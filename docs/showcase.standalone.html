@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GitHub Beyond Coding: The Agentic Engineering Loop</title>
-<meta name="description" content="A nine-stage engineering loop shown in eleven demo scenes: durable intent, reviewable proposals, deterministic evidence, policy, accountable authority, governed release, and production feedback.">
+<meta name="description" content="A nine-concern engineering graph shown in eleven demo scenes: work enters from telemetry, business intent, a security finding or a production incident, and GitHub makes the next step durable through intent, contract, evidence, authority, governed release and production feedback.">
 <meta name="doc-id" content="agentic-engineering-loop-showcase">
 <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJBZ2VudGljIGVuZ2luZWVyaW5nIGxvb3AiPgogIDxyZWN0IHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgcng9IjciIGZpbGw9IiMwMDc4ZDQiLz4KICA8cGF0aCBkPSJNMTYgNy41YTguNSA4LjUgMCAxIDEtOC4wNiA1LjgzIiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMi42IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNNy40IDguMmwxLjEgNC45IDQuOS0xLjEiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIyLjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxjaXJjbGUgY3g9IjE2IiBjeT0iMTYiIHI9IjIuNiIgZmlsbD0iI2ZmZmZmZiIvPgo8L3N2Zz4K" type="image/svg+xml">
 
@@ -2360,7 +2360,7 @@ html:not(.js) .detail-more { display: none; }
     <p class="eyebrow">ENGINEERING PRACTICE</p>
     <h1>GitHub Beyond Coding</h1>
     <p class="subtitle">The Agentic Engineering Loop</p>
-    <p class="subtitle">A nine-stage engineering loop shown in eleven demo scenes; only one lifecycle stage is coding. The business case is in the other eight, where cycle time, rework and audit effort accumulate. By the end you can tell which stages an agent should own, which must stay with a named human, and which primitives your current stack already provides.</p>
+    <p class="subtitle">A nine-concern engineering graph shown in eleven demo scenes; only one concern is coding. The business case is in the other eight, where cycle time, rework and audit effort accumulate. By the end you can tell which concerns an agent should own, which must stay with a named human, and which primitives your current stack already provides.</p>
     <p class="meta"><time datetime="2026-08-24">24 August 2026</time> &middot; Product states verified 2026-08-24 &middot; Synthetic data only</p>
   </header>
 
@@ -2391,71 +2391,111 @@ html:not(.js) .detail-more { display: none; }
           <button type="button" class="card-toggle" aria-expanded="true">
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
-              <span class="card-title">Nine stages carry one change, and only one is coding</span>
-              <span class="card-sub">All nine stages &middot; Q1 to Q7 &middot; Bitbucket and Jira may remain; nothing migrates</span>
+              <span class="card-title">The hard part is not writing code. It is steering change.</span>
+              <span class="card-sub">The whole graph &middot; Nine concerns, nine questions &middot; only one of them is coding</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
         </h3>
         <div class="card-body">
           <figure class="figure">
-            <svg viewBox="0 0 1600 126" width="1600" height="126" style="width:100%;height:auto;display:block" role="img" aria-label="Nine stages arranged as a loop: Signal, Intent, Contract, Lane, Implementation, Evidence, Authority, Release, Production. A dashed arrow returns from Production to Signal; that return is the arrow back to stage one, not a tenth stage. Implementation is highlighted as the only coding stage.">
+            <svg viewBox="0 0 1600 324" width="1600" height="324" style="width:100%;height:auto;display:block" role="img" aria-label="The engineering graph. Nine concerns: Signal, Intent, Contract, Lane, Implementation, Evidence, Authority, Release, Production. Four entry points feed different concerns: telemetry into Signal, business intent into Intent, a security finding into Evidence, and a production incident into Production. Three dashed feedback edges run backwards: Evidence into Contract and Implementation, Authority into Contract and Intent, and Production into Signal, Intent and a changed contract. Reading it left to right is one path through the graph, not the definition of the system. Implementation is highlighted as the only coding concern.">
               <style>
                 .b { fill: var(--surface); stroke: var(--border-strong); stroke-width: 2; }
                 .ba { fill: var(--accent-soft); stroke: var(--accent-border); stroke-width: 2; }
                 .t { fill: var(--text); font-size: 32px; font-weight: 600; }
-                .l { fill: var(--accent); font-size: 30px; }
+                .e { fill: var(--text); font-size: 31px; }
+                .g { fill: var(--text-muted); font-size: 31px; }
+                .l { fill: var(--accent); font-size: 31px; }
                 .ln { stroke: var(--border-strong); stroke-width: 2; fill: none; }
                 .la { stroke: var(--accent); stroke-width: 2; fill: none; stroke-dasharray: 7 6; }
                 .h { fill: var(--border-strong); }
                 .ha { fill: var(--accent); }
                 text { font-family: var(--font-sans); }
               </style>
-              <rect class="b" x="18" y="10" width="120" height="62" rx="8"/>
-              <text class="t" x="78" y="52" text-anchor="middle">Signal</text>
-              <rect class="b" x="156" y="10" width="118" height="62" rx="8"/>
-              <text class="t" x="215" y="52" text-anchor="middle">Intent</text>
-              <rect class="b" x="292" y="10" width="156" height="62" rx="8"/>
-              <text class="t" x="370" y="52" text-anchor="middle">Contract</text>
-              <rect class="b" x="466" y="10" width="100" height="62" rx="8"/>
-              <text class="t" x="516" y="52" text-anchor="middle">Lane</text>
-              <rect class="ba" x="584" y="10" width="264" height="62" rx="8"/>
-              <text class="t" x="716" y="52" text-anchor="middle">Implementation</text>
-              <rect class="b" x="866" y="10" width="160" height="62" rx="8"/>
-              <text class="t" x="946" y="52" text-anchor="middle">Evidence</text>
-              <rect class="b" x="1044" y="10" width="170" height="62" rx="8"/>
-              <text class="t" x="1129" y="52" text-anchor="middle">Authority</text>
-              <rect class="b" x="1232" y="10" width="140" height="62" rx="8"/>
-              <text class="t" x="1302" y="52" text-anchor="middle">Release</text>
-              <rect class="b" x="1390" y="10" width="192" height="62" rx="8"/>
-              <text class="t" x="1486" y="52" text-anchor="middle">Production</text>
-              <path class="ln" d="M138 41 H149"/><polygon class="h" points="156,41 146,37 146,45"/>
-              <path class="ln" d="M274 41 H285"/><polygon class="h" points="292,41 282,37 282,45"/>
-              <path class="ln" d="M448 41 H459"/><polygon class="h" points="466,41 456,37 456,45"/>
-              <path class="ln" d="M566 41 H577"/><polygon class="h" points="584,41 574,37 574,45"/>
-              <path class="ln" d="M848 41 H859"/><polygon class="h" points="866,41 856,37 856,45"/>
-              <path class="ln" d="M1026 41 H1037"/><polygon class="h" points="1044,41 1034,37 1034,45"/>
-              <path class="ln" d="M1214 41 H1225"/><polygon class="h" points="1232,41 1222,37 1222,45"/>
-              <path class="ln" d="M1372 41 H1383"/><polygon class="h" points="1390,41 1380,37 1380,45"/>
-              <path class="la" d="M1486 72 V114 H78 V78"/><polygon class="ha" points="78,72 74,82 82,82"/>
-              <text class="l" x="716" y="100" text-anchor="middle">the return to stage one, not a tenth stage</text>
+              <rect class="b" x="18" y="72" width="120" height="62" rx="8"/>
+              <text class="t" x="78" y="114" text-anchor="middle">Signal</text>
+              <rect class="b" x="156" y="72" width="118" height="62" rx="8"/>
+              <text class="t" x="215" y="114" text-anchor="middle">Intent</text>
+              <rect class="b" x="292" y="72" width="156" height="62" rx="8"/>
+              <text class="t" x="370" y="114" text-anchor="middle">Contract</text>
+              <rect class="b" x="466" y="72" width="100" height="62" rx="8"/>
+              <text class="t" x="516" y="114" text-anchor="middle">Lane</text>
+              <rect class="ba" x="584" y="72" width="264" height="62" rx="8"/>
+              <text class="t" x="716" y="114" text-anchor="middle">Implementation</text>
+              <rect class="b" x="866" y="72" width="160" height="62" rx="8"/>
+              <text class="t" x="946" y="114" text-anchor="middle">Evidence</text>
+              <rect class="b" x="1044" y="72" width="170" height="62" rx="8"/>
+              <text class="t" x="1129" y="114" text-anchor="middle">Authority</text>
+              <rect class="b" x="1232" y="72" width="140" height="62" rx="8"/>
+              <text class="t" x="1302" y="114" text-anchor="middle">Release</text>
+              <rect class="b" x="1390" y="72" width="192" height="62" rx="8"/>
+              <text class="t" x="1486" y="114" text-anchor="middle">Production</text>
+              <path class="ln" d="M138 103 H149"/><polygon class="h" points="156,103 146,99 146,107"/>
+              <path class="ln" d="M274 103 H285"/><polygon class="h" points="292,103 282,99 282,107"/>
+              <path class="ln" d="M448 103 H459"/><polygon class="h" points="466,103 456,99 456,107"/>
+              <path class="ln" d="M566 103 H577"/><polygon class="h" points="584,103 574,99 574,107"/>
+              <path class="ln" d="M848 103 H859"/><polygon class="h" points="866,103 856,99 856,107"/>
+              <path class="ln" d="M1026 103 H1037"/><polygon class="h" points="1044,103 1034,99 1034,107"/>
+              <path class="ln" d="M1214 103 H1225"/><polygon class="h" points="1232,103 1222,99 1222,107"/>
+              <path class="ln" d="M1372 103 H1383"/><polygon class="h" points="1390,103 1380,99 1380,107"/>
+              <text class="e" x="90" y="32" text-anchor="middle">Telemetry</text>
+              <text class="e" x="300" y="32" text-anchor="middle">Business intent</text>
+              <text class="g" x="620" y="32" text-anchor="middle">Four entry points</text>
+              <text class="e" x="946" y="32" text-anchor="middle">Security finding</text>
+              <text class="e" x="1450" y="32" text-anchor="middle">Production incident</text>
+              <path class="ln" d="M90 44 V58 H78 V64"/><polygon class="h" points="78,72 74,62 82,62"/>
+              <path class="ln" d="M300 44 V58 H215 V64"/><polygon class="h" points="215,72 211,62 219,62"/>
+              <path class="ln" d="M946 44 V64"/><polygon class="h" points="946,72 942,62 950,62"/>
+              <path class="ln" d="M1450 44 V58 H1486 V64"/><polygon class="h" points="1486,72 1482,62 1490,62"/>
+              <path class="la" d="M946 134 V180 H380 V146"/><polygon class="ha" points="380,134 376,144 384,144"/>
+              <path class="la" d="M716 180 V146"/><polygon class="ha" points="716,134 712,144 720,144"/>
+              <text class="l" x="966" y="190">Evidence sends work back</text>
+              <path class="la" d="M1129 134 V228 H215 V146"/><polygon class="ha" points="215,134 211,144 219,144"/>
+              <path class="la" d="M340 228 V146"/><polygon class="ha" points="340,134 336,144 344,144"/>
+              <text class="l" x="1149" y="238">Authority sends work back</text>
+              <path class="la" d="M1486 134 V276 H78 V146"/><polygon class="ha" points="78,134 74,144 82,144"/>
+              <path class="la" d="M170 276 V146"/><polygon class="ha" points="170,134 166,144 174,144"/>
+              <text class="l" x="800" y="310" text-anchor="middle">Production reshapes the graph: a new signal, new intent, a changed contract</text>
             </svg>
-            <figcaption>Implementation, stage five, is the only coding stage. Seven questions decide whether that diff survives.</figcaption>
+            <figcaption>Reading it left to right is one path through the graph, not the definition of the system. Work enters at four different concerns, and the dashed edges run backwards.</figcaption>
           </figure>
-          <ul class="arrow-list">
-            <li><strong>Q1 Intent</strong> — written down? Durable work items beside the code.</li>
-            <li><strong>Q2 Proposal</strong> — reviewable? A change set with line-level review.</li>
-            <li><strong>Q3 Evidence</strong> — deterministic? Checks bound to that change set.</li>
-            <li><strong>Q4 Policy</strong> — allowed? Branch rules as reviewable configuration.</li>
-            <li><strong>Q5 Accountability</strong> — who merged it? Named code-owner review.</li>
-            <li><strong>Q6 Release</strong> — how does it ship? Approval and federated identity.</li>
-            <li><strong>Q7 Feedback</strong> — what did production say? Back to stage one.</li>
-          </ul>
-          <p><strong>Nothing migrates for this demonstration.</strong> Your Bitbucket repositories and your Jira projects may remain exactly where they are. Assess one repository, and mark each of these seven primitives <strong>native</strong>, <strong>integrated</strong>, or <strong>custom</strong> in your current stack. The maintained bridges behind the custom ones are the platform cost.</p>
+          <p>An agent writes a plausible diff in ninety seconds. Steering it is nine concerns, and only <strong>Implementation</strong> is coding. Take the other eight and mark each one <strong>native</strong>, <strong>integrated</strong>, or <strong>custom</strong> in the stack you already run. The maintained bridges behind the custom ones are the platform cost, and nothing on this slide asks you to move a repository to find that number.</p>
         </div>
       </article>
 
       <div>
+        <article class="card" id="card-graph-questions">
+          <h3 class="card-head">
+            <button type="button" class="card-toggle" aria-expanded="false">
+              <span class="card-num" aria-hidden="true"></span>
+              <span class="card-titles">
+                <span class="card-title">Nine concerns, and the plain question each one answers</span>
+                <span class="card-sub">Every scene of the hour carries its concern and its question in the slide subtitle.</span>
+              </span>
+              <span class="card-mark" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="card-body">
+            <div class="summary-grid">
+              <div class="summary-item"><span class="summary-label">Signal</span>What changed or deserves attention?</div>
+              <div class="summary-item"><span class="summary-label">Intent</span>Why should we act?</div>
+              <div class="summary-item"><span class="summary-label">Contract</span>What must remain true?</div>
+              <div class="summary-item"><span class="summary-label">Lane</span>Who or what should act?</div>
+              <div class="summary-item"><span class="summary-label">Implementation</span>What changed?</div>
+              <div class="summary-item"><span class="summary-label">Evidence</span>Does it work and remain secure?</div>
+              <div class="summary-item"><span class="summary-label">Authority</span>Who accepts the risk?</div>
+              <div class="summary-item"><span class="summary-label">Release</span>What is allowed to ship?</div>
+              <div class="summary-item"><span class="summary-label">Production</span>What happened after release?</div>
+            </div>
+            <p>Each question needs a primitive, and the primitive is the thing your platform either has or bridges to: scheduled, bounded automation that reads committed evidence and proposes work; durable, assignable work items an agent can read where the code lives; a specification, a decision record and acceptance criteria stored beside the code; interchangeable execution surfaces bound by one repository contract; a reviewable change set with line-level discussion; deterministic checks and security scanning bound to that change set; required review by named owners, attributed to a person on a commit; environment approval, federated credentials, build provenance; and a path for production signal to re-enter the graph as work.</p>
+            <aside class="callout callout--note">
+              <p class="callout-label">Note</p>
+              <p>None of the nine is a model problem. That is the whole argument, and it is why the choice of agent stays reversible for as long as the answers live in the repository.</p>
+            </aside>
+          </div>
+        </article>
+
         <article class="card" id="card-primitives">
           <h3 class="card-head">
             <button type="button" class="card-toggle" aria-expanded="false">
@@ -2467,8 +2507,8 @@ html:not(.js) .detail-more { display: none; }
             </button>
           </h3>
           <div class="card-body">
-            <p>Most stacks have several of these primitives natively and bridge the rest. That is a legitimate position, and this session does not ask you to abandon it. Go down the seven and mark each primitive <strong>native</strong> in your current stack, <strong>integrated</strong> through a connector you did not write, or <strong>custom</strong>, meaning a system your own team maintains. The question is only how much of the bridge you are maintaining, and whether an agent can read across it.</p>
-            <p>Your repositories may be on Bitbucket and your planning in Jira. One repository is enough to test this loop, and migration is not required today.</p>
+            <p>Most stacks have several of these primitives natively and bridge the rest. That is a legitimate position, and this session does not ask you to abandon it. Go down the nine and mark each primitive <strong>native</strong> in your current stack, <strong>integrated</strong> through a connector you did not write, or <strong>custom</strong>, meaning a system your own team maintains. The question is only how much of the bridge you are maintaining, and whether an agent can read across it.</p>
+            <p>Existing source control and work management can stay where they are while you find out. One repository is enough to test this graph, and nothing has to move for the answer to be real.</p>
             <aside class="callout callout--note">
               <p class="callout-label">Note</p>
               <p>An agent reads the repository. Intent that lives outside the repository has to be copied into it, and a copy is where accuracy is lost. That is the whole reason this argument is about where evidence lives rather than about which vendor wins.</p>
@@ -2481,15 +2521,21 @@ html:not(.js) .detail-more { display: none; }
             <button type="button" class="card-toggle" aria-expanded="false">
               <span class="card-num" aria-hidden="true"></span>
               <span class="card-titles">
-                <span class="card-title">Stages and scenes are different counts and must not be conflated</span>
+                <span class="card-title">A graph, not a queue: entry points and feedback edges are the point</span>
               </span>
               <span class="card-mark" aria-hidden="true"></span>
             </button>
           </h3>
           <div class="card-body">
-            <p>There are <strong>nine lifecycle stages</strong>: signal, intent, contract, lane, implementation, evidence, authority, release, production. That is what the loop is made of.</p>
-            <p>There are <strong>eleven demo scenes</strong> across fifteen slides. That is how one hour presents the loop. The counts differ because some stages need two scenes and some scenes cover no stage at all.</p>
-            <p><code>fixtures/prepared/manifest.json</code> holds both numbers, and a test fails the build if any document drifts from them.</p>
+            <p>There are <strong>nine concerns</strong>: signal, intent, contract, lane, implementation, evidence, authority, release, production. That is what the graph is made of. Nothing says work must start at signal.</p>
+            <ul class="arrow-list">
+              <li><strong>Telemetry enters at Signal.</strong> A scheduled workflow reads committed telemetry and finds a rate that moved. This hour enters here, because it is the entry most rooms have never automated.</li>
+              <li><strong>Business intent enters at Intent.</strong> Somebody opens an issue because the business wants an outcome. Nothing had to change first.</li>
+              <li><strong>A security finding enters at Evidence.</strong> A scanner raises an alert about code that already merged, and the graph runs backwards from there.</li>
+              <li><strong>A production incident enters at Production.</strong> A release misbehaves, and the observation is the first thing anyone writes down.</li>
+            </ul>
+            <p>The edges run backwards too, and plurally. <strong>Evidence</strong> may send work back to the contract or to the implementation, because a failing check either found a defect in the change or a defect in what was asked for. <strong>Authority</strong> may send it back to intent or to the contract, because a reviewer who declines is rarely rejecting the code. <strong>Production</strong> may raise a new signal, reshape intent, change what must remain true, or open a proposal directly.</p>
+            <p>There are <strong>eleven demo scenes</strong> across fifteen slides. That is how one hour presents the graph, and it walks one readable path through it. The counts differ because some concerns need two scenes and some scenes cover no concern at all. <code>fixtures/prepared/manifest.json</code> holds both numbers, and a test fails the build if any document drifts from them.</p>
           </div>
         </article>
       </div>
@@ -2500,15 +2546,15 @@ html:not(.js) .detail-more { display: none; }
           <button type="button" class="card-toggle" aria-expanded="false">
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
-              <span class="card-title">Reasoning proposes one issue; a compiled contract bounds the write</span>
-              <span class="card-sub">Stage 1 Signal &middot; Q1 of 7 &middot; GitHub Agentic Workflows, public preview, pinned at gh-aw v0.86.2</span>
+              <span class="card-title">Work can enter from anywhere; make the next step durable.</span>
+              <span class="card-sub">Signal &middot; What changed or deserves attention? &middot; GitHub Agentic Workflows, public preview, pinned at gh-aw v0.86.2</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
         </h3>
         <div class="card-body">
-          <p><strong>The opening number.</strong> For the synthetic pair <code>SITE-NORTH</code> / <code>SKU-1001</code>, the unavailable rate rose from <strong>23%</strong> to <strong>78%</strong> across the window. The counts quoted at the close are a different measure, not a comparison with these percentages.</p>
-          <p>The input is committed telemetry: reviewed repository content, not attacker-controlled. What bounds the run is the frontmatter below, and the compiled lock it produces is ordinary committed Actions YAML.</p>
+          <p><strong>Four ways in:</strong> telemetry at Signal, business intent at Intent, a security finding at Evidence, a production incident at Production. Any of them can be first, and <strong>this demonstration enters at telemetry</strong>.</p>
+          <p>What makes it engineering is that the next step survives. A scheduled workflow read three weeks of committed telemetry &mdash; reviewed repository content, not attacker-controlled &mdash; and left <strong>one bounded issue</strong> behind: for <code>SITE-NORTH</code> / <code>SKU-1001</code> the unavailable rate rose from <strong>23%</strong> to <strong>78%</strong>, and the counts at the close are a different measure. The frontmatter bounds the run, and the lock it compiles to is ordinary committed Actions YAML.</p>
           <div class="code">
             <p class="code-label">control contract, abridged from .github/workflows/repository-pulse.md</p>
             <pre><code>permissions:  { contents: read, issues: read }   # the agent job can write nothing
@@ -2595,7 +2641,7 @@ safe-outputs:
             </button>
           </h3>
           <div class="card-body">
-            <p>The pulse lane reads a file that went through a pull request. It is reviewed repository content, and treating it as attacker-controlled would be theatre. What bounds that lane is the control contract above.</p>
+            <p>The pulse lane reads a file that went through a pull request. It is reviewed repository content, and treating it as attacker-controlled would be theatre. What bounds that lane is the control contract on the signal slide.</p>
             <p>The intake lane reads an issue body. Anyone can open an issue, so that text <em>is</em> attacker-controlled, and a model cannot reliably distinguish instructions in its prompt from instructions in the data it was asked to read. That lane needs an input gate, and it has one.</p>
             <p>Five boundaries carry the load between them. Only the first is specific to the untrusted-input lane:</p>
             <ol class="steps">
@@ -2619,26 +2665,24 @@ safe-outputs:
           <button type="button" class="card-toggle" aria-expanded="false">
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
-              <span class="card-title">Contracts outlive engines, and this one already proved it</span>
-              <span class="card-sub">Stage 2 Intent &middot; Q1 of 7 &middot; prepared output from an engine GitHub has since removed</span>
+              <span class="card-title">Turn noise into intent before asking an agent to code.</span>
+              <span class="card-sub">Intent &middot; Why should we act? &middot; prepared output, never run live; the supported Copilot lane imports the identical brief</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
         </h3>
         <div class="card-body">
-          <p>Intake reads an issue body, and anyone can open one, so that text is attacker-controlled.</p>
+          <div class="summary-grid">
+            <div class="summary-item"><span class="summary-label">Classification</span>A bounded change in <code>app/src</code>.</div>
+            <div class="summary-item"><span class="summary-label">Duplicate check</span>Every open issue compared. Not a duplicate.</div>
+            <div class="summary-item"><span class="summary-label">Feasibility</span>No new dependency, and it names the file.</div>
+            <div class="summary-item"><span class="summary-label">Missing decisions</span>Five, none of them engineering's to make.</div>
+            <div class="summary-item"><span class="summary-label">Safe next action</span>Label <code>needs-detail</code>. Do not write code yet.</div>
+          </div>
+          <p>The last two are the valuable ones: an agent that says "five decisions are missing" has done more for the change than one that starts writing. And because anyone can open an issue, this lane gates on a label before any model runs.</p>
           <aside class="callout callout--rule">
             <p class="callout-label">Rule</p>
             <p>Do not ask a model to refuse a malicious instruction. Arrange the system so obeying a malicious instruction achieves nothing.</p>
-          </aside>
-          <div class="summary-grid">
-            <div class="summary-item"><span class="summary-label">Engine removed</span>ADR-50145, accepted 2026-08-04, removed OpenCode as a supported gh-aw engine.</div>
-            <div class="summary-item"><span class="summary-label">Ecosystem grew</span>Third-party coding agents: Anthropic Claude and OpenAI Codex, public preview.</div>
-            <div class="summary-item"><span class="summary-label">What changed here</span>One line. Two workflows share the identical brief; only the engine differs.</div>
-          </div>
-          <aside class="callout callout--warning">
-            <p class="callout-label">Warning</p>
-            <p>Prepared output, never run live. The lane returns one comment and at most three allowlisted labels; this lock also reports the egress firewall disabled and maps the Copilot token into the sandbox as <code>OPENAI_API_KEY</code> without excluding it. Both supported lanes do neither.</p>
           </aside>
         </div>
       </article>
@@ -2650,6 +2694,7 @@ safe-outputs:
               <span class="card-num" aria-hidden="true"></span>
               <span class="card-titles">
                 <span class="card-title">A decision in someone else's repository ended a lane, and the contract did not move</span>
+                <span class="card-sub">Engine churn is depth, not the argument. The brief, the labels and the reviewer never changed.</span>
               </span>
               <span class="card-mark" aria-hidden="true"></span>
             </button>
@@ -2657,11 +2702,34 @@ safe-outputs:
           <div class="card-body">
             <p>ADR-50145 in <code>github/gh-aw</code> states: "We will remove <code>opencode</code> as a supported experimental engine from the gh-aw platform." Its changeset is marked <code>major</code> and says workflows using <code>engine: opencode</code> no longer compile or validate. The behaviour definition still ships under "Unsupported engine samples", carrying <code>experimental: true</code>, with no compatibility or maintenance commitment.</p>
             <p>The vendored copy here is byte-identical to the upstream blob, and a test computes its git blob SHA to prove it. All commentary lives outside that file.</p>
+            <p>Two properties of the compiled lock, both readable in the committed file, are why this lane is presented as prepared output rather than run live: it reports the egress firewall disabled, and it maps the Copilot token into the model sandbox as <code>OPENAI_API_KEY</code> without excluding it. Both supported Copilot lanes do neither.</p>
             <p>Separately, GitHub now lists Anthropic Claude and OpenAI Codex as third-party coding agents in public preview, enabled through Copilot policy. Nothing in this repository depends on either: they are named so the ecosystem claim is dated and bounded, not because a scene uses them.</p>
             <aside class="callout callout--source">
               <p class="callout-label">Source</p>
               <p>gh-aw <code>main</code> at <code>c453ed8</code>, read 2026-08-23. ADR blob <code>2b9a9f46</code>, changeset blob <code>a18ad374</code>, vendored definition blob <code>d875e158</code>. Third-party agent state verified the same day at <a href="https://docs.github.com/en/copilot/concepts/agents/about-third-party-coding-agents">the third-party coding agents page</a>.</p>
             </aside>
+          </div>
+        </article>
+
+        <article class="card" id="card-triage-value">
+          <h3 class="card-head">
+            <button type="button" class="card-toggle" aria-expanded="false">
+              <span class="card-num" aria-hidden="true"></span>
+              <span class="card-titles">
+                <span class="card-title">The five questions triage asked, and why they are the output that matters</span>
+              </span>
+              <span class="card-mark" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="card-body">
+            <ol class="steps">
+              <li><h4>How many alternatives are offered?</h4><p>One, or a ranked list? The answer changes the response shape and every test that guards it.</p></li>
+              <li><h4>What makes two items interchangeable?</h4><p>And is that a clinical or a commercial decision? Nobody in engineering owns that answer.</p></li>
+              <li><h4>Must an alternative cover the whole quantity?</h4><p>Or is a partial match useful? This one silently decides half the ranking logic.</p></li>
+              <li><h4>What happens when nothing in the group is in stock?</h4><p>The empty case is the case that reaches production first.</p></li>
+              <li><h4>Does the alternative have to be at the same site?</h4><p>A constraint that is cheap to state now and expensive to retrofit later.</p></li>
+            </ol>
+            <p>An agent that answered these itself would have invented the product. Naming them and stopping is the correct behaviour, and it is what turns a signal into intent somebody can accept or reject.</p>
           </div>
         </article>
       </div>
@@ -2672,20 +2740,26 @@ safe-outputs:
           <button type="button" class="card-toggle" aria-expanded="false">
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
-              <span class="card-title">Ten acceptance criteria, ten named tests, checked both ways</span>
-              <span class="card-sub">Stage 3 Contract &middot; Q1 and Q2 of 7 &middot; intent becomes a contract</span>
+              <span class="card-title">Intent becomes a contract agents can prove.</span>
+              <span class="card-sub">Contract &middot; What must remain true? &middot; an issue is one link, not the chain</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
         </h3>
         <div class="card-body">
+          <ol class="sequence">
+            <li><span class="seq-title">Product brief</span><span class="seq-note">The outcome, and how success is measured.</span></li>
+            <li><span class="seq-title">Issue</span><span class="seq-note">One assignable unit of that intent.</span></li>
+            <li><span class="seq-title">Decision record</span><span class="seq-note">The choice made, and what it rules out.</span></li>
+            <li><span class="seq-title">Specification</span><span class="seq-note">Behaviour, constraints, acceptance criteria.</span></li>
+            <li><span class="seq-title">Tests</span><span class="seq-note">The criteria, made executable.</span></li>
+          </ol>
           <div class="summary-grid">
             <div class="summary-item"><span class="summary-label">Outcome</span>An unavailable request returns one concrete alternative in the same response.</div>
-            <div class="summary-item"><span class="summary-label">Constraint</span>No internal classification field leaves the service.</div>
-            <div class="summary-item"><span class="summary-label">Constraint</span>One alternative only, chosen deterministically.</div>
-            <div class="summary-item"><span class="summary-label">Enforcement</span>A criterion without a test fails CI, and so does a test without a criterion.</div>
+            <div class="summary-item"><span class="summary-label">Constraint</span>No internal classification field leaves the service; one alternative only, chosen deterministically.</div>
+            <div class="summary-item"><span class="summary-label">Enforcement</span>Ten criteria, ten named tests. A criterion without a test fails CI, and so does a test without a criterion.</div>
           </div>
-          <p>Whichever surface does the work reads this same specification and is judged by these same tests. A constraint an agent cannot test is a hope.</p>
+          <p><strong>An issue on its own is not the contract.</strong> It carries why, and nothing an agent can be judged against. The chain above is what a coding agent reads, and <a href="https://github.com/github/spec-kit">GitHub Spec Kit</a> packages exactly this chain as a spec-driven workflow. Whichever surface does the work reads the same specification and is judged by the same tests. A constraint an agent cannot test is a hope.</p>
         </div>
       </article>
 
@@ -2710,7 +2784,60 @@ safe-outputs:
   }
 });</code></pre>
             </div>
-            <p><a href="https://github.com/tkubica12/agentic-engineering-loop-demo/blob/main/docs/spec/SPEC-001-substitute-suggestion.md">The specification</a>, <a href="https://github.com/tkubica12/agentic-engineering-loop-demo/blob/main/docs/spec/acceptance-mapping.md">the mapping</a>, and <a href="https://github.com/tkubica12/agentic-engineering-loop-demo/blob/main/docs/spec/ADR-0001-substitute-selection.md">the decision record</a>. GitHub spec-kit packages this discipline when more than one team needs the same shape; this repository writes the three artefacts by hand to stay dependency-light and claims nothing further about it.</p>
+            <p><a href="https://github.com/tkubica12/agentic-engineering-loop-demo/blob/main/docs/spec/SPEC-001-substitute-suggestion.md">The specification</a>, <a href="https://github.com/tkubica12/agentic-engineering-loop-demo/blob/main/docs/spec/acceptance-mapping.md">the mapping</a>, and <a href="https://github.com/tkubica12/agentic-engineering-loop-demo/blob/main/docs/spec/ADR-0001-substitute-selection.md">the decision record</a>. This repository writes those three artefacts by hand to stay dependency-light; the discipline, not the tool, is the point.</p>
+          </div>
+        </article>
+
+        <article class="card" id="card-spec-kit">
+          <h3 class="card-head">
+            <button type="button" class="card-toggle" aria-expanded="false">
+              <span class="card-num" aria-hidden="true"></span>
+              <span class="card-titles">
+                <span class="card-title">Spec-driven development, and the part of the graph it does not cover</span>
+                <span class="card-sub">Spec Kit is a first-party GitHub toolkit. It is the contract layer, not the whole graph.</span>
+              </span>
+              <span class="card-mark" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="card-body">
+            <p>Spec-driven development means the specification, not the prompt, is the durable artefact: intent is written down, constraints and acceptance criteria are made explicit, and the agent implements against them rather than against a conversation. <strong>Spec Kit</strong> is GitHub's own toolkit for that workflow, and it is the reason this scene is a chain rather than a single file.</p>
+            <p>Its role in the graph is precise and worth stating as a limit rather than a slogan. Spec Kit makes the edge from <strong>Intent</strong> to <strong>Contract</strong> durable and repeatable. It does not discover intent for you, so the Signal concern still needs something that watches; and it does not close the production feedback edge, so the Production concern still needs an operational path back into the repository. A spec-driven repository with no signal source and no feedback edge is a well-documented open loop.</p>
+            <aside class="callout callout--source">
+              <p class="callout-label">Source</p>
+              <p><a href="https://github.com/github/spec-kit">github/spec-kit</a>, described upstream as a "Toolkit to help you get started with Spec-Driven Development", and its documentation at <a href="https://github.github.io/spec-kit/">github.github.io/spec-kit</a>. Both read 2026-08-24. First-party GitHub, and the only tool named on this card that is.</p>
+            </aside>
+          </div>
+        </article>
+
+        <article class="card" id="card-loop-patterns">
+          <h3 class="card-head">
+            <button type="button" class="card-toggle" aria-expanded="false">
+              <span class="card-num" aria-hidden="true"></span>
+              <span class="card-titles">
+                <span class="card-title">Three emerging loop patterns, and what none of them is</span>
+                <span class="card-sub">Community vocabulary, dated and sourced. Not GitHub products, not settled standards.</span>
+              </span>
+              <span class="card-mark" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="card-body">
+            <p>The vocabulary around agent loops moved fast in 2026, and three names now come up in most serious conversations. They are named here because attendees will meet them, with the same honesty applied to everything else in this session: each is a <strong>community or emerging pattern</strong>, none is a GitHub or Microsoft product, and none is a standard anyone has ratified.</p>
+            <div class="reveal">
+              <button type="button" class="reveal-toggle" aria-expanded="false">Show what each pattern claims, and where it sits in the graph</button>
+              <div class="reveal-body">
+                <ol class="steps">
+                  <li><h4>Loop engineering</h4><p>Replace repeated human prompting with a designed loop: something schedules or triggers the work, state is persisted outside the chat window, output is verified, and the loop escalates to a person or stops. It is the discipline behind the Signal concern, and behind every <code>max-turns</code> and stop condition in this repository. IBM defines it as "the practice of designing agentic workflows, or loops, that iteratively guide AI agents toward completing user-defined goals with minimal human intervention", published 17 July 2026.</p></li>
+                  <li><h4>The intent loop</h4><p>Observation continuously reshapes intent and the specification, rather than intent being captured once at the start. Expressed publicly as a four-step team operating model, "Notice, Spec, Execute, Observe", in a small community repository. In this graph it is the Production feedback edge taken seriously: the specification is expected to change because production said something.</p></li>
+                  <li><h4>The gauntlet loop</h4><p>A maker builds, a separate critic with fresh context judges the artefact against a bar written down before the work started, the largest gap goes back, and the loop repeats until the work clears the bar. Named by Matt Shumer in July 2026 and widely re-implemented since. It improves what arrives at the Implementation concern; it does not replace a deterministic check, because a critic is still a model.</p></li>
+                  <li><h4>Spec-driven development</h4><p>The contract layer, and the oldest idea of the four. It is what the other three iterate around, and the only one of the four with first-party GitHub tooling.</p></li>
+                </ol>
+                <p>The useful test for any of them is the same one this session applies everywhere: does the pattern leave a durable artefact in the repository that a deterministic check can be bound to? Loop engineering and spec-driven development do. The other two are ways of producing a better proposal, which is valuable and is not evidence.</p>
+              </div>
+            </div>
+            <aside class="callout callout--source">
+              <p class="callout-label">Source</p>
+              <p>All read 2026-08-24, all labelled community or emerging. Loop engineering: <a href="https://www.ibm.com/think/topics/loop-engineering">IBM, "What is loop engineering?"</a>, published 17 July 2026, and the community repository that named it, <a href="https://github.com/cobusgreyling/loop-engineering">cobusgreyling/loop-engineering</a>. Intent loop: <a href="https://github.com/theparlor/intent">theparlor/intent</a> and <a href="https://theparlor.github.io/intent/">its documentation</a> &mdash; a small community project, cited for its articulation rather than its adoption. Gauntlet loop: <a href="https://github.com/robonuggets/gauntlet-loop">robonuggets/gauntlet-loop</a>, which credits Matt Shumer for the technique. None of these came from GitHub, and no first-party source describes them as GitHub practice.</p>
+            </aside>
           </div>
         </article>
       </div>
@@ -2721,13 +2848,14 @@ safe-outputs:
           <button type="button" class="card-toggle" aria-expanded="false">
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
-              <span class="card-title">Four execution surfaces, one repository contract</span>
-              <span class="card-sub">Stage 4 Lane &middot; Q2 of 7 &middot; the surface is a preference, not an architecture</span>
+              <span class="card-title">Change the agent, keep the contract.</span>
+              <span class="card-sub">Lane &middot; Who or what should act? &middot; the surface is a preference, not an architecture</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
         </h3>
         <div class="card-body">
+          <p><strong>Four execution surfaces, one repository contract.</strong> The surface is a preference; the contract is the architecture.</p>
           <div class="summary-grid">
             <div class="summary-item"><span class="summary-label">IDE</span>Cursor, VS Code. Developer machine. If your team likes Cursor, keep Cursor.</div>
             <div class="summary-item"><span class="summary-label">CLI</span>OpenCode CLI, Copilot CLI, Claude Code. Developer machine or CI.</div>
@@ -2777,8 +2905,8 @@ safe-outputs:
           <button type="button" class="card-toggle" aria-expanded="false">
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
-              <span class="card-title">A good agent pull request is small enough to read in the room</span>
-              <span class="card-sub">Stage 5 Implementation &middot; Q2 of 7 &middot; is the proposal reviewable?</span>
+              <span class="card-title">A good agent proposal fits on one screen.</span>
+              <span class="card-sub">Implementation &middot; What changed? &middot; the only concern of the nine that is coding</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
@@ -2826,8 +2954,8 @@ safe-outputs:
           <button type="button" class="card-toggle" aria-expanded="false">
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
-              <span class="card-title">Eight checks, one ruleset, one accountable human</span>
-              <span class="card-sub">Stages 6 and 7, Evidence and Authority &middot; Q3, Q4 and Q5 of 7 &middot; evidence, policy, accountability</span>
+              <span class="card-title">Agents propose. Deterministic gates decide.</span>
+              <span class="card-sub">Evidence and Authority &middot; Does it work and remain secure? Who accepts the risk?</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
@@ -2843,7 +2971,7 @@ safe-outputs:
             <li>codeql / analyze javascript</li>
             <li>dependency-review / review dependency changes</li>
           </ul>
-          <p><strong>Policy:</strong> a ruleset on the default branch requires a pull request, these checks and a code-owner review. <strong>Accountability:</strong> CODEOWNERS names who must approve, on a commit SHA. An AI review can do neither. It did catch one leak: four internal fields were being spread into the response.</p>
+          <p><strong>Eight checks, eight different questions, no model in any of them.</strong> <strong>Policy:</strong> a ruleset on the default branch requires a pull request, these checks and a code-owner review. <strong>Accountability:</strong> CODEOWNERS names who must approve, on a commit SHA. An AI review can do neither. It did catch one leak: four internal fields were being spread into the response.</p>
           <div class="code">
             <p class="code-label">app/src/service.js &mdash; the remediation, proved on every run by AC-4</p>
             <pre><code>suggestion: { ...toPublicItem(substitute), siteId, available: available(siteId, substitute.sku) }</code></pre>
@@ -2925,8 +3053,8 @@ safe-outputs:
           <button type="button" class="card-toggle" aria-expanded="false">
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
-              <span class="card-title">Merging is a code decision; deploying is an authority decision</span>
-              <span class="card-sub">Stage 8 Release &middot; Q6 of 7 &middot; how does it reach production?</span>
+              <span class="card-title">Merge authority and deploy authority are different.</span>
+              <span class="card-sub">Release &middot; What is allowed to ship? &middot; the agent may write the plan, not apply it</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
@@ -2974,8 +3102,8 @@ safe-outputs:
           <button type="button" class="card-toggle" aria-expanded="false">
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
-              <span class="card-title">Production signal correlated to source under an identity scoped to one workload</span>
-              <span class="card-sub">Stage 9 Production &middot; Q7 of 7 &middot; a cloud-neutral pattern; GitHub write-back is the named next step, not proof</span>
+              <span class="card-title">Production changes the graph.</span>
+              <span class="card-sub">Production &middot; What happened after release? &middot; a cloud-neutral pattern; GitHub write-back is the named next step, not proof</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
@@ -2988,9 +3116,10 @@ safe-outputs:
             <li>Its identity is scoped to that single application, plus a custom role granting only alert read and alert state change.</li>
             <li>The cloud Activity Log attributes the write to the agent identity, so it is visibly not a human action, and recovery is verified rather than assumed.</li>
           </ul>
+          <p>What production then does to the graph is plural, and this is the point of the scene: it may raise <strong>a new signal</strong>, reshape <strong>intent</strong>, change <strong>what must remain true</strong>, or open <strong>a proposal</strong> directly. None of those is "go back to the start".</p>
           <aside class="callout callout--warning">
             <p class="callout-label">Warning</p>
-            <p>What is proved here is the title and no more: production signal correlated to source, and remediation under an identity scoped to one workload. <strong>GitHub write-back is the named next step, not proof.</strong> The rollback subagent is instructed to raise an issue for source fixes, but its configured tool list contains no GitHub connector, so the return to stage one is designed and not yet demonstrated.</p>
+            <p>What is proved here is the title and no more: production signal correlated to source, and remediation under an identity scoped to one workload. <strong>GitHub write-back is the named next step, not proof.</strong> The rollback subagent is instructed to raise an issue for source fixes, but its configured tool list contains no GitHub connector, so the edge back into the repository is designed and not yet demonstrated.</p>
           </aside>
         </div>
       </article>
@@ -3023,14 +3152,14 @@ safe-outputs:
           <button type="button" class="card-toggle" aria-expanded="false">
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
-              <span class="card-title">Keep Bitbucket and Jira; pilot one repository for two weeks</span>
-              <span class="card-sub">Across all nine stages &middot; Q1 to Q7 &middot; the ask, and what it costs</span>
+              <span class="card-title">Pilot the control system, not another assistant.</span>
+              <span class="card-sub">Across the whole graph &middot; Which concerns does your stack already answer? &middot; the ask, and what it costs</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
         </h3>
         <div class="card-body">
-          <p><strong>Jira</strong> keeps planning, reporting and cross-team work management. <strong>Bitbucket</strong> repositories stay exactly where they are: nothing migrates during the pilot. Afterwards, each repository gets one disposition &mdash; <strong>migrate</strong>, <strong>mirror</strong>, or <strong>leave in place</strong> &mdash; decided on evidence, not on a calendar.</p>
+          <p><strong>Nothing has to move.</strong> Existing source control and work management stay exactly where they are for the whole pilot: work management keeps planning, reporting and cross-team coordination, and the repository keeps engineering evidence. Afterwards, each repository gets one disposition &mdash; <strong>migrate</strong>, <strong>mirror</strong>, or <strong>leave in place</strong> &mdash; decided on evidence, not on a calendar.</p>
           <div class="summary-grid">
             <div class="summary-item"><span class="summary-label">Phase 1, week 1</span>Observation only. AGENTS.md, one specification, one read-only workflow. Nothing merges differently.</div>
             <div class="summary-item"><span class="summary-label">Phase 2, week 2</span>Make existing checks required, add CODEOWNERS and a ruleset. Then choose a surface.</div>
@@ -3081,7 +3210,7 @@ safe-outputs:
               <li><h4>A check run that blocked something</h4><p>A green wall proves nothing. One red check that stopped a merge proves the gate is real.</p></li>
               <li><h4>An attributed approval on a commit SHA</h4><p>A named person, a code-owner requirement, a timestamp.</p></li>
             </ol>
-            <p>The decision it exists to make is narrow and answerable: extend the loop to a second repository, or stop. It is deliberately not a decision about which agent to standardise on, because that one stays reversible for as long as the contract lives in the repository.</p>
+            <p>The decision it exists to make is narrow and answerable: extend the graph to a second repository, or stop. It is deliberately not a decision about which agent to standardise on, because that one stays reversible for as long as the contract lives in the repository.</p>
           </div>
         </article>
 
@@ -3103,7 +3232,7 @@ safe-outputs:
               <li><h4>Mirror</h4><p>Something others depend on, mid-assessment. Pick which side is writable and say so out loud.</p></li>
               <li><h4>Leave in place</h4><p>Archived or genuinely inactive. Not everything needs to move.</p></li>
             </ol>
-            <p>Assess pipeline definitions before moving anything: <code>gh actions-importer</code> audits Bitbucket Pipelines and other systems and translates most of the mechanical shape. The security posture is the part worth rewriting by hand rather than importing. The path is cloud-neutral: nothing here requires a particular hosting provider.</p>
+            <p>Assess pipeline definitions before moving anything: <code>gh actions-importer</code> audits several other CI systems and translates most of the mechanical shape. The security posture is the part worth rewriting by hand rather than importing. The path is cloud-neutral: nothing here requires a particular hosting provider.</p>
           </div>
         </article>
 
@@ -3157,7 +3286,7 @@ safe-outputs:
               <li><h4>Let one agent propose</h4><p>Add one read-only agentic workflow with safe outputs. Watch what it writes for two weeks.</p></li>
               <li><h4>Then, and only then, pick a lane</h4><p>Only then decide which execution lane the team prefers. That decision is now reversible.</p></li>
             </ol>
-            <p><strong>Coexistence premise:</strong> Jira keeps planning and reporting; the repository keeps engineering evidence. <strong>Migration:</strong> the path is cloud-neutral, <code>gh actions-importer</code> audits Bitbucket Pipelines and translates most of the mechanical shape, and the security posture is worth rewriting by hand rather than importing.</p>
+            <p><strong>Coexistence premise:</strong> existing work management keeps planning and reporting; the repository keeps engineering evidence. <strong>Migration:</strong> the path is cloud-neutral, <code>gh actions-importer</code> audits several other CI systems and translates most of the mechanical shape, and the security posture is worth rewriting by hand rather than importing.</p>
           </div>
         </article>
 
@@ -3169,24 +3298,21 @@ safe-outputs:
           <button type="button" class="card-toggle" aria-expanded="false">
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
-              <span class="card-title">The loop closed, and the follow-up issue proves it</span>
-              <span class="card-sub">Stage 9 back to stage 1 &middot; Q1 to Q7 &middot; prepared replay of the real unmet requests</span>
+              <span class="card-title">The repository remembers why, what, proof, and outcome.</span>
+              <span class="card-sub">Production back into the graph &middot; What did production change? &middot; prepared replay of the real unmet requests</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
         </h3>
         <div class="card-body">
-          <p>The change was measured by the same signal that motivated it. Replaying the <strong>32 unmet requests</strong> of the window through the shipped selection logic, <strong>25 are now answered</strong> with an alternative and <strong>7 still are not</strong>, because by then no active group member had free stock at that site. Counts, not rates: a different measure from the opening percentages. Stage nine became stage one.</p>
+          <p>The change was measured by the same signal that motivated it. Replaying the <strong>32 unmet requests</strong> of the window through the shipped selection logic, <strong>25 are now answered</strong> with an alternative and <strong>7 still are not</strong>, because by then no active group member had free stock at that site. Counts, not rates: a different measure from the opening percentages. That residue entered the graph again, as a bounded issue.</p>
           <div class="summary-grid">
-            <div class="summary-item"><span class="summary-label">Q1 Intent</span>An issue with outcome, constraints, acceptance criteria.</div>
-            <div class="summary-item"><span class="summary-label">Q2 Proposal</span>A pull request small enough to read.</div>
-            <div class="summary-item"><span class="summary-label">Q3 Evidence</span>Eight checks, none of them a model.</div>
-            <div class="summary-item"><span class="summary-label">Q4 Policy</span>A ruleset on the default branch.</div>
-            <div class="summary-item"><span class="summary-label">Q5 Accountability</span>A named person, on a commit SHA.</div>
-            <div class="summary-item"><span class="summary-label">Q6 Release</span>An approved environment, a federated token.</div>
-            <div class="summary-item"><span class="summary-label">Q7 Feedback</span>The next signal, which is stage one again.</div>
+            <div class="summary-item"><span class="summary-label">Why</span>An issue carrying the outcome, the constraints and the acceptance criteria.</div>
+            <div class="summary-item"><span class="summary-label">What</span>A pull request small enough to read, on a branch nobody could merge alone.</div>
+            <div class="summary-item"><span class="summary-label">Proof</span>Eight deterministic checks, none of them a model, and a named approval on a commit.</div>
+            <div class="summary-item"><span class="summary-label">Outcome</span>The replayed counts, and the next issue they produced.</div>
           </div>
-          <p><strong>The ask:</strong> one repository, two weeks, three people, five artefacts, and a decision on day 14.</p>
+          <p>Not one of those four is a chat transcript, and not one of them depends on which model wrote the code. <strong>The ask:</strong> one repository, two weeks, three people, five artefacts, and a decision on day 14.</p>
         </div>
       </article>
 
@@ -3196,7 +3322,7 @@ safe-outputs:
             <button type="button" class="card-toggle" aria-expanded="false">
               <span class="card-num" aria-hidden="true"></span>
               <span class="card-titles">
-                <span class="card-title">The residue is a different question, which is how you know the loop works</span>
+                <span class="card-title">The residue is a different question, which is how you know the graph is working</span>
               </span>
               <span class="card-mark" aria-hidden="true"></span>
             </button>

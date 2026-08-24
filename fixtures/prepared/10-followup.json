@@ -24,26 +24,23 @@
     "labels": ["showcase", "pulse", "needs-triage"],
     "body": "## Signal\n\n- Unmet requests in the window: 32 requests\n- Now answered with an alternative: 25 requests\n- Still answered with nothing: 7 requests\n- Cause of the remainder: no active group member had free stock at the same site\n\nThis counts requests, not rates. It is not comparable with the opening availability percentages, which measure a different thing.\n\n## Why this is worth engineering time\n\nThe change closed most of the gap. The residue is a different problem: it is a sourcing question, not a response-shape question.\n\n## Proposed outcome\n\nA request that no site can meet locally tells the counter what the next option is.\n\n## Open questions\n\n1. Is a cross-site transfer acceptable, and what is the promised time?\n2. Should the response distinguish \"nothing today\" from \"nothing at all\"?\n"
   },
-  "whyThisMatters": "The output of the loop is the input of the loop. The change was measured by the same signal that motivated it, which is only possible because the intent, the evidence, and the telemetry all live where the code lives.",
-  "lifecycleStages": [
-    { "stage": "Signal", "coding": false },
-    { "stage": "Intent", "coding": false },
-    { "stage": "Contract", "coding": false },
-    { "stage": "Lane", "coding": false },
-    { "stage": "Implementation", "coding": true },
-    { "stage": "Evidence", "coding": false },
-    { "stage": "Authority", "coding": false },
-    { "stage": "Release", "coding": false },
-    { "stage": "Production", "coding": false }
+  "whyThisMatters": "What leaves the graph re-enters it. The change was measured by the same signal that motivated it, which is only possible because the intent, the evidence, and the telemetry all live where the code lives.",
+  "graphConcerns": [
+    { "concern": "Signal", "question": "What changed or deserves attention?", "coding": false },
+    { "concern": "Intent", "question": "Why should we act?", "coding": false },
+    { "concern": "Contract", "question": "What must remain true?", "coding": false },
+    { "concern": "Lane", "question": "Who or what should act?", "coding": false },
+    { "concern": "Implementation", "question": "What changed?", "coding": true },
+    { "concern": "Evidence", "question": "Does it work and remain secure?", "coding": false },
+    { "concern": "Authority", "question": "Who accepts the risk?", "coding": false },
+    { "concern": "Release", "question": "What is allowed to ship?", "coding": false },
+    { "concern": "Production", "question": "What happened after release?", "coding": false }
   ],
-  "sevenQuestionsAnswered": [
-    "Was the intent written down? An issue, with outcome, constraints and acceptance criteria.",
-    "Is the proposal reviewable? A pull request small enough to read in the room.",
-    "Does deterministic evidence exist? Eight checks, none of them a model.",
-    "Does policy allow it? A ruleset on the default branch.",
-    "Who is accountable for the merge? A named person, attached to a commit SHA.",
-    "How does it reach production? An approved environment and a short-lived federated token.",
-    "What does production say afterwards? The next signal, which is stage one again."
+  "whatTheRepositoryRemembers": [
+    "Why: an issue carrying the outcome, the constraints and the acceptance criteria.",
+    "What: a pull request small enough to read, on a branch nobody could merge alone.",
+    "Proof: eight deterministic checks, none of them a model, and a named approval on a commit SHA.",
+    "Outcome: the replayed counts, and the next issue they produced."
   ],
-  "closingLine": "Nine lifecycle stages, one of them coding, and the other eight are what made the coding safe to keep."
+  "closingLine": "Nine concerns, one of them coding, and the other eight are what made the coding safe to keep."
 }

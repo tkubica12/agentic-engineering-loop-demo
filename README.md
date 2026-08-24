@@ -2,7 +2,7 @@
 
 Source of truth for a sixty-minute presenter-led showcase: **GitHub Beyond Coding — The Agentic Engineering Loop**.
 
-A nine-stage engineering loop shown in eleven demo scenes; only one lifecycle stage is coding. The ninth stage returns to the first, which is why the loop closes.
+A nine-concern engineering graph shown in eleven demo scenes; only one concern is coding. Work can enter the graph at more than one concern, and its feedback edges run backwards as well as forwards.
 
 Everything here is public, customer-neutral, and built on synthetic data.
 
@@ -51,17 +51,29 @@ observed, and nothing in the repository claims one was.
 
 `npm run rehearse -- --fallback` walks the same hour entirely on prepared artefacts, resolving every fallback target, which is the check that the fallback path has no gaps.
 
-## The seven questions this loop answers
+## The nine concerns this graph answers
 
-1. Was the intent written down?
-2. Is the proposal reviewable?
-3. Does deterministic evidence exist?
-4. Does policy allow it?
-5. Who is accountable for the merge?
-6. How does it reach production?
-7. What does production say afterwards?
+| Concern | Question |
+|---|---|
+| Signal | What changed or deserves attention? |
+| Intent | Why should we act? |
+| Contract | What must remain true? |
+| Lane | Who or what should act? |
+| Implementation | What changed? |
+| Evidence | Does it work and remain secure? |
+| Authority | Who accepts the risk? |
+| Release | What is allowed to ship? |
+| Production | What happened after release? |
 
-None of them is a model problem. All of them are platform problems.
+Only Implementation is coding. None of the nine is a model problem; all of them are
+platform problems.
+
+Work enters the graph wherever it happens to arrive — telemetry at Signal, business
+intent at Intent, a security finding at Evidence, a production incident at Production —
+and the edges run backwards too: Evidence can send work back to Contract or
+Implementation, Authority back to Intent or Contract, and Production can raise a new
+signal, reshape intent, change the contract, or open a proposal. The hour walks one
+readable path through the graph; that path is not the definition of it.
 
 ## What is in here
 

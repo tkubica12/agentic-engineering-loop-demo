@@ -9,6 +9,7 @@ const shape = manifest.shape;
 
 const SCENE_IDS = ['thesis', 'pulse', 'intake', 'refine', 'lanes', 'delegate', 'evidence', 'release', 'sre', 'coexist', 'close'];
 const CHAPTERS = ['ch-intent', 'ch-proposal', 'ch-outcome'];
+const CONCERN_NAMES = shape.concerns.map((c) => c.name);
 const showcase = readText('docs', 'showcase.html');
 const presenter = readText('docs', 'presenter.html');
 const mission = readText('docs', 'mission-control.html');
@@ -47,35 +48,66 @@ test('the budget preserves the agreed per-scene minutes', () => {
 
 // --- the two counts ---------------------------------------------------------
 
-test('nine lifecycle stages, eleven demo scenes, fifteen slides', () => {
-  assert.equal(shape.lifecycleStages, 9);
+test('nine graph concerns, eleven demo scenes, fifteen slides', () => {
+  assert.equal(shape.graphConcerns, 9);
   assert.equal(shape.demoScenes, 11);
-  assert.equal(shape.codingStages, 1);
+  assert.equal(shape.codingConcerns, 1);
   assert.equal(shape.slides, 15);
-  assert.equal(shape.stages.length, 9);
+  assert.equal(shape.concerns.length, 9);
   assert.equal(scenes.length, shape.demoScenes);
   assert.deepEqual(scenes.map((s) => s.id), SCENE_IDS);
   assert.equal(
     shape.sentence,
-    'A nine-stage engineering loop shown in eleven demo scenes; only one lifecycle stage is coding.'
+    'A nine-concern engineering graph shown in eleven demo scenes; only one concern is coding.'
   );
+  assert.deepEqual(CONCERN_NAMES, [
+    'Signal', 'Intent', 'Contract', 'Lane', 'Implementation',
+    'Evidence', 'Authority', 'Release', 'Production'
+  ]);
 });
 
-test('no document conflates scenes with lifecycle stages', () => {
-  const wrong = [/\beleven stages\b/i, /\b11 stages\b/i, /\bten stages\b/i, /\b10 stages\b/i];
+test('no document conflates scenes with graph concerns', () => {
+  const wrong = [/\beleven concerns\b/i, /\b11 concerns\b/i, /\bten concerns\b/i, /\b10 concerns\b/i];
   for (const file of ['README.md', 'AGENTS.md', 'docs/showcase.html', 'docs/presenter.html', 'docs/mission-control.html', 'docs/index.html', 'fixtures/prepared/10-followup.json']) {
     const content = readText(file);
     for (const pattern of wrong) assert.ok(!pattern.test(content), `${file} conflates counts: ${pattern}`);
   }
 });
 
-test('the loop diagram names the canonical nine stages and denies a tenth', () => {
-  const label = showcase.match(/aria-label="(Nine stages[^"]+)"/);
-  assert.ok(label, 'the loop diagram has no nine-stage aria-label');
-  for (const stage of shape.stages) {
-    assert.ok(label[1].includes(stage), `the diagram label omits the canonical stage "${stage}"`);
+test('the hero diagram is a graph: nine concerns, four entry points, backwards edges', () => {
+  const label = showcase.match(/aria-label="(The engineering graph[^"]+)"/);
+  assert.ok(label, 'the hero diagram has no engineering-graph aria-label');
+  for (const concern of CONCERN_NAMES) {
+    assert.ok(label[1].includes(concern), `the diagram label omits the canonical concern "${concern}"`);
   }
-  assert.match(label[1], /not a tenth stage/i);
+
+  // The graph must not read as a queue that always starts at Signal.
+  assert.match(label[1], /one path through the graph, not the definition of the system/i,
+    'the diagram does not deny that the left-to-right reading defines the system');
+  assert.ok(!/tenth stage|back to stage one/i.test(showcase),
+    'the retired "return to stage one" framing survives somewhere in the deck');
+
+  // Every declared entry point reaches the diagram and the concern it enters at.
+  assert.equal(shape.entryPoints.length, 4);
+  for (const entry of shape.entryPoints) {
+    assert.ok(CONCERN_NAMES.includes(entry.entersAt), `${entry.id} enters at a concern that does not exist`);
+    assert.ok(label[1].toLowerCase().includes(entry.label.toLowerCase()),
+      `the diagram label omits the "${entry.label}" entry point`);
+  }
+  assert.ok(new Set(shape.entryPoints.map((e) => e.entersAt)).size >= 3,
+    'the entry points collapse onto too few concerns to disprove a single start');
+
+  // Feedback edges are plural, drawn, and named.
+  assert.equal(shape.feedbackEdges.length, 3);
+  for (const edge of shape.feedbackEdges) {
+    assert.ok(edge.to.length >= 2, `the ${edge.from} feedback edge names only one target`);
+    for (const target of edge.to) {
+      assert.ok(CONCERN_NAMES.includes(target), `${edge.from} feeds back into "${target}", which is not a concern`);
+    }
+  }
+  const svg = showcase.match(/<svg viewBox="0 0 1600 \d+"[\s\S]*?<\/svg>/)[0];
+  const dashedHeads = [...svg.matchAll(/<polygon class="ha"/g)].length;
+  assert.ok(dashedHeads >= 6, `only ${dashedHeads} feedback arrowheads; the backwards edges must be plural and drawn`);
 });
 
 test('the diagrams are inline and follow the page theme, not only the operating system', () => {
@@ -157,21 +189,70 @@ test('the article still carries full depth below the presentation cards', () => 
   assert.ok(total - 11 >= 12, 'not enough nested detail cards');
 });
 
-// --- question markers -------------------------------------------------------
+// --- concern and question markers -------------------------------------------
 
-test('every scene slide carries a persistent question marker', () => {
+test('every scene slide carries its concern and its plain question', () => {
+  const questions = new Set(shape.concerns.map((c) => c.question));
   for (const scene of scenes) {
-    assert.ok(Array.isArray(scene.questions) && scene.questions.length > 0, `${scene.id} declares no question`);
-    for (const q of scene.questions) assert.ok(q >= 1 && q <= 7, `${scene.id} references question ${q}`);
+    assert.ok(Array.isArray(scene.concerns) && scene.concerns.length > 0, `${scene.id} declares no concern`);
+    for (const concern of scene.concerns) {
+      assert.ok(CONCERN_NAMES.includes(concern), `${scene.id} references "${concern}", which is not a concern`);
+    }
+    assert.ok(scene.question, `${scene.id} declares no question`);
+    if (!scene.crossCutting) {
+      for (const concern of scene.concerns) {
+        const canonical = shape.concerns.find((c) => c.name === concern).question;
+        assert.ok(scene.question.includes(canonical),
+          `${scene.id} demonstrates "${concern}" but its marker does not carry that concern's question`);
+      }
+    }
     const start = showcase.indexOf(`id="${scene.card}"`);
-    const head = showcase.slice(start, start + 900);
+    const head = showcase.slice(start, start + 1200);
     assert.match(head, /class="card-sub"/, `${scene.card} has no subtitle to carry the marker`);
-    assert.match(
-      head,
-      /Question[s]? [\d, and]+ of 7|All seven questions|Q\d(?: to Q\d)?|Q1 to Q7/,
-      `${scene.card} does not display which of the seven questions it answers`
-    );
   }
+  assert.equal(questions.size, 9, 'two concerns share a question, so the pairing is not one to one');
+});
+
+test('every concern and its question is rendered, and no numbered taxonomy survives', () => {
+  // Each demonstrating scene projects one pair as its slide subtitle, and the
+  // reader-depth card lists all nine. Both must be true: the room sees the pair
+  // for the concern in front of it, and the article carries the whole set.
+  const projected = scenes.filter((s) => !s.crossCutting).map((s) => s.sceneMarker);
+  for (const concern of shape.concerns) {
+    assert.ok(projected.some((m) => m.includes(concern.name) && m.includes(concern.question)),
+      `no projected slide pairs "${concern.name}" with "${concern.question}"`);
+    const grid = `<span class="summary-label">${concern.name}</span>${concern.question}`;
+    assert.ok(showcase.includes(grid),
+      `the reader-depth grid does not render "${concern.name} — ${concern.question}"`);
+  }
+
+  // The retired Q1..Q7 taxonomy must not reappear anywhere attendees can read it,
+  // and the configuration must no longer allow the labels through the scanner.
+  for (const [name, doc] of [['showcase', showcase], ['presenter', presenter], ['mission control', mission], ['index', readText('docs', 'index.html')]]) {
+    assert.ok(!/\bQ[1-7]\b/.test(doc), `${name} still carries a Q1-style question label`);
+    assert.ok(!/\bseven questions\b/i.test(doc), `${name} still promises seven questions`);
+  }
+  const sceneWords = readJson('config', 'showcase.config.json').neutrality.sceneWords;
+  assert.ok(!sceneWords.some((w) => /^Q[1-7]$/.test(w)),
+    'the neutrality allowlist still permits a Q1-style label');
+});
+
+test('the entry points and the backwards edges reach the attendee-facing deck', () => {
+  const pulse = showcase.slice(showcase.indexOf('id="card-pulse"'), showcase.indexOf('id="card-limits"'));
+  for (const entry of shape.entryPoints) {
+    assert.ok(new RegExp(entry.label, 'i').test(pulse), `the entry-point slide omits "${entry.label}"`);
+    assert.ok(pulse.includes(entry.entersAt), `the entry-point slide does not say where "${entry.label}" enters`);
+  }
+  assert.match(pulse, /this demonstration enters at telemetry/i,
+    'the entry-point slide does not say which entry this hour actually uses');
+
+  // The plural backwards edges are stated in reader depth, not only drawn.
+  const counts = showcase.slice(showcase.indexOf('id="card-counts"'), showcase.indexOf('<!-- SCENE 2 -->'));
+  for (const edge of shape.feedbackEdges) {
+    assert.ok(counts.includes(edge.from), `the graph card does not name the ${edge.from} feedback edge`);
+  }
+  assert.match(counts, /Nothing says work must start at signal/i,
+    'the graph card does not deny a single entry point');
 });
 
 test('the evidence, release and production slides visibly answer their questions', () => {
@@ -209,10 +290,32 @@ test('each scene slide carries its own sharp line, not only the card nested belo
   assert.match(evidence, /toPublicItem\(substitute\)/, 'the evidence slide does not show the remediation');
   assert.match(evidence, /AC-4/, 'the evidence slide does not name the check that proves the remediation');
 
-  const thesis = slice('card-thesis', 'card-primitives');
-  assert.match(thesis, /Bitbucket/, 'the thesis slide does not say Bitbucket may remain');
-  assert.match(thesis, /Jira/, 'the thesis slide does not say Jira may remain');
-  assert.match(thesis, /Nothing migrates for this demonstration/i);
+  const thesis = slice('card-thesis', 'card-graph-questions');
+  assert.match(thesis, /steering/i, 'the thesis slide does not name what the hard part actually is');
+  assert.match(thesis, /maintained bridges behind the custom ones are the platform cost/i,
+    'the thesis slide does not name where the platform cost sits');
+});
+
+test('no attendee-facing document addresses one audience\'s named stack', () => {
+  // The projected thesis once told a specific room that its own tools could
+  // remain. That is engagement wording, not a public argument, and the public
+  // documents must make the coexistence point generically instead.
+  const RETIRED = [
+    /Nothing migrates for this demonstration/i,
+    /Your Bitbucket repositories/i,
+    /your Jira projects/i,
+    /Keep Bitbucket and Jira/i
+  ];
+  for (const [name, doc] of [['showcase', showcase], ['presenter', presenter], ['mission control', mission], ['index', readText('docs', 'index.html')]]) {
+    for (const pattern of RETIRED) {
+      assert.ok(!pattern.test(doc), `${name} still addresses a specific audience stack: ${pattern}`);
+    }
+    assert.ok(!/\b(Bitbucket|Jira)\b/.test(doc),
+      `${name} names an incumbent product where a generic phrase belongs`);
+  }
+  const coexist = showcase.slice(showcase.indexOf('id="card-coexist"'), showcase.indexOf('id="card-cost"'));
+  assert.match(coexist, /source control and work management stay exactly where they are/i,
+    'the adoption slide no longer makes the coexistence point generically');
 });
 
 test('the closing counts have a visible antecedent on the pulse slide', () => {
@@ -264,7 +367,7 @@ test('there are exactly four execution surfaces, named consistently everywhere',
   assert.deepEqual(lanes.surfaces.map((s) => s.id), surfaces.map((s) => s.id));
 
   const scene = scenes.find((s) => s.id === 'lanes');
-  assert.match(scene.title, /Four execution surfaces/);
+  assert.match(scene.title, /Change the agent, keep the contract/);
   assert.match(scene.expectedState, /four surfaces/i);
 
   const card = showcase.slice(showcase.indexOf('id="card-lanes"'), showcase.indexOf('id="card-hosted"'));
@@ -295,8 +398,8 @@ test('every presenter scene title matches the manifest mode', () => {
 test('the experimental intake lane is never described as live', () => {
   const intake = scenes.find((s) => s.id === 'intake');
   assert.equal(intake.mode, 'prepared');
-  assert.equal(intake.presenterTitle, 'Prepared — Issue intake (experimental lane)');
-  assert.ok(!/Live — Issue intake/.test(presenter), 'the presenter guide still calls intake live');
+  assert.equal(intake.presenterTitle, 'Prepared — Issue triage');
+  assert.ok(!/Live — Issue (intake|triage)/.test(presenter), 'the presenter guide still calls triage live');
   assert.match(intake.stopCondition, /[Pp]repared only/);
 });
 
@@ -404,14 +507,13 @@ test('the pilot ask names participants, artefacts, the review point and the deci
 });
 
 test('the platform-gap argument is incumbent-neutral', () => {
-  const card = showcase.slice(showcase.indexOf('id="card-primitives"'), showcase.indexOf('id="card-pulse"'));
+  const card = showcase.slice(showcase.indexOf('id="card-primitives"'), showcase.indexOf('id="card-counts"'));
   assert.match(card, /native/i);
   assert.match(card, /integrated/i);
   assert.match(card, /custom/i);
-  assert.equal(shape.questions.length, 7);
+  assert.equal(shape.concerns.length, 9);
   for (const doc of [showcase, presenter]) {
-    assert.ok(!/Bitbucket is (worse|inferior|bad)/i.test(doc));
-    assert.ok(!/Jira is (worse|inferior|bad)/i.test(doc));
+    assert.ok(!/\b(source control|work management) is (worse|inferior|bad)\b/i.test(doc));
   }
 });
 
@@ -480,15 +582,27 @@ test('every presenter scene card carries the canonical stop condition verbatim',
   }
 });
 
-test('the intake lane is prepared, experimental, and hard-bounded at three minutes', () => {
+test('the triage lane is prepared, hard-bounded at three minutes, and still discloses the engine', () => {
   const intake = scenes.find((s) => s.id === 'intake');
   assert.equal(intake.end - intake.start, 3);
   assert.equal(intake.mode, 'prepared');
   const start = presenter.indexOf('id="card-scene-intake"');
   const card = presenter.slice(start, start + 4200);
-  assert.match(card, /Prepared \u2014 Issue intake \(experimental lane\)/, 'the intake heading must not read Live');
-  assert.ok(!/\bLive\b/.test(card.slice(0, card.indexOf('card-body'))), 'the intake title claims a live lane');
+  assert.match(card, /Prepared \u2014 Issue triage/, 'the triage heading must not read Live');
+  assert.ok(!/\bLive\b/.test(card.slice(0, card.indexOf('card-body'))), 'the triage title claims a live lane');
   assert.match(card, /Three minutes, hard/);
+  assert.match(card, /experimental sample engine that upstream has since removed/i,
+    'the presenter card no longer discloses which engine produced the prepared output');
+
+  // The projected slide leads with triage, not with engine history.
+  const slide = showcase.slice(showcase.indexOf('id="card-intake"'), showcase.indexOf('id="card-opencode-status"'));
+  for (const heading of ['Classification', 'Duplicate check', 'Feasibility', 'Missing decisions', 'Safe next action']) {
+    assert.ok(slide.includes(heading), `the triage slide omits "${heading}"`);
+  }
+  assert.ok(!/ADR-50145|OpenCode/.test(slide),
+    'engine-removal history is back on the projected slide instead of in reader depth');
+  assert.match(readText('docs', 'showcase.html'), /ADR-50145/,
+    'the engine-removal history was dropped from the article entirely');
 });
 
 test('the trust model distinguishes reviewed input from attacker-controlled input', () => {
@@ -506,13 +620,19 @@ test('the trust model distinguishes reviewed input from attacker-controlled inpu
   assert.match(gate, /The pulse lane does not need this, and does not have it/);
 });
 
-test('the seven primitives are paired to the seven questions and shown on the thesis slide', () => {
-  assert.equal(shape.primitives.length, 7);
-  assert.equal(shape.questions.length, 7);
-  const card = showcase.slice(showcase.indexOf('id="card-thesis"'), showcase.indexOf('id="card-primitives"'));
-  for (const label of ['Intent', 'Proposal', 'Evidence', 'Policy', 'Accountability', 'Release', 'Feedback']) {
-    assert.ok(card.includes(`${label}</strong>`) || card.includes(`${label}</span>`),
-      `the thesis slide does not visibly carry the ${label} primitive`);
+test('the nine primitives are paired to the nine concerns and reach the article', () => {
+  assert.equal(shape.concerns.length, 9);
+  for (const concern of shape.concerns) {
+    assert.ok(concern.primitive && concern.primitive.length > 20,
+      `the "${concern.name}" concern has no primitive worth stating`);
+    assert.ok(showcase.includes(concern.primitive.charAt(0).toLowerCase() + concern.primitive.slice(1))
+      || showcase.includes(concern.primitive),
+      `the primitive for "${concern.name}" is not rendered anywhere in the article`);
+  }
+  const card = showcase.slice(showcase.indexOf('id="card-thesis"'), showcase.indexOf('id="card-graph-questions"'));
+  for (const concern of CONCERN_NAMES) {
+    assert.ok(card.includes(`>${concern}</text>`),
+      `the thesis diagram does not carry the ${concern} concern`);
   }
 });
 
@@ -521,6 +641,53 @@ test('the pulse slide shows the bounded control contract, not only the pipeline'
   for (const token of ['permissions:', 'timeout-minutes', 'max-turns', 'max-ai-credits', 'safe-outputs']) {
     assert.ok(card.includes(token), `the pulse slide does not show ${token}`);
   }
+});
+
+test('the contract scene shows the artefact chain, and names Spec Kit with a first-party source', () => {
+  const slide = showcase.slice(showcase.indexOf('id="card-refine"'), showcase.indexOf('id="card-acceptance"'));
+  const chain = [...slide.matchAll(/<span class="seq-title">([^<]+)<\/span>/g)].map((m) => m[1]);
+  assert.deepEqual(chain, ['Product brief', 'Issue', 'Decision record', 'Specification', 'Tests'],
+    'the contract slide does not render the artefact chain from brief to tests');
+  assert.match(slide, /An issue on its own is not the contract/i,
+    'the contract slide does not say that an issue alone is not the contract');
+  const card = showcase.slice(showcase.indexOf('id="card-spec-kit"'), showcase.indexOf('id="card-loop-patterns"'));
+  assert.match(card, /first-party/i, 'the Spec Kit card does not say it is first-party GitHub tooling');
+  assert.match(card, /does not discover intent for you/i,
+    'the Spec Kit card does not state that it cannot discover intent');
+  assert.match(card, /does not close the production feedback edge/i,
+    'the Spec Kit card does not state that it cannot close the feedback edge');
+  assert.match(readText('ATTRIBUTION.md'), /github\/spec-kit/, 'ATTRIBUTION.md does not record the Spec Kit source');
+});
+
+test('the emerging loop patterns are labelled community, dated, and never claimed for GitHub', () => {
+  const card = showcase.slice(showcase.indexOf('id="card-loop-patterns"'), showcase.indexOf('<!-- SCENE 5 -->'));
+  assert.ok(card, 'the loop-patterns card is missing');
+  for (const pattern of ['Loop engineering', 'The intent loop', 'The gauntlet loop', 'Spec-driven development']) {
+    assert.ok(card.includes(pattern), `the loop-patterns card omits "${pattern}"`);
+  }
+  assert.match(card, /community or emerging pattern/i,
+    'the loop-patterns card does not label the patterns as community or emerging');
+  assert.match(card, /none is a GitHub or Microsoft product/i,
+    'the loop-patterns card does not deny that these are products');
+  assert.match(card, /None of these came from GitHub/i,
+    'the loop-patterns card does not deny GitHub provenance in its source note');
+  assert.match(card, /read 2026-08-24/i, 'the loop-patterns sources are undated');
+
+  // Every claim carries a public source, and the depth stays behind a reveal.
+  for (const url of [
+    'https://www.ibm.com/think/topics/loop-engineering',
+    'https://github.com/cobusgreyling/loop-engineering',
+    'https://github.com/theparlor/intent',
+    'https://github.com/robonuggets/gauntlet-loop'
+  ]) {
+    assert.ok(card.includes(url), `the loop-patterns card does not cite ${url}`);
+    assert.ok(readText('ATTRIBUTION.md').includes(url), `ATTRIBUTION.md does not record ${url}`);
+  }
+  assert.match(card, /<div class="reveal">/, 'the pattern definitions are not behind a reveal');
+
+  // And the card is depth, never a slide: it must not appear in the slide list.
+  assert.ok(!slides.some((s) => s.id === 'card-loop-patterns'),
+    'the loop-patterns card became a slide, which is a product tour by another name');
 });
 
 test('the compression plan cuts only from checkpoints, and never the close', () => {
@@ -577,13 +744,18 @@ test('every scene renders its canonical manifest title on its own card', () => {
   }
 });
 
-test('the pulse scene leads with the guardrail outcome, everywhere it is named', () => {
+test('the pulse scene leads with the entry-point claim, everywhere it is named', () => {
   const pulse = scenes.find((s) => s.id === 'pulse');
-  assert.match(pulse.title, /compiled contract bounds the write/i,
-    'the pulse title still describes a generic mechanism');
+  assert.match(pulse.title, /Work can enter from anywhere; make the next step durable\./,
+    'the pulse title no longer leads with the entry-point claim');
   for (const [name, doc] of [['presenter', presenter], ['mission control', mission]]) {
     assert.ok(doc.includes(pulse.title), `${name} does not carry the canonical pulse title`);
   }
+  // The numbers are supporting evidence and must not open the slide.
+  const card = showcase.slice(showcase.indexOf('id="card-pulse"'), showcase.indexOf('id="card-limits"'));
+  const body = card.slice(card.indexOf('card-body'));
+  assert.ok(body.indexOf('Telemetry') < body.indexOf('SITE-NORTH'),
+    'the pulse slide still leads with the synthetic identifiers rather than with the entry points');
 });
 
 test('the pulse scene states the product stage and the pinned compiler version', () => {
@@ -594,23 +766,24 @@ test('the pulse scene states the product stage and the pinned compiler version',
     'the pulse slide does not say the compiled lock is ordinary Actions YAML');
 });
 
-test('the thesis scene reassures that nothing migrates, and labels the questions Q1 to Q7', () => {
-  const card = showcase.slice(showcase.indexOf('id="card-thesis"'), showcase.indexOf('id="card-primitives"'));
-  assert.match(card, /Nothing migrates for this demonstration/i);
+test('the thesis scene makes the coexistence point generically and offers three verdicts', () => {
+  const card = showcase.slice(showcase.indexOf('id="card-thesis"'), showcase.indexOf('id="card-graph-questions"'));
   for (const verdict of ['native', 'integrated', 'custom']) {
     assert.match(card, new RegExp(`<strong>${verdict}</strong>`),
       `the thesis slide does not offer "${verdict}" as one of the three verdicts`);
   }
-  for (let n = 1; n <= 7; n++) {
-    assert.ok(card.includes(`Q${n} `), `the thesis slide does not label question Q${n}`);
-  }
+  assert.match(card, /nothing on this slide asks you to move a repository/i,
+    'the thesis slide no longer reassures the room that nothing has to move');
+  const primitives = showcase.slice(showcase.indexOf('id="card-primitives"'), showcase.indexOf('id="card-counts"'));
+  assert.match(primitives, /Existing source control and work management can stay where they are/i,
+    'the coexistence depth card lost its generic phrasing');
 });
 
 test('the commercial argument is stated as a cost to measure, never as a return', () => {
   // The thesis names where the platform cost actually sits, and the adoption
   // slide says the pilot measures that cost. Neither invents a number, and no
   // document may assert a return on investment it cannot evidence.
-  const thesis = showcase.slice(showcase.indexOf('id="card-thesis"'), showcase.indexOf('id="card-primitives"'));
+  const thesis = showcase.slice(showcase.indexOf('id="card-thesis"'), showcase.indexOf('id="card-graph-questions"'));
   assert.match(thesis, /maintained bridges behind the custom ones are the platform cost/i,
     'the thesis slide does not name where the platform cost sits');
 
@@ -713,21 +886,21 @@ const HERO_LABEL_WIDTHS = {
   Evidence: 128.1, Authority: 137.5, Release: 108.8, Production: 160.3
 };
 
-test('every hero stage label fits inside its own box, and the return label clears the return line', () => {
+test('every hero concern label fits inside its own box, and the feedback lanes never cross', () => {
   const svg = showcase.match(/<svg viewBox="0 0 1600 \d+"[\s\S]*?<\/svg>/)?.[0];
-  assert.ok(svg, 'the nine-stage diagram is missing');
+  assert.ok(svg, 'the engineering-graph diagram is missing');
 
   const labelSize = Number(svg.match(/\.t\s*\{[^}]*font-size:\s*(\d+)px/)[1]);
-  const returnSize = Number(svg.match(/\.l\s*\{[^}]*font-size:\s*(\d+)px/)[1]);
 
-  const rects = [...svg.matchAll(/<rect class="b[a]?" x="(\d+)" y="\d+" width="(\d+)"/g)]
-    .map((m) => ({ x: Number(m[1]), w: Number(m[2]) }));
+  const rects = [...svg.matchAll(/<rect class="b[a]?" x="(\d+)" y="(\d+)" width="(\d+)"/g)]
+    .map((m) => ({ x: Number(m[1]), y: Number(m[2]), w: Number(m[3]) }));
   const labels = [...svg.matchAll(/<text class="t" x="(\d+)" y="(\d+)" text-anchor="middle">([^<]+)</g)]
     .map((m) => ({ cx: Number(m[1]), baseline: Number(m[2]), text: m[3] }));
 
-  assert.equal(rects.length, 9, 'expected nine stage boxes');
-  assert.equal(labels.length, 9, 'expected nine stage labels');
-  assert.deepEqual(labels.map((l) => l.text), shape.stages, 'the boxes do not carry the canonical stages');
+  assert.equal(rects.length, 9, 'expected nine concern boxes');
+  assert.equal(labels.length, 9, 'expected nine concern labels');
+  assert.deepEqual(labels.map((l) => l.text), CONCERN_NAMES, 'the boxes do not carry the canonical concerns');
+  assert.equal(new Set(rects.map((r) => r.y)).size, 1, 'the concern row is not on one baseline');
 
   let previousEnd = 0;
   labels.forEach((label, i) => {
@@ -745,27 +918,60 @@ test('every hero stage label fits inside its own box, and the return label clear
       `"${label.text}" renders about ${rendered.toFixed(0)}px inside a ${box.w}px box, leaving under 12px either side`);
   });
 
-  // The dashed return runs below the row and carries its own label. The label's
-  // descenders must stay above that line: at 30px Chromium reports a descent of
-  // about a quarter of the size, so 0.3 is a safe allowance.
-  const returnLine = Number(svg.match(/class="la" d="M\d+ \d+ V(\d+) H/)[1]);
-  const returnLabel = svg.match(/<text class="l" x="(\d+)" y="(\d+)"/);
-  const bottom = Number(returnLabel[2]) + returnSize * 0.3;
-  assert.ok(bottom < returnLine,
-    `the return label reaches y=${bottom.toFixed(1)} but the return line is at y=${returnLine}`);
+  // Entry arrows come down into the top of the row, happy-path arrows run along
+  // its middle, and feedback arrows come up into the bottom. Nothing floats.
+  const rowTop = rects[0].y;
+  const rowMiddle = rowTop + 31;
+  const rowBottom = rowTop + 62;
+  for (const [, y] of svg.matchAll(/<polygon class="h" points="\d+,(\d+) /g)) {
+    assert.ok([rowTop, rowMiddle].includes(Number(y)),
+      `an arrowhead at y=${y} lands on neither the top nor the middle of the concern row`);
+  }
+  for (const [, y] of svg.matchAll(/<polygon class="ha" points="\d+,(\d+) /g)) {
+    assert.equal(Number(y), rowBottom, 'a feedback arrowhead does not land on the bottom of the concern row');
+  }
+
+  // The three feedback lanes are nested so that no line crosses another: each
+  // lane further from the row must reach further left than the one above it.
+  const lanes = [...svg.matchAll(/class="la" d="M(\d+) \d+ V(\d+) H(\d+) V\d+"/g)]
+    .map((m) => ({ from: Number(m[1]), depth: Number(m[2]), leftmost: Number(m[3]) }));
+  assert.equal(lanes.length, 3, 'expected exactly three feedback lanes');
+  for (let i = 1; i < lanes.length; i++) {
+    assert.ok(lanes[i].depth > lanes[i - 1].depth, 'the feedback lanes share a depth and would overlap');
+    assert.ok(lanes[i].leftmost < lanes[i - 1].leftmost,
+      'a deeper feedback lane stops short of a shallower one, so their stubs cross');
+  }
+
+  // Every stub that rises out of a lane must start left of the lane above it,
+  // which is what keeps the whole diagram crossing-free.
+  const stubs = [...svg.matchAll(/class="la" d="M(\d+) (\d+) V\d+"/g)]
+    .map((m) => ({ x: Number(m[1]), depth: Number(m[2]) }));
+  assert.equal(stubs.length, 3, 'expected one extra stub per feedback lane');
+  for (const stub of stubs) {
+    for (const lane of lanes) {
+      if (lane.depth >= stub.depth) continue;
+      assert.ok(stub.x < lane.leftmost,
+        `a stub at x=${stub.x} crosses the lane at depth ${lane.depth}, which reaches x=${lane.leftmost}`);
+    }
+  }
 
   const viewBoxHeight = Number(svg.match(/viewBox="0 0 1600 (\d+)"/)[1]);
-  assert.ok(returnLine < viewBoxHeight, 'the return line falls outside the viewBox');
+  const deepest = Math.max(...lanes.map((l) => l.depth));
+  assert.ok(deepest < viewBoxHeight, 'a feedback lane falls outside the viewBox');
+  const captions = [...svg.matchAll(/<text class="l" x="\d+" y="(\d+)"/g)].map((m) => Number(m[1]));
+  assert.equal(captions.length, 3, 'each feedback lane needs its own caption');
+  for (const y of captions) {
+    assert.ok(y + 9 < viewBoxHeight, `a lane caption reaches y=${y + 9}, outside the ${viewBoxHeight}px viewBox`);
+  }
 });
 
 test('inline diagram text is large enough to read from the back of a room', () => {
   // The fit zoom scales the whole slide, so a diagram that is too tall shrinks
-  // its own text. Both diagrams end up occupying the same rendered width at the
-  // smallest target size, 1280x720: measured in the browser sweep as 1069px for
-  // the 1600-wide viewBox and 1072px for the 1000-wide one. Take the lower of
-  // those as the calibration constant, so this static check agrees with what the
-  // browser reports rather than guessing at the zoom twice.
-  const RENDERED_WIDTH = 1069;
+  // its own text. The hero diagram was measured in Chromium at 1280x720 on
+  // 2026-08-24: its 1600-wide viewBox renders 1064px across. Take that as the
+  // calibration constant so this static check agrees with what the browser
+  // reports rather than guessing at the zoom twice.
+  const RENDERED_WIDTH = 1064;
   const svgs = [...showcase.matchAll(/<svg viewBox="0 0 (\d+) \d+"[\s\S]*?<\/svg>/g)];
   assert.equal(svgs.length, 2, 'expected exactly two inline diagrams');
   for (const svg of svgs) {
@@ -795,7 +1001,7 @@ test('the first divider is a cover, and it costs no extra slide', () => {
   const subtitles = [...header.matchAll(/<p class="subtitle">([\s\S]*?)<\/p>/g)].map((m) => m[1]);
   assert.equal(subtitles.length, 2, 'the cover needs a subtitle and a thesis, and no more');
   assert.equal(subtitles[0], 'The Agentic Engineering Loop');
-  assert.match(subtitles[1], /nine-stage engineering loop shown in eleven demo scenes/,
+  assert.match(subtitles[1], /nine-concern engineering graph shown in eleven demo scenes/,
     'the cover thesis drops the canonical sentence');
   assert.match(subtitles[1], /business case/i, 'the cover thesis is not a business thesis');
 
@@ -1005,52 +1211,54 @@ test('every command list that claims a count states the right one', () => {
 
 // --- Round 6: lifecycle stages, the close, and the replayed payoff -----------
 
-test('every scene declares which lifecycle stage it puts on the screen', () => {
-  const canonical = shape.stages;
+test('every scene declares which graph concern it puts on the screen', () => {
   for (const scene of scenes) {
-    assert.ok(Array.isArray(scene.stages), `${scene.id} declares no stages array`);
-    assert.ok(scene.stages.length > 0 || scene.crossCutting,
-      `${scene.id} claims no stage and is not marked cross-cutting`);
-    for (const stage of scene.stages) {
-      assert.ok(canonical.includes(stage), `${scene.id} claims "${stage}", which is not one of the nine`);
+    assert.ok(Array.isArray(scene.concerns), `${scene.id} declares no concerns array`);
+    assert.ok(scene.concerns.length > 0 || scene.crossCutting,
+      `${scene.id} claims no concern and is not marked cross-cutting`);
+    for (const concern of scene.concerns) {
+      assert.ok(CONCERN_NAMES.includes(concern), `${scene.id} claims "${concern}", which is not one of the nine`);
     }
-    assert.ok(['demonstrates', 'frames', 'returns'].includes(scene.stageRole),
-      `${scene.id} has an unknown stage role "${scene.stageRole}"`);
-    assert.ok(scene.stageLabel, `${scene.id} has no stage label`);
-    assert.ok(scene.questionLabel, `${scene.id} has no question label`);
-    assert.equal(scene.sceneMarker, `${scene.stageLabel} \u00b7 ${scene.questionLabel}`,
+    assert.ok(['demonstrates', 'frames', 'returns'].includes(scene.graphRole),
+      `${scene.id} has an unknown graph role "${scene.graphRole}"`);
+    assert.ok(scene.concernLabel, `${scene.id} has no concern label`);
+    assert.ok(scene.question, `${scene.id} has no question`);
+    assert.equal(scene.sceneMarker, `${scene.concernLabel} \u00b7 ${scene.question}`,
       `${scene.id} marker does not compose from its own parts`);
+    assert.ok(!/\bStage \d\b/.test(scene.sceneMarker),
+      `${scene.id} still numbers its concern as a lifecycle stage`);
   }
 });
 
-test('every one of the nine stages is demonstrated by a scene that is not cross-cutting', () => {
-  // Cross-cutting scenes frame the loop. If they counted, the opening diagram
+test('every one of the nine concerns is demonstrated by a scene that is not cross-cutting', () => {
+  // Cross-cutting scenes frame the graph. If they counted, the opening diagram
   // alone would satisfy this and the check would prove nothing.
-  const mapping = shape.stageMapping;
-  assert.ok(mapping, 'the manifest declares no stage mapping');
-  for (const stage of shape.stages) {
-    const claimed = mapping.demonstratedBy[stage];
+  const mapping = shape.concernMapping;
+  assert.ok(mapping, 'the manifest declares no concern mapping');
+  assert.equal(mapping.markerFormat, '<concernLabel> \u00b7 <question>');
+  for (const concern of CONCERN_NAMES) {
+    const claimed = mapping.demonstratedBy[concern];
     assert.ok(Array.isArray(claimed) && claimed.length > 0,
-      `no scene demonstrates the "${stage}" stage`);
+      `no scene demonstrates the "${concern}" concern`);
     for (const id of claimed) {
       const scene = scenes.find((s) => s.id === id);
       assert.ok(scene, `the mapping names "${id}", which is not a scene`);
-      assert.ok(!scene.crossCutting, `"${stage}" is only claimed by the cross-cutting scene ${id}`);
-      assert.ok(scene.stages.includes(stage), `${id} does not actually claim "${stage}"`);
+      assert.ok(!scene.crossCutting, `"${concern}" is only claimed by the cross-cutting scene ${id}`);
+      assert.ok(scene.concerns.includes(concern), `${id} does not actually claim "${concern}"`);
     }
   }
   // The mapping is derived, never hand-maintained: recompute and compare.
-  const recomputed = Object.fromEntries(shape.stages.map((stage) => [
-    stage,
-    scenes.filter((s) => !s.crossCutting && s.stages.includes(stage)).map((s) => s.id)
+  const recomputed = Object.fromEntries(CONCERN_NAMES.map((concern) => [
+    concern,
+    scenes.filter((s) => !s.crossCutting && s.concerns.includes(concern)).map((s) => s.id)
   ]));
-  assert.deepEqual(mapping.demonstratedBy, recomputed, 'the stage mapping has drifted from the scenes');
+  assert.deepEqual(mapping.demonstratedBy, recomputed, 'the concern mapping has drifted from the scenes');
   assert.deepEqual(mapping.crossCuttingScenes, scenes.filter((s) => s.crossCutting).map((s) => s.id));
   assert.deepEqual(mapping.crossCuttingScenes, ['thesis', 'coexist', 'close'],
     'the set of scenes that only frame the story has changed');
 });
 
-test('the stage marker reaches both screens, identically', () => {
+test('the concern marker reaches both screens, identically', () => {
   for (const scene of scenes) {
     const start = showcase.indexOf(`id="${scene.card}"`);
     const head = showcase.slice(start, start + 1600);
@@ -1066,27 +1274,23 @@ test('the stage marker reaches both screens, identically', () => {
     assert.ok(presenter.includes(marker),
       `the crosswalk does not carry the marker "${scene.sceneMarker}" for ${scene.id}`);
   }
-  // Numbering is the canonical numbering, so "Stage 5" really is the fifth.
-  const delegate = scenes.find((s) => s.id === 'delegate');
-  assert.equal(delegate.stageLabel, `Stage ${shape.stages.indexOf('Implementation') + 1} Implementation`);
-  assert.equal(scenes.find((s) => s.id === 'pulse').stageLabel, 'Stage 1 Signal');
-  assert.equal(scenes.find((s) => s.id === 'sre').stageLabel, 'Stage 9 Production');
+  assert.equal(scenes.find((s) => s.id === 'delegate').concernLabel, 'Implementation');
+  assert.equal(scenes.find((s) => s.id === 'pulse').concernLabel, 'Signal');
+  assert.equal(scenes.find((s) => s.id === 'sre').concernLabel, 'Production');
 });
 
-test('the close names the seven questions with the thesis slide labels, verbatim', () => {
-  const thesis = showcase.slice(showcase.indexOf('id="card-thesis"'), showcase.indexOf('id="card-primitives"'));
+test('the close remembers four things, and the graph card explains the plural edges', () => {
   const close = showcase.slice(showcase.indexOf('id="card-close"'), showcase.indexOf('id="card-followup"'));
+  const labels = [...close.matchAll(/<span class="summary-label">([^<]+)<\/span>/g)].map((m) => m[1]);
+  assert.deepEqual(labels, ['Why', 'What', 'Proof', 'Outcome'],
+    'the close slide no longer remembers exactly why, what, proof and outcome');
+  assert.match(close, /entered the graph again/i, 'the close does not say the residue re-entered the graph');
 
-  const thesisLabels = [...thesis.matchAll(/<strong>(Q\d [A-Za-z]+)<\/strong>/g)].map((m) => m[1]);
-  const closeLabels = [...close.matchAll(/<span class="summary-label">(Q\d [A-Za-z]+)<\/span>/g)].map((m) => m[1]);
-
-  assert.equal(thesisLabels.length, 7, `the thesis slide labels ${thesisLabels.length} questions, not 7`);
-  assert.deepEqual(closeLabels, thesisLabels,
-    'the close slide labels the seven questions differently from the thesis slide');
-  assert.deepEqual(thesisLabels, [
-    'Q1 Intent', 'Q2 Proposal', 'Q3 Evidence', 'Q4 Policy',
-    'Q5 Accountability', 'Q6 Release', 'Q7 Feedback'
-  ]);
+  const counts = showcase.slice(showcase.indexOf('id="card-counts"'), showcase.indexOf('<!-- SCENE 2 -->'));
+  assert.match(counts, /may send work back to the contract or to the implementation/i,
+    'the graph card does not state the Evidence feedback edge in full');
+  assert.match(counts, /may raise a new signal, reshape intent, change what must remain true, or open a proposal/i,
+    'the graph card does not state the Production feedback edge in full');
 });
 
 test('the closing payoff is recomputed from the telemetry, not restated', async () => {

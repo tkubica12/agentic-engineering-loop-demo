@@ -77,7 +77,7 @@
   <header class="doc-header">
     <p class="eyebrow">OFFLINE FALLBACK</p>
     <h1>Every scene, with no network</h1>
-    <p class="subtitle">The complete sixty-minute journey as eleven self-contained demo scenes covering a nine-stage engineering loop. Nothing here contacts GitHub, nothing here is live, and every state on this page is labelled as what it is.</p>
+    <p class="subtitle">The complete sixty-minute journey as eleven self-contained demo scenes covering a nine-concern engineering graph. Nothing here contacts GitHub, nothing here is live, and every state on this page is labelled as what it is.</p>
     <p class="meta"><time datetime="2026-08-24">24 August 2026</time> &middot; Captured from prepared artefacts under <code>fixtures/prepared/</code></p>
   </header>
 
@@ -138,8 +138,8 @@
           </button>
         </h3>
         <div class="card-body">
-          <p>One change is followed from a telemetry signal to a governed release and back. Nine lifecycle stages carry it, shown here in eleven demo scenes. Only one lifecycle stage is coding, and the ninth returns to the first.</p>
-          <p>The seven questions that decide whether an agent's diff survives contact with a real system are platform questions: was intent written down, is the proposal reviewable, does deterministic evidence exist, does policy allow it, who is accountable, how does it reach production, and what does production say afterwards.</p>
+          <p>One change is followed through an engineering graph of nine concerns, shown here in eleven demo scenes. Only one concern is coding. The graph has four entry points and its edges run backwards as well as forwards, so the order below is one path through it rather than a definition of it.</p>
+          <p>The nine concerns and the plain question each one answers: Signal, what changed or deserves attention; Intent, why should we act; Contract, what must remain true; Lane, who or what should act; Implementation, what changed; Evidence, does it work and remain secure; Authority, who accepts the risk; Release, what is allowed to ship; Production, what happened after release. None of them is a model problem.</p>
           <p>Live equivalent: the showcase article, chapter one.</p>
         </div>
       </article>
@@ -150,7 +150,7 @@
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
               <span class="card-title">02 to 10 — Repository pulse</span>
-              <span class="card-sub">Simulated view of a live scene. Reasoning proposes one issue; a compiled contract bounds the write.</span>
+              <span class="card-sub">Simulated view of a live scene. Work can enter from anywhere; make the next step durable.</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
@@ -177,8 +177,8 @@ Window: 2026-08-02 to 2026-08-22</code></pre>
           <button type="button" class="card-toggle" aria-expanded="false">
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
-              <span class="card-title">10 to 13 — Issue intake</span>
-              <span class="card-sub">Simulated view of the experimental OpenCode lane.</span>
+              <span class="card-title">10 to 13 — Issue triage</span>
+              <span class="card-sub">Simulated view of prepared triage output. Turn noise into intent before asking an agent to code.</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
@@ -196,7 +196,7 @@ Window: 2026-08-02 to 2026-08-22</code></pre>
 
 labels applied: needs-detail, size/medium</code></pre>
           </div>
-          <p>Verified 2026-08-23 against gh-aw <code>main</code>: ADR-50145, accepted 4 August 2026, removed OpenCode as a first-class experimental engine, and its changeset is <code>major</code>. It still ships as an unsupported sample with <code>experimental: true</code>. The supported Copilot lane imports the identical brief and produces the same shape, which is why the removal costs this showcase nothing.</p>
+          <p>Verified 2026-08-23 against gh-aw <code>main</code>: ADR-50145, accepted 4 August 2026, removed OpenCode as a first-class experimental engine, and its changeset is <code>major</code>. It still ships as an unsupported sample with <code>experimental: true</code>. The supported Copilot lane imports the identical brief and produces the same shape, which is why the removal costs this showcase nothing. The triage output, not the engine, is what the scene is about.</p>
           <p>Prepared artefact: <code>fixtures/prepared/02-intake-result.json</code>.</p>
         </div>
       </article>
@@ -373,7 +373,7 @@ Code owner review: 1 required, 1 approved</code></pre>
           </button>
         </h3>
         <div class="card-body">
-          <p>Work management and engineering evidence are different systems of record. Jira keeps planning and reporting; the evidence an agent works from moves closer to the code. Each repository later gets one disposition: Migrate, Mirror, or Leave in place. Those are per-repository decisions, not calendar phases.</p>
+          <p>Work management and engineering evidence are different systems of record. Existing planning and reporting stay where they are; the evidence an agent works from moves closer to the code. Each repository later gets one disposition: Migrate, Mirror, or Leave in place. Those are per-repository decisions, not calendar phases.</p>
           <ul class="arrow-list">
             <li>Phase 1, week 1: observation only, contract in one repository.</li>
             <li>Phase 2, week 2: make existing checks required.</li>
@@ -391,7 +391,7 @@ Code owner review: 1 required, 1 approved</code></pre>
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
               <span class="card-title">58 to 60 — Close</span>
-              <span class="card-sub">Prepared replay of the follow-up signal that restarts the loop.</span>
+              <span class="card-sub">Prepared replay of the follow-up signal that re-enters the graph.</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
@@ -408,7 +408,7 @@ Still answered with nothing:        7 requests
 
 Counts, not rates. Not comparable with the opening percentages.</code></pre>
           </div>
-          <p>Nine lifecycle stages, one of them coding. The change was measured by the same signal that motivated it, which is only possible because intent, evidence, and telemetry all live where the code lives.</p>
+          <p>Nine concerns, one of them coding. The change was measured by the same signal that motivated it, which is only possible because intent, evidence, and telemetry all live where the code lives. The residue re-entered the graph as a bounded issue rather than as a complaint.</p>
           <p><strong>Prepared replay, not a second production run.</strong> The thirty-two unmet requests are the real ones from the opening telemetry; what the shelf held afterwards is declared synthetic in <code>fixtures/telemetry/post-change-stock.json</code>, and the answer is computed from both by the shipped selection logic. Recompute it with <code>npm run verify -- --only followup</code>.</p>
           <p>Prepared artefact: <code>fixtures/prepared/10-followup.json</code>.</p>
         </div>

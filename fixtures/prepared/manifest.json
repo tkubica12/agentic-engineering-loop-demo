@@ -4,45 +4,117 @@
   "durationMinutes": 60,
   "productValidationDate": "2026-08-24",
   "shape": {
-    "lifecycleStages": 9,
+    "graphConcerns": 9,
     "demoScenes": 11,
-    "codingStages": 1,
+    "codingConcerns": 1,
     "slides": 15,
     "slideLayout": "3 section dividers + 11 scene presentation cards + 1 closing takeaway",
-    "sentence": "A nine-stage engineering loop shown in eleven demo scenes; only one lifecycle stage is coding.",
-    "note": "The return to the next signal is the arrow back to stage one, not a tenth stage. Scenes are how the hour is presented; stages are what the loop is made of. Never conflate the two counts.",
-    "stages": [
-      "Signal",
-      "Intent",
-      "Contract",
-      "Lane",
-      "Implementation",
-      "Evidence",
-      "Authority",
-      "Release",
-      "Production"
+    "sentence": "A nine-concern engineering graph shown in eleven demo scenes; only one concern is coding.",
+    "note": "This is a graph, not a queue. Work enters at more than one concern and travels along more than one edge. The left-to-right reading below is one path through the graph, chosen because it is easy to narrate, and it is never the definition of the system. Scenes are how the hour is presented; concerns are what the graph is made of. Never conflate the two counts.",
+    "concerns": [
+      {
+        "name": "Signal",
+        "question": "What changed or deserves attention?",
+        "primitive": "Scheduled, bounded automation that reads committed evidence and proposes work"
+      },
+      {
+        "name": "Intent",
+        "question": "Why should we act?",
+        "primitive": "Durable, assignable work items an agent can read where the code lives"
+      },
+      {
+        "name": "Contract",
+        "question": "What must remain true?",
+        "primitive": "A specification, a decision record and acceptance criteria stored beside the code"
+      },
+      {
+        "name": "Lane",
+        "question": "Who or what should act?",
+        "primitive": "Interchangeable execution surfaces bound by one repository contract"
+      },
+      {
+        "name": "Implementation",
+        "question": "What changed?",
+        "primitive": "A reviewable change set with line-level discussion"
+      },
+      {
+        "name": "Evidence",
+        "question": "Does it work and remain secure?",
+        "primitive": "Deterministic checks and security scanning bound to that change set"
+      },
+      {
+        "name": "Authority",
+        "question": "Who accepts the risk?",
+        "primitive": "Required review by named owners, attributed to a person on a commit"
+      },
+      {
+        "name": "Release",
+        "question": "What is allowed to ship?",
+        "primitive": "Environment approval, federated credentials, build provenance"
+      },
+      {
+        "name": "Production",
+        "question": "What happened after release?",
+        "primitive": "A path for production signal to re-enter the graph as work"
+      }
     ],
-    "questions": [
-      "Was the intent written down?",
-      "Is the proposal reviewable?",
-      "Does deterministic evidence exist?",
-      "Does policy allow it?",
-      "Who is accountable for the merge?",
-      "How does it reach production?",
-      "What does production say afterwards?"
+    "entryPoints": [
+      {
+        "id": "telemetry",
+        "label": "Telemetry",
+        "entersAt": "Signal",
+        "example": "A scheduled workflow reads committed telemetry and finds a rate that moved. This hour enters here."
+      },
+      {
+        "id": "business-intent",
+        "label": "Business intent",
+        "entersAt": "Intent",
+        "example": "Somebody opens an issue because the business wants an outcome. Nothing had to change first."
+      },
+      {
+        "id": "security-finding",
+        "label": "Security finding",
+        "entersAt": "Evidence",
+        "example": "A scanner raises an alert about code that already merged, and the graph runs backwards from evidence."
+      },
+      {
+        "id": "production-incident",
+        "label": "Production incident",
+        "entersAt": "Production",
+        "example": "A release misbehaves, and the observation is the first thing anyone writes down."
+      }
     ],
-    "primitives": [
-      "Durable, assignable work items an agent can read where the code lives",
-      "A reviewable change set with line-level discussion",
-      "Deterministic checks bound to that change set",
-      "Branch rules expressed as reviewable configuration",
-      "Required review by named owners, attributed to a person",
-      "Environment approval, federated credentials, build provenance",
-      "A path for production signal to become the next work item"
+    "feedbackEdges": [
+      {
+        "from": "Evidence",
+        "to": [
+          "Contract",
+          "Implementation"
+        ],
+        "note": "A failing check either found a defect in the change or a defect in what the contract asked for."
+      },
+      {
+        "from": "Authority",
+        "to": [
+          "Intent",
+          "Contract"
+        ],
+        "note": "A reviewer who declines is rarely rejecting the code. Usually the intent or the constraint was wrong."
+      },
+      {
+        "from": "Production",
+        "to": [
+          "Signal",
+          "Intent",
+          "Contract",
+          "Implementation"
+        ],
+        "note": "Production may raise a new signal, reshape intent, change what must remain true, or open a proposal directly."
+      }
     ],
-    "stageMapping": {
-      "$comment": "Every scene declares which lifecycle stage it puts on the screen. A scene marked crossCutting frames the loop rather than demonstrating one stage of it, and does not count towards coverage: each of the nine canonical stages must be demonstrated by at least one scene that is not cross-cutting. sceneMarker is what the card subtitle and the presenter crosswalk both render, so the two can never drift.",
-      "markerFormat": "<stageLabel> · <questionLabel>",
+    "concernMapping": {
+      "$comment": "Every scene declares which concern it puts on the screen. A scene marked crossCutting frames the graph rather than demonstrating one concern of it, and does not count towards coverage: each of the nine canonical concerns must be demonstrated by at least one scene that is not cross-cutting. sceneMarker is what the card subtitle and the presenter crosswalk both render, so the two can never drift.",
+      "markerFormat": "<concernLabel> · <question>",
       "crossCuttingScenes": [
         "thesis",
         "coexist",
@@ -199,23 +271,14 @@
       "tab": 1,
       "tabLabel": "1 — Showcase, slides mode",
       "tabRouting": "Stay on tab 1 for the whole scene.",
-      "questions": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7
-      ],
       "start": 0,
       "end": 2,
-      "title": "Nine stages carry one change, and only one is coding",
+      "title": "The hard part is not writing code. It is steering change.",
       "presenterTitle": "Static — Cold open and thesis",
       "mode": "static",
       "surface": "article",
       "artifact": null,
-      "expectedState": "The nine-stage loop with the seven questions and their primitives beneath it, so the room can audit its own stack while listening.",
+      "expectedState": "The engineering graph: nine concerns, four entry points, and the feedback edges that run backwards. Implementation is the only coding concern.",
       "stopCondition": "If the deck will not enter slides mode, present the article view and continue.",
       "fallback": [
         {
@@ -229,7 +292,7 @@
           "label": "Offline fallback scene: thesis"
         }
       ],
-      "stages": [
+      "concerns": [
         "Signal",
         "Intent",
         "Contract",
@@ -240,11 +303,11 @@
         "Release",
         "Production"
       ],
-      "stageRole": "frames",
+      "graphRole": "frames",
       "crossCutting": true,
-      "stageLabel": "All nine stages",
-      "questionLabel": "Q1 to Q7",
-      "sceneMarker": "All nine stages · Q1 to Q7"
+      "concernLabel": "The whole graph",
+      "question": "Nine concerns, nine questions",
+      "sceneMarker": "The whole graph · Nine concerns, nine questions"
     },
     {
       "id": "pulse",
@@ -255,17 +318,14 @@
       "tab": 3,
       "tabLabel": "3 — The signal issue",
       "tabRouting": "Open tab 3 first for the finished issue, then tab 2 for the source and the run.",
-      "questions": [
-        1
-      ],
       "start": 2,
       "end": 10,
-      "title": "Reasoning proposes one issue; a compiled contract bounds the write",
+      "title": "Work can enter from anywhere; make the next step durable.",
       "presenterTitle": "Live — Repository pulse",
       "mode": "live",
       "surface": "github-actions",
       "artifact": "fixtures/prepared/01-signal-issue.json",
-      "expectedState": "The finished issue on screen within fifteen seconds, then the pipeline and the bounded control contract in the frontmatter. A fresh run is triggered into the background only.",
+      "expectedState": "The four entry points first, then the finished issue on screen within fifteen seconds, then the pipeline and the bounded control contract in the frontmatter. A fresh run is triggered into the background only.",
       "stopCondition": "Show the finished issue first, always. Never make the room watch a queue.",
       "trustModel": {
         "input": "Committed synthetic telemetry",
@@ -285,14 +345,14 @@
           "label": "Offline fallback scene: pulse"
         }
       ],
-      "stages": [
+      "concerns": [
         "Signal"
       ],
-      "stageRole": "demonstrates",
+      "graphRole": "demonstrates",
       "crossCutting": false,
-      "stageLabel": "Stage 1 Signal",
-      "questionLabel": "Q1 of 7",
-      "sceneMarker": "Stage 1 Signal · Q1 of 7"
+      "concernLabel": "Signal",
+      "question": "What changed or deserves attention?",
+      "sceneMarker": "Signal · What changed or deserves attention?"
     },
     {
       "id": "intake",
@@ -303,17 +363,14 @@
       "tab": 3,
       "tabLabel": "3 — The signal issue",
       "tabRouting": "Stay on tab 3; scroll to the intake comment.",
-      "questions": [
-        1
-      ],
       "start": 10,
       "end": 13,
-      "title": "Contracts outlive engines, and this one already proved it",
-      "presenterTitle": "Prepared — Issue intake (experimental lane)",
+      "title": "Turn noise into intent before asking an agent to code.",
+      "presenterTitle": "Prepared — Issue triage",
       "mode": "prepared",
       "surface": "github-issue",
       "artifact": "fixtures/prepared/02-intake-result.json",
-      "expectedState": "Prepared output: one comment with four headings and at most three allowlisted labels, beside the engine-churn point.",
+      "expectedState": "Prepared output: one triage comment with four headings and at most three allowlisted labels, and the safe next action it names.",
       "stopCondition": "Three minutes, hard. Prepared only: the OpenCode lock reports the firewall disabled and maps the Copilot token into the model sandbox. Never run this lane live.",
       "trustModel": {
         "input": "Issue title and body",
@@ -333,14 +390,14 @@
           "label": "Offline fallback scene: intake"
         }
       ],
-      "stages": [
+      "concerns": [
         "Intent"
       ],
-      "stageRole": "demonstrates",
+      "graphRole": "demonstrates",
       "crossCutting": false,
-      "stageLabel": "Stage 2 Intent",
-      "questionLabel": "Q1 of 7",
-      "sceneMarker": "Stage 2 Intent · Q1 of 7"
+      "concernLabel": "Intent",
+      "question": "Why should we act?",
+      "sceneMarker": "Intent · Why should we act?"
     },
     {
       "id": "refine",
@@ -351,18 +408,14 @@
       "tab": 4,
       "tabLabel": "4 — The specification",
       "tabRouting": "Move to tab 4.",
-      "questions": [
-        1,
-        2
-      ],
       "start": 13,
       "end": 17,
-      "title": "Ten acceptance criteria, ten named tests, checked both ways",
+      "title": "Intent becomes a contract agents can prove.",
       "presenterTitle": "Prepared — The contract",
       "mode": "prepared",
       "surface": "repository",
       "artifact": "fixtures/prepared/03-refined-spec.json",
-      "expectedState": "SPEC-001 open beside the acceptance mapping table.",
+      "expectedState": "The artefact chain from product brief to tests, then SPEC-001 open beside the acceptance mapping table.",
       "stopCondition": "None. This scene is repository content and cannot fail.",
       "fallback": [
         {
@@ -376,14 +429,14 @@
           "label": "Offline fallback scene: refine"
         }
       ],
-      "stages": [
+      "concerns": [
         "Contract"
       ],
-      "stageRole": "demonstrates",
+      "graphRole": "demonstrates",
       "crossCutting": false,
-      "stageLabel": "Stage 3 Contract",
-      "questionLabel": "Q1 and Q2 of 7",
-      "sceneMarker": "Stage 3 Contract · Q1 and Q2 of 7"
+      "concernLabel": "Contract",
+      "question": "What must remain true?",
+      "sceneMarker": "Contract · What must remain true?"
     },
     {
       "id": "lanes",
@@ -395,12 +448,9 @@
       "tabLabel": "1 — Showcase, slides mode",
       "tabRouting": "First backwards jump: return to tab 1.",
       "backwardsJump": true,
-      "questions": [
-        2
-      ],
       "start": 17,
       "end": 21,
-      "title": "Four execution surfaces, one repository contract",
+      "title": "Change the agent, keep the contract.",
       "presenterTitle": "Static — Execution surfaces",
       "mode": "static",
       "surface": "article",
@@ -419,14 +469,14 @@
           "label": "Offline fallback scene: lanes"
         }
       ],
-      "stages": [
+      "concerns": [
         "Lane"
       ],
-      "stageRole": "demonstrates",
+      "graphRole": "demonstrates",
       "crossCutting": false,
-      "stageLabel": "Stage 4 Lane",
-      "questionLabel": "Q2 of 7",
-      "sceneMarker": "Stage 4 Lane · Q2 of 7"
+      "concernLabel": "Lane",
+      "question": "Who or what should act?",
+      "sceneMarker": "Lane · Who or what should act?"
     },
     {
       "id": "delegate",
@@ -437,12 +487,9 @@
       "tab": 5,
       "tabLabel": "5 — The pull request, Files changed",
       "tabRouting": "Move forward to tab 5.",
-      "questions": [
-        2
-      ],
       "start": 21,
       "end": 27,
-      "title": "A good agent pull request is small enough to read in the room",
+      "title": "A good agent proposal fits on one screen.",
       "presenterTitle": "Prepared — Delegation",
       "mode": "prepared",
       "surface": "github-pr",
@@ -461,14 +508,14 @@
           "label": "Offline fallback scene: delegate"
         }
       ],
-      "stages": [
+      "concerns": [
         "Implementation"
       ],
-      "stageRole": "demonstrates",
+      "graphRole": "demonstrates",
       "crossCutting": false,
-      "stageLabel": "Stage 5 Implementation",
-      "questionLabel": "Q2 of 7",
-      "sceneMarker": "Stage 5 Implementation · Q2 of 7"
+      "concernLabel": "Implementation",
+      "question": "What changed?",
+      "sceneMarker": "Implementation · What changed?"
     },
     {
       "id": "evidence",
@@ -479,14 +526,9 @@
       "tab": 6,
       "tabLabel": "6 — The pull request, Checks",
       "tabRouting": "Move forward to tab 6.",
-      "questions": [
-        3,
-        4,
-        5
-      ],
       "start": 27,
       "end": 40,
-      "title": "Eight checks, one ruleset, one accountable human",
+      "title": "Agents propose. Deterministic gates decide.",
       "presenterTitle": "Prepared — Evidence, policy, authority",
       "mode": "prepared",
       "surface": "github-pr",
@@ -505,15 +547,15 @@
           "label": "Offline fallback scene: evidence"
         }
       ],
-      "stages": [
+      "concerns": [
         "Evidence",
         "Authority"
       ],
-      "stageRole": "demonstrates",
+      "graphRole": "demonstrates",
       "crossCutting": false,
-      "stageLabel": "Stages 6 and 7, Evidence and Authority",
-      "questionLabel": "Q3, Q4 and Q5 of 7",
-      "sceneMarker": "Stages 6 and 7, Evidence and Authority · Q3, Q4 and Q5 of 7"
+      "concernLabel": "Evidence and Authority",
+      "question": "Does it work and remain secure? Who accepts the risk?",
+      "sceneMarker": "Evidence and Authority · Does it work and remain secure? Who accepts the risk?"
     },
     {
       "id": "release",
@@ -524,12 +566,9 @@
       "tab": 7,
       "tabLabel": "7 — Release run",
       "tabRouting": "Move forward to tab 7.",
-      "questions": [
-        6
-      ],
       "start": 40,
       "end": 45,
-      "title": "Merging is a code decision; deploying is an authority decision",
+      "title": "Merge authority and deploy authority are different.",
       "presenterTitle": "Mixed — Release",
       "mode": "mixed",
       "surface": "github-actions",
@@ -548,14 +587,14 @@
           "label": "Offline fallback scene: release"
         }
       ],
-      "stages": [
+      "concerns": [
         "Release"
       ],
-      "stageRole": "demonstrates",
+      "graphRole": "demonstrates",
       "crossCutting": false,
-      "stageLabel": "Stage 8 Release",
-      "questionLabel": "Q6 of 7",
-      "sceneMarker": "Stage 8 Release · Q6 of 7"
+      "concernLabel": "Release",
+      "question": "What is allowed to ship?",
+      "sceneMarker": "Release · What is allowed to ship?"
     },
     {
       "id": "sre",
@@ -567,17 +606,14 @@
       "tabLabel": "1 — Showcase, slides mode",
       "tabRouting": "Second backwards jump: return to tab 1 and stay there to the end.",
       "backwardsJump": true,
-      "questions": [
-        7
-      ],
       "start": 45,
       "end": 51,
-      "title": "Production signal correlated to source under an identity scoped to one workload",
+      "title": "Production changes the graph.",
       "presenterTitle": "Prepared — Production feedback",
       "mode": "prepared",
       "surface": "external-evidence",
       "artifact": "fixtures/prepared/08-sre-incident.json",
-      "expectedState": "The cloud-neutral pattern stated first, then the Azure implementation as one concrete proof, then the stated limitation.",
+      "expectedState": "The cloud-neutral pattern stated first, then the Azure implementation as one concrete proof, then the stated limitation, then the edges production can travel back along.",
       "stopCondition": "Never open a live cloud portal. This scene is cited evidence from a public repository.",
       "fallback": [
         {
@@ -591,14 +627,14 @@
           "label": "Offline fallback scene: sre"
         }
       ],
-      "stages": [
+      "concerns": [
         "Production"
       ],
-      "stageRole": "demonstrates",
+      "graphRole": "demonstrates",
       "crossCutting": false,
-      "stageLabel": "Stage 9 Production",
-      "questionLabel": "Q7 of 7",
-      "sceneMarker": "Stage 9 Production · Q7 of 7"
+      "concernLabel": "Production",
+      "question": "What happened after release?",
+      "sceneMarker": "Production · What happened after release?"
     },
     {
       "id": "coexist",
@@ -609,23 +645,14 @@
       "tab": 1,
       "tabLabel": "1 — Showcase, slides mode",
       "tabRouting": "Stay on tab 1.",
-      "questions": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7
-      ],
       "start": 51,
       "end": 58,
-      "title": "Keep Bitbucket and Jira; pilot one repository for two weeks",
+      "title": "Pilot the control system, not another assistant.",
       "presenterTitle": "Static — Coexistence and adoption",
       "mode": "static",
       "surface": "article",
       "artifact": "fixtures/prepared/09-adoption-matrix.json",
-      "expectedState": "Bitbucket and Jira coexistence, the three cost lines, the two phases, the three dispositions, the pilot participants, the five artefacts and the day-14 decision, all visible.",
+      "expectedState": "Coexistence stated in one line, the three cost lines, the two phases, the three dispositions, the pilot participants, the five artefacts and the day-14 decision, all visible.",
       "stopCondition": "None. This is the commercial ask and it is never cut.",
       "fallback": [
         {
@@ -639,7 +666,7 @@
           "label": "Offline fallback scene: coexist"
         }
       ],
-      "stages": [
+      "concerns": [
         "Signal",
         "Intent",
         "Contract",
@@ -650,11 +677,11 @@
         "Release",
         "Production"
       ],
-      "stageRole": "frames",
+      "graphRole": "frames",
       "crossCutting": true,
-      "stageLabel": "Across all nine stages",
-      "questionLabel": "Q1 to Q7",
-      "sceneMarker": "Across all nine stages · Q1 to Q7"
+      "concernLabel": "Across the whole graph",
+      "question": "Which concerns does your stack already answer?",
+      "sceneMarker": "Across the whole graph · Which concerns does your stack already answer?"
     },
     {
       "id": "close",
@@ -665,23 +692,14 @@
       "tab": 1,
       "tabLabel": "1 — Showcase, slides mode",
       "tabRouting": "Stay on tab 1 through the takeaway.",
-      "questions": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7
-      ],
       "start": 58,
       "end": 60,
-      "title": "The loop closed, and the follow-up issue proves it",
+      "title": "The repository remembers why, what, proof, and outcome.",
       "presenterTitle": "Static — Close",
       "mode": "static",
       "surface": "article",
       "artifact": "fixtures/prepared/10-followup.json",
-      "expectedState": "The follow-up counts, the seven questions answered, and the pilot action, then the closing takeaway. Questions are taken after this, not inside the hour.",
+      "expectedState": "The follow-up counts, the four things the repository remembers, and the pilot action, then the closing takeaway. Questions are taken after this, not inside the hour.",
       "stopCondition": "None. Never cut the close.",
       "fallback": [
         {
@@ -695,15 +713,15 @@
           "label": "Offline fallback scene: close"
         }
       ],
-      "stages": [
+      "concerns": [
         "Production",
         "Signal"
       ],
-      "stageRole": "returns",
+      "graphRole": "returns",
       "crossCutting": true,
-      "stageLabel": "Stage 9 back to stage 1",
-      "questionLabel": "Q1 to Q7",
-      "sceneMarker": "Stage 9 back to stage 1 · Q1 to Q7"
+      "concernLabel": "Production back into the graph",
+      "question": "What did production change?",
+      "sceneMarker": "Production back into the graph · What did production change?"
     }
   ]
 }

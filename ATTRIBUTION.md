@@ -75,6 +75,15 @@ On gh-aw v0.86.2 a workflow importing this definition still compiles and passes
 - Third-party coding agents on GitHub, public preview, currently Anthropic
   Claude and OpenAI Codex:
   <https://docs.github.com/en/copilot/concepts/agents/about-third-party-coding-agents>
+- GitHub Spec Kit, described upstream as a "Toolkit to help you get started with
+  Spec-Driven Development":
+  <https://github.com/github/spec-kit> and <https://github.github.io/spec-kit/>
+
+Spec Kit is named on the contract scene as first-party GitHub tooling for
+spec-driven development. Both of its links were read 2026-08-24. Nothing in this
+repository depends on it: the three contract artefacts here are written by hand,
+and the claim made about Spec Kit is deliberately bounded to the edge from intent
+to contract in the graph.
 
 First read 2026-08-23 and **re-read 2026-08-24**, which is this repository's
 product validation date. What was re-checked on that date, and what it said:
@@ -107,6 +116,30 @@ carry the stage; the initiative page's own title does, which is why the stage is
 cited from there and why `fixtures/prepared/06-pr-evidence.json` records the
 initiative page as its `stageSource`. Nothing in this repository depends on the
 capability, and no finding from it is shown or simulated.
+
+## Cited community and emerging patterns
+
+The contract chapter carries one reader-depth card naming three loop patterns
+that attendees will meet elsewhere. Every one of them is labelled in the document
+itself as a **community or emerging pattern**. None is a GitHub or Microsoft
+product, none is a ratified standard, and no first-party source describes any of
+them as GitHub practice. All read 2026-08-24.
+
+- Loop engineering, defined by IBM as "the practice of designing agentic
+  workflows, or loops, that iteratively guide AI agents toward completing
+  user-defined goals with minimal human intervention", published 17 July 2026:
+  <https://www.ibm.com/think/topics/loop-engineering>. The community repository
+  that named and popularised the term:
+  <https://github.com/cobusgreyling/loop-engineering>
+- The intent loop, published as a team operating model with the steps
+  "Notice, Spec, Execute, Observe": <https://github.com/theparlor/intent> and
+  <https://theparlor.github.io/intent/>. A small community project, cited for
+  its articulation of the pattern rather than for its adoption.
+- The gauntlet loop, a builder-and-critic iteration pattern credited upstream to
+  Matt Shumer, July 2026: <https://github.com/robonuggets/gauntlet-loop>
+
+None of these is reproduced here beyond the one quotation above. Nothing in this
+repository depends on any of them.
 
 ## Cited external evidence
 

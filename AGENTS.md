@@ -108,21 +108,29 @@ without advancing it, remove the change.
 1. **`fixtures/prepared/manifest.json` is the only place the sequence is defined.**
    The rehearsal script, the offline fallback, the presenter guide, and the tests
    all read it. Change the order there and nowhere else.
-2. **Two counts exist and must never be conflated.** There are **nine lifecycle
-   stages** and **eleven demo scenes**. The exact sentence, used verbatim
-   wherever the shape is described, is: "A nine-stage engineering loop shown in
-   eleven demo scenes; only one lifecycle stage is coding." The return to the
-   next signal is the arrow back to stage one, not a tenth stage. Both numbers
-   live in `manifest.json` under `shape`, and a test fails the build on drift.
-3. **Every scene needs an expected visible state, a stop condition, and at least
+2. **Two counts exist and must never be conflated.** There are **nine graph
+   concerns** and **eleven demo scenes**. The exact sentence, used verbatim
+   wherever the shape is described, is: "A nine-concern engineering graph shown in
+   eleven demo scenes; only one concern is coding." The graph is not a queue: work
+   enters at more than one concern, the feedback edges run backwards, and the
+   left-to-right reading in the deck is one path through it rather than a
+   definition of it. Both numbers live in `manifest.json` under `shape`, and a test
+   fails the build on drift.
+3. **Every concern is paired with one plain-language question, and the pair is the
+   marker.** The nine pairs live in `shape.concerns`, each scene renders its own
+   pair as `<concernLabel> · <question>` in the slide subtitle and in the presenter
+   crosswalk, and no document may reintroduce a separate numbered question
+   taxonomy. A test fails the build on a `Q1`-style label reaching a projected
+   slide.
+4. **Every scene needs an expected visible state, a stop condition, and at least
    one fallback.** The rehearsal fails without them.
-4. **Fallbacks are structured, not prose.** Each is
+5. **Fallbacks are structured, not prose.** Each is
    `{ kind, target, label }` where `kind` is `file`, `url`, `doc-scene`, or
    `narrate`. Preflight and `rehearse --fallback` resolve every target and fail
    on a missing one.
-5. **Every live scene needs a durable prepared artefact.** No exceptions.
-6. **The scenes must tile the whole hour with no gap.** A test asserts it.
-7. **Slides mode must produce between ten and fifteen slides in
+6. **Every live scene needs a durable prepared artefact.** No exceptions.
+7. **The scenes must tile the whole hour with no gap.** A test asserts it.
+8. **Slides mode must produce between ten and fifteen slides in
    `docs/showcase.html`.** That rule is about the presented deck and nothing
    else. `docs/mission-control.html` is a scene fallback surface: it is a
    readable article that can also be presented, its card count follows the
