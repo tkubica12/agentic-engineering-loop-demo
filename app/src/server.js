@@ -72,6 +72,13 @@ export function createApp(service = createService()) {
         return send(res, 422, result);
       }
 
+      if (req.method === 'DELETE' && url.pathname.startsWith('/api/v1/reservations/')) {
+        const reservationId = safeEcho(
+          decodeURIComponent(url.pathname.slice('/api/v1/reservations/'.length))
+        );
+        return send(res, 200, service.release(reservationId));
+      }
+
       return send(res, 404, { error: 'not_found' });
     } catch (err) {
       if (err instanceof ValidationError) {

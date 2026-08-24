@@ -54,6 +54,40 @@ test('an in-stock reservation answers 201', async () => {
   assert.equal(res.status, 201);
 });
 
+test('releasing a held reservation answers 200 and restores availability', async () => {
+  const reservation = await fetch(`${base}/api/v1/reservations`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ siteId: 'SITE-NORTH', sku: 'SKU-4001', quantity: 15 })
+  });
+  const { reservationId } = await reservation.json();
+
+  const release = await fetch(`${base}/api/v1/reservations/${reservationId}`, {
+    method: 'DELETE'
+  });
+  assert.equal(release.status, 200);
+  assert.deepEqual(await release.json(), { outcome: 'released', reservationId });
+  assert.equal(release.headers.get('x-content-type-options'), 'nosniff');
+
+  const laterReservation = await fetch(`${base}/api/v1/reservations`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ siteId: 'SITE-NORTH', sku: 'SKU-4001', quantity: 15 })
+  });
+  assert.equal(laterReservation.status, 201);
+});
+
+test('releasing an unknown reservation answers 400', async () => {
+  const res = await fetch(`${base}/api/v1/reservations/RES-99999`, {
+    method: 'DELETE'
+  });
+  assert.equal(res.status, 400);
+  assert.deepEqual(await res.json(), {
+    error: 'unknown reservation',
+    details: { reservationId: 'RES-99999' }
+  });
+});
+
 test('a malformed body answers 400 rather than crashing', async () => {
   const res = await fetch(`${base}/api/v1/reservations`, {
     method: 'POST',
