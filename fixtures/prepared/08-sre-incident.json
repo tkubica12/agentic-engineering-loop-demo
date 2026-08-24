@@ -1,0 +1,62 @@
+{
+  "artifactId": "08-sre-incident",
+  "scene": "sre",
+  "kind": "cited-external-evidence",
+  "status": "prepared",
+  "labelInUi": "Cited evidence from a separate public repository — nothing here runs live",
+  "capturedOn": "2026-08-23",
+  "source": {
+    "repository": "tkubica12/azure-sre-agent",
+    "url": "https://github.com/tkubica12/azure-sre-agent",
+    "licence": "MIT",
+    "copyright": "Copyright (c) 2026 Tomáš Kubica",
+    "attribution": "Screenshots and evidence transcripts are cited by path. This repository stores no copy of them and modifies nothing in the source repository.",
+    "reuseNote": "MIT permits reuse with attribution. See ATTRIBUTION.md."
+  },
+  "workload": {
+    "name": "PulseMart",
+    "what": "A small FastAPI storefront with structured telemetry.",
+    "runsOn": "Azure Container Apps",
+    "observability": ["Application Insights", "Log Analytics", "Azure Monitor"]
+  },
+  "incident": {
+    "scenario": "bad-deployment",
+    "path": "scenarios/bad-deployment/scenario.yaml",
+    "whatBreaks": "A new Container Apps revision ships with a payment-gateway configuration regression and receives 100% of production traffic. Checkout requests fail with HTTP 500.",
+    "trigger": "PAYMENT_GATEWAY_PROFILE set to legacy-acquirer on the new revision."
+  },
+  "whatThisDemoProves": [
+    {
+      "claim": "The agent correlates live Azure telemetry and resource state with connected GitHub source.",
+      "evidence": "Application Insights, Azure Monitor, and Log Analytics are the configured connectors. A connected GitHub repository provides code-level root cause context.",
+      "citation": "docs/assets/screenshots/09-code-access.png, docs/assets/screenshots/10-connectors.png"
+    },
+    {
+      "claim": "It identifies the exact source and configuration context, not just a failing metric.",
+      "evidence": "The incident detail names the configuration difference between the faulty and the known-good revision.",
+      "citation": "docs/assets/screenshots/02-incident-root-cause.png"
+    },
+    {
+      "claim": "A write-capable subagent performed a real traffic shift under a narrow managed identity.",
+      "evidence": "The rollback-advisor subagent shifted 100% of traffic to the known-good revision and drained the faulty revision to 0%, using az containerapp ingress traffic set. Its identity holds Container Apps Contributor scoped to the single container app, plus a custom role granting only alerts/read and alerts/changestate/action.",
+      "citation": "scenarios/bad-deployment/evidence/, agent/config/subagents/rollback-advisor.yaml, README.md"
+    },
+    {
+      "claim": "The Azure Activity Log attributes the write to the agent rather than to a person.",
+      "evidence": "The write is attributable in the Azure Activity Log; the caller field shows the agent identity.",
+      "citation": "README.md"
+    },
+    {
+      "claim": "Recovery was verified independently rather than assumed.",
+      "evidence": "POST /api/checkout returned HTTP 200 after the shift, and the agent re-queried telemetry to confirm.",
+      "citation": "scenarios/bad-deployment/evidence/"
+    }
+  ],
+  "statedLimitation": {
+    "what": "GitHub issue or pull request write-back is a designed next step, not something this demonstration proves.",
+    "detail": "The rollback-advisor instructions say: \"If a fix would require a source-code change, create a GitHub issue describing the change instead of editing code yourself.\" Its configured tool list is RunAzCliReadCommands, RunAzCliWriteCommands, QueryAppInsightsUsingAppId, and SearchMemory. No GitHub Connector and no GitHub MCP server appears in that list, so the agent has no tool with which to perform the write the instruction describes.",
+    "citation": "agent/config/subagents/rollback-advisor.instructions.md, agent/config/subagents/rollback-advisor.yaml",
+    "presenterRule": "Say this out loud. An audience that later discovers the gap will discount everything else that was said."
+  },
+  "whyThisSceneBelongs": "The repository half of the loop ends at deployment. This is the return path: production state, correlated with the source that produced it, closing back onto the repository as durable intent. The mechanical link from incident to issue is the part still to build, and naming it is more useful than implying it exists."
+}

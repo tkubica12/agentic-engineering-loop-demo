@@ -1,0 +1,72 @@
+name: Bounded change request
+description: Durable intent for one bounded change, in the shape the agent lanes expect.
+title: "[change] "
+labels: ["showcase", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This form is the contract. An agent that starts from a vague sentence
+        produces a vague pull request; an agent that starts from an outcome,
+        constraints, and acceptance criteria produces something reviewable.
+
+        Use synthetic data only. Never paste real product, supplier, pricing,
+        patient, or customer data into this repository.
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+      description: What is true after this change that is not true now? One or two sentences, from the user's point of view.
+      placeholder: A counter assistant who requests an unavailable pack sees one concrete alternative in the same response.
+    validations:
+      required: true
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Constraints
+      description: What must remain true. Include anything that must not be exposed, added, or changed.
+      placeholder: |
+        - No internal classification field leaves the service.
+        - At most one alternative is offered.
+        - No new runtime dependency.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Numbered, each independently checkable, each one a test someone could write.
+      placeholder: |
+        1. An in-stock request is reserved and carries no suggestion.
+        2. An out-of-stock request returns exactly one substitute.
+    validations:
+      required: true
+  - type: input
+    id: spec
+    attributes:
+      label: Specification document
+      description: Path to the specification this change implements, if one exists.
+      placeholder: docs/spec/SPEC-001-substitute-suggestion.md
+  - type: dropdown
+    id: lane
+    attributes:
+      label: Intended execution lane
+      description: Which surface is expected to do the work. The repository contract is identical in every lane.
+      options:
+        - Undecided
+        - Copilot coding agent
+        - Copilot CLI or app
+        - Cursor
+        - OpenCode
+        - Human only
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Confirmations
+      options:
+        - label: This request uses synthetic data only.
+          required: true
+        - label: The acceptance criteria are checkable without asking the author.
+          required: true

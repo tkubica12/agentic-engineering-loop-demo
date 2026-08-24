@@ -1,0 +1,31 @@
+{
+  "artifactId": "01-signal-issue",
+  "scene": "pulse",
+  "kind": "prepared-output",
+  "status": "prepared",
+  "labelInUi": "Prepared output — captured from a real run of repository-pulse",
+  "capturedOn": "2026-08-23",
+  "producedBy": {
+    "workflow": ".github/workflows/repository-pulse.md",
+    "engine": "copilot",
+    "supportStatus": "supported",
+    "safeOutput": "create-issue"
+  },
+  "derivedFrom": {
+    "file": "fixtures/telemetry/reservation-events.jsonl",
+    "events": 959,
+    "window": ["2026-08-02", "2026-08-22"],
+    "note": "Synthetic. Regenerate the numbers with scripts/verify.mjs --only signal."
+  },
+  "issue": {
+    "title": "[pulse] SITE-NORTH SKU-1001 unavailable rate rose from 23% to 78% across the window",
+    "labels": ["showcase", "pulse", "needs-triage"],
+    "body": "## Signal\n\n- Pair: `SITE-NORTH` / `SKU-1001`\n- Requests in window: 57\n- Unavailable outcomes: 32\n- First third of window: 23% unavailable\n- Last third of window: 78% unavailable\n- Repository-wide unavailable rate: 11.3% of 959 events\n- Window: 2026-08-02 to 2026-08-22\n\n## Why this is worth engineering time\n\nOne pair accounts for a quarter of all unavailable outcomes while representing 6% of requests. Every one of those 32 requests ended without an alternative, because `substituteOffered` is false on every event in the file.\n\n## Proposed outcome\n\nA request that cannot be met returns something the counter can act on instead of a bare failure.\n\n## Open questions\n\n1. Is the rise a supply interruption or a demand shift? The telemetry does not carry supply data.\n2. Is an alternative clinically acceptable for this group, and who decides that?\n3. Should an alternative be offered at the same site only, or across sites?\n"
+  },
+  "verifiableClaims": [
+    "The workflow created exactly one issue.",
+    "The title carries the [pulse] prefix declared in the workflow frontmatter.",
+    "Only the three labels declared in safe-outputs.create-issue were applied.",
+    "The agent job held contents: read and issues: read, with no write permission, and the compiled lock excluded the engine and MCP credentials from the model sandbox by name."
+  ]
+}

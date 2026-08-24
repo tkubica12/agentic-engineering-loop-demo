@@ -1,0 +1,40 @@
+{
+  "artifactId": "10-followup",
+  "scene": "close",
+  "kind": "prepared-output",
+  "status": "prepared",
+  "labelInUi": "Prepared output — the loop restarting",
+  "capturedOn": "2026-08-23",
+  "metricStyle": {
+    "$comment": "Deliberately expressed as absolute counts of requests, never as a percentage. The opening signal is stated in percentages (23% to 78%); if the closing metric were also a percentage an audience would try to subtract the two. They measure different things: the opening measures how often stock ran out, the closing measures how often an alternative existed.",
+    "unit": "requests",
+    "usesPercentages": false
+  },
+  "followUpIssue": {
+    "title": "[pulse] 7 unmet requests still end with no alternative because no group member is in stock",
+    "labels": ["showcase", "pulse", "needs-triage"],
+    "body": "## Signal\n\n- Unmet requests in the window: 32 requests\n- Now answered with an alternative: 25 requests\n- Still answered with nothing: 7 requests\n- Cause of the remainder: no active group member had free stock at the same site\n\nThis counts requests, not rates. It is not comparable with the opening availability percentages, which measure a different thing.\n\n## Why this is worth engineering time\n\nThe change closed most of the gap. The residue is a different problem: it is a sourcing question, not a response-shape question.\n\n## Proposed outcome\n\nA request that no site can meet locally tells the counter what the next option is.\n\n## Open questions\n\n1. Is a cross-site transfer acceptable, and what is the promised time?\n2. Should the response distinguish \"nothing today\" from \"nothing at all\"?\n"
+  },
+  "whyThisMatters": "The output of the loop is the input of the loop. The change was measured by the same signal that motivated it, which is only possible because the intent, the evidence, and the telemetry all live where the code lives.",
+  "lifecycleStages": [
+    { "stage": "Signal", "coding": false },
+    { "stage": "Intent", "coding": false },
+    { "stage": "Contract", "coding": false },
+    { "stage": "Lane", "coding": false },
+    { "stage": "Implementation", "coding": true },
+    { "stage": "Evidence", "coding": false },
+    { "stage": "Authority", "coding": false },
+    { "stage": "Release", "coding": false },
+    { "stage": "Production", "coding": false }
+  ],
+  "sevenQuestionsAnswered": [
+    "Was the intent written down? An issue, with outcome, constraints and acceptance criteria.",
+    "Is the proposal reviewable? A pull request small enough to read in the room.",
+    "Does deterministic evidence exist? Eight checks, none of them a model.",
+    "Does policy allow it? A ruleset on the default branch.",
+    "Who is accountable for the merge? A named person, attached to a commit SHA.",
+    "How does it reach production? An approved environment and a short-lived federated token.",
+    "What does production say afterwards? The next signal, which is stage one again."
+  ],
+  "closingLine": "Nine lifecycle stages, one of them coding, and the other eight are what made the coding safe to keep."
+}

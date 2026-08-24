@@ -1,0 +1,42 @@
+/* =========================================================================
+   slide-a11y.css — accessibility overrides layered on the vendored article.css
+
+   Two rules only: a visually-hidden live-region class used by slide-a11y.js,
+   and a non-text-contrast fix for the presenting chrome. No design token is
+   defined or changed here and no colour literal is used — colour stays with
+   article.css; only layer opacity changes.
+   ========================================================================= */
+
+/* Visually hidden, but still announced by assistive tech. display:none or
+   visibility:hidden would silence the live region, so use the clip pattern. */
+.slide-a11y-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* WCAG 1.4.11 non-text contrast: article.css rests the presenting chrome at
+   opacity 0.22, so the Prev/Next/Index buttons and the control bar are almost
+   invisible and fall under the 3:1 minimum until a pointer hovers them. Raise
+   the resting opacity so the controls are perceivable at rest for keyboard and
+   low-vision users. These match the base selectors' specificity and load after
+   article.css, so they win by source order; hover still reaches full strength
+   through article.css's higher-specificity :hover / :focus-within rules. */
+[data-view="slides"] .slide-nav,
+[data-view="slides"] .controls {
+  opacity: 0.9;
+}
+
+/* Keep the transient "awake" state at least as strong as rest, so a mouse move
+   never dims the chrome below its resting value. */
+[data-view="slides"][data-chrome="awake"] .slide-nav,
+[data-view="slides"][data-chrome="awake"] .controls {
+  opacity: 1;
+}

@@ -1,0 +1,37 @@
+{
+  "id": "enterprise",
+  "label": "Enterprise",
+  "description": "An organisation repository under enterprise policy: rulesets, required environments, and a security programme already in place. The same content runs; more of it is live and less of it is simulated.",
+  "target": {
+    "$comment": "Supply OWNER/REPO on the command line. This file never names a real organisation.",
+    "owner": null,
+    "repo": null
+  },
+  "capabilities": {
+    "agenticWorkflows": "live",
+    "opencodeEngine": "removed-ships-as-sample",
+    "copilotCodeReview": "live",
+    "codeql": "live",
+    "secretScanningPush": "live",
+    "dependencyReview": "live",
+    "artifactAttestation": "live",
+    "environmentApproval": "live",
+    "rulesets": "live",
+    "mdash": "preview-if-enrolled"
+  },
+  "governance": {
+    "environmentName": "production",
+    "rulesetName": "org-default-protection",
+    "requiredReviewers": 2,
+    "requireCodeOwnerReview": true
+  },
+  "release": {
+    "provenance": "live",
+    "deploymentTarget": "oidc-federated",
+    "oidcSubjectPattern": "repo:OWNER/REPO:environment:production"
+  },
+  "limits": {
+    "agentTimeoutMinutes": 15,
+    "agentMaxTurns": 20
+  }
+}

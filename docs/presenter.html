@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Presenter guide — The Agentic Engineering Loop</title>
+<meta name="description" content="Minute-by-minute run of show for the sixty-minute showcase: tab order, talk track, expected visible state, stop conditions, the ten-second fallback ladder, and the reset procedure.">
+<meta name="doc-id" content="agentic-engineering-loop-presenter">
+
+<script>
+(function () {
+  var d = document.documentElement;
+  d.classList.add("js");
+  var p = new URLSearchParams(location.search);
+  var t = p.get("theme");
+  if (t !== "light" && t !== "dark") {
+    try { t = localStorage.getItem("doc-theme"); } catch (e) { t = null; }
+  }
+  if (t !== "light" && t !== "dark") {
+    t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+  d.setAttribute("data-theme", t);
+  if (p.get("view") === "slides") d.setAttribute("data-view", "slides");
+})();
+</script>
+
+<style>
+:root {
+  color-scheme: light;
+  --bg: #ffffff; --surface: #ffffff; --surface-2: #f5f6f8; --surface-3: #eaecf0;
+  --border: #dee1e6; --border-strong: #c2c7cf;
+  --text: #14171a; --text-muted: #565c66; --text-faint: #767d87;
+  --accent: #0078d4; --accent-strong: #005a9e; --accent-quiet: #4a9fe0;
+  --accent-soft: #eaf3fb; --accent-border: #a9d0ef;
+  --warn: #8a5300; --warn-soft: #fdf5e8; --warn-border: #e6c99a;
+  --code-bg: #f5f6f8; --code-border: #e2e5ea;
+  --focus: #0078d4;
+  --shadow-1: 0 1px 2px rgba(16,19,23,.06);
+  --shadow-2: 0 2px 4px rgba(16,19,23,.06), 0 12px 28px rgba(16,19,23,.08);
+  --radius: 10px; --radius-sm: 6px; --canvas: 1160px;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Cascadia Mono", "Cascadia Code", ui-monospace, Consolas, "SF Mono", "Liberation Mono", Menlo, monospace;
+}
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0e1013; --surface: #15181d; --surface-2: #1b1f26; --surface-3: #232830;
+  --border: #2b313a; --border-strong: #3d4550;
+  --text: #eceef1; --text-muted: #a7aeb8; --text-faint: #868e99;
+  --accent: #4aa3e8; --accent-strong: #7cc0f3; --accent-quiet: #2f80c4;
+  --accent-soft: #142430; --accent-border: #2c4f6d;
+  --warn: #e0b055; --warn-soft: #241d10; --warn-border: #574627;
+  --code-bg: #12151a; --code-border: #262c34;
+  --focus: #6cb8f0;
+  --shadow-1: 0 1px 2px rgba(0,0,0,.4);
+  --shadow-2: 0 2px 4px rgba(0,0,0,.4), 0 12px 28px rgba(0,0,0,.45);
+}
+</style>
+
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/article.css">
+<link rel="stylesheet" href="assets/slide-a11y.css">
+<script src="assets/article.js" defer></script>
+<script src="assets/slide-a11y.js" defer></script>
+</head>
+
+<body>
+
+<div class="controls" role="group" aria-label="Guide controls">
+  <button type="button" class="ctrl" data-action="expand-all">Expand all</button>
+  <button type="button" class="ctrl" data-action="collapse-all">Collapse all</button>
+  <button type="button" class="ctrl" data-action="toggle-slides" aria-pressed="false">Slides</button>
+  <button type="button" class="ctrl" data-action="toggle-theme">Dark</button>
+</div>
+
+<div class="doc">
+
+  <header class="doc-header">
+    <p class="eyebrow">OPERATOR DOCUMENT</p>
+    <h1>Presenter guide</h1>
+    <p class="subtitle">Everything needed to run the sixty minutes from a cold machine: what to prepare, what to say, what should be on screen, when to abandon a live path, and how to get back to a clean state afterwards.</p>
+    <p class="meta"><time datetime="2026-08-23">23 August 2026</time> &middot; Read this once at T-24h and keep it open on the second screen</p>
+  </header>
+
+  <nav class="doc-nav" aria-label="Related material">
+    <a href="index.html">Repository index</a>
+    <a href="showcase.html">The showcase</a>
+    <a href="mission-control.html">Offline fallback</a>
+  </nav>
+
+  <nav class="toc" aria-label="Contents">
+    <p class="toc-label">Contents</p>
+    <ol>
+      <li><a href="#ch-prepare">Preparation</a></li>
+      <li><a href="#ch-tabs">Tab order</a></li>
+      <li><a href="#ch-run">Run of show</a></li>
+      <li><a href="#ch-fallback">The fallback ladder</a></li>
+      <li><a href="#ch-after">Afterwards</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <section class="chapter" id="ch-prepare">
+      <h2 class="chapter-label">Preparation</h2>
+
+      <article class="card card--lead" id="card-how-to-read" data-open>
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="true">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">Three scene kinds, and you must know which one you are in</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <div class="summary-grid">
+            <div class="summary-item"><span class="summary-label">Live</span>Runs on GitHub in front of the room. It can fail, so it always has a stop condition.</div>
+            <div class="summary-item"><span class="summary-label">Prepared</span>Ran before the session. Say so once; do not pretend it is happening now.</div>
+            <div class="summary-item"><span class="summary-label">Static</span>Article content. It cannot fail and needs no fallback beyond the page itself.</div>
+          </div>
+          <aside class="callout callout--rule">
+            <p class="callout-label">Rule</p>
+            <p>Never describe a prepared artefact or a simulated record as something happening live. One discovered overstatement costs the whole hour's credibility.</p>
+          </aside>
+        </div>
+      </article>
+
+      <article class="card" id="card-t24">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">T minus 24 hours: prove the machine, not the intention</span>
+              <span class="card-sub">Six commands. All of them must exit zero.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <div class="code">
+            <p class="code-label">from a clean checkout</p>
+            <pre><code>npm run setup
+npm run preflight
+npm test
+npm run verify
+npm run validate:aw
+npm run rehearse</code></pre>
+          </div>
+          <p><strong>Then walk the slides with the console open.</strong> Open the showcase in the browser you will actually present from, press <kbd>F12</kbd> to open DevTools and select the Console tab <em>before</em> you enter slides mode, then switch to slides and step to the end with the <kbd>End</kbd> key. The console must stay empty. Any <code>slide-a11y</code> or html-docs warning — a slide that does not fit, a slide shrunk below a readable size — is a <strong>no-go</strong>: fix the content, do not present over it.</p>
+          <div class="code">
+            <p class="code-label">to rehearse the enterprise profile as well</p>
+            <pre><code># PowerShell
+$env:SHOWCASE_PROFILE = "enterprise"; npm run preflight; npm run verify
+
+# bash, zsh, or any POSIX shell
+SHOWCASE_PROFILE=enterprise npm run preflight &amp;&amp; SHOWCASE_PROFILE=enterprise npm run verify</code></pre>
+          </div>
+          <p>An unknown profile name fails immediately with one line and exit code 2, so a typo cannot silently fall back to the sandbox profile.</p>
+          <div class="reveal">
+            <button type="button" class="reveal-toggle" aria-expanded="false">Show what each command proves</button>
+            <div class="reveal-body">
+              <ul class="arrow-list">
+                <li><code>setup</code> creates the output directories and clears the previous transcript. It installs nothing.</li>
+                <li><code>preflight</code> checks Node, the documents, the fixtures, and the optional tooling, then prints the capability state for the active profile.</li>
+                <li><code>test</code> runs the service tests and the repository tests.</li>
+                <li><code>verify</code> recomputes the telemetry signal and fails if the prepared issue disagrees with the data.</li>
+                <li><code>validate:aw</code> runs <code>gh aw validate --strict</code> and checks that every lock file was compiled rather than written.</li>
+                <li><code>rehearse</code> walks all eleven scenes and fails if any one lacks an artefact, a fallback, an expected state, or a stop condition.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" id="card-t30">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">T minus 30 minutes: open the tabs and stop changing things</span>
+              <span class="card-sub">The last thirty minutes are for arrangement, not for fixes.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <ol class="steps">
+            <li><h4>Run preflight once more</h4><p><code>npm run preflight</code>. If it fails now, present entirely from the prepared path and say so at the start.</p></li>
+            <li><h4>Start the local server</h4><p><code>npm run serve</code>. Leave it running. The offline fallback needs it.</p></li>
+            <li><h4>Open the eight tabs in order</h4><p>Listed in the next chapter. Do not reorder them during the session.</p></li>
+            <li><h4>Set the theme and font size</h4><p>Dark or light, chosen once. Browser zoom at 100%; the slides fit themselves.</p></li>
+            <li><h4>Silence everything</h4><p>Notifications off. Second screen shows this guide, not a chat client.</p></li>
+          </ol>
+        </div>
+      </article>
+
+      <article class="card" id="card-gono">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">Go or no-go is decided before the room fills, not during scene two</span>
+              <span class="card-sub">Four hard conditions, and one honest opening line if any fails.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <div class="summary-grid">
+            <div class="summary-item"><span class="summary-label">Go 1</span><code>npm run preflight</code> exits zero.</div>
+            <div class="summary-item"><span class="summary-label">Go 2</span>The showcase opens in slides mode with a clean console.</div>
+            <div class="summary-item"><span class="summary-label">Go 3</span>The offline fallback loads and its first scene renders.</div>
+            <div class="summary-item"><span class="summary-label">Go 4</span>The prepared pull request and issue tabs are open and readable.</div>
+          </div>
+          <p>Conditions 1 to 3 are hard. If any fails, do not present. Condition 4 failing costs the live path only.</p>
+          <p>If GitHub or the network is unavailable, open with: "Two segments would normally run live. They ran this morning instead, and I will show you the output and the workflow that produced it." Then never mention it again.</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="chapter" id="ch-tabs">
+      <h2 class="chapter-label">Tab order</h2>
+
+      <article class="card" id="card-tabs">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">Eight tabs, left to right, in the order the hour visits them</span>
+              <span class="card-sub">Exactly two backwards jumps to tab 1, at minute 17 and minute 45.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <ol class="steps">
+            <li><h4>1 — Showcase, slides mode</h4><p><code>showcase.html?view=slides</code>. The spine. You return here between every other tab.</p></li>
+            <li><h4>2 — Actions</h4><p>The repository's Actions tab, filtered to the pulse workflow.</p></li>
+            <li><h4>3 — The signal issue</h4><p>The <code>[pulse]</code> issue, with the intake comment below it.</p></li>
+            <li><h4>4 — The specification</h4><p><code>docs/spec/SPEC-001-substitute-suggestion.md</code> in the repository view.</p></li>
+            <li><h4>5 — The pull request, Files changed</h4><p>Opened on the diff, not on the conversation.</p></li>
+            <li><h4>6 — The pull request, Checks</h4><p>Same pull request, checks tab. This is where minutes 27 to 40 live.</p></li>
+            <li><h4>7 — Release run</h4><p>The release workflow run showing the provenance record and the environment gate.</p></li>
+            <li><h4>8 — Offline fallback</h4><p><code>mission-control.html</code>. Kept open all session. It is the ten-second answer to anything.</p></li>
+          </ol>
+        </div>
+      </article>
+      <div>
+      <article class="card" id="card-crosswalk">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">Scene, slide, tab, question: the whole hour on one card</span>
+              <span class="card-sub">Two backwards jumps to tab 1, at minute 17 and minute 45.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <p>Fifteen slides: three section dividers, eleven scene cards, one closing takeaway. The slide number is what the corner counter shows.</p>
+          <ol class="steps">
+            <li><h4>00 to 02 &middot; slide 2 &middot; <code>card-thesis</code></h4><p>Tab 1 — Showcase, slides mode. Questions 1 to 7.</p></li>
+            <li><h4>02 to 10 &middot; slide 3 &middot; <code>card-pulse</code></h4><p>Tab 3 — The signal issue, with tab 2 — Actions triggered in the background. Question 1.</p></li>
+            <li><h4>10 to 13 &middot; slide 4 &middot; <code>card-intake</code></h4><p>Tab 3 — The signal issue. Question 1. Prepared output only.</p></li>
+            <li><h4>13 to 17 &middot; slide 5 &middot; <code>card-refine</code></h4><p>Tab 4 — The specification. Questions 1 and 2.</p></li>
+            <li><h4>17 to 21 &middot; slide 6 &middot; <code>card-lanes</code></h4><p>Back to tab 1 — Showcase, slides mode. Question 2. First backwards jump.</p></li>
+            <li><h4>21 to 27 &middot; slide 8 &middot; <code>card-delegate</code></h4><p>Tab 5 — The pull request, Files changed. Question 2.</p></li>
+            <li><h4>27 to 40 &middot; slide 9 &middot; <code>card-evidence</code></h4><p>Tab 6 — The pull request, Checks. Questions 3, 4 and 5.</p></li>
+            <li><h4>40 to 45 &middot; slide 11 &middot; <code>card-release</code></h4><p>Tab 7 — Release run. Question 6.</p></li>
+            <li><h4>45 to 51 &middot; slide 12 &middot; <code>card-sre</code></h4><p>Back to tab 1 — Showcase, slides mode. Question 7. Second backwards jump.</p></li>
+            <li><h4>51 to 58 &middot; slide 13 &middot; <code>card-coexist</code></h4><p>Tab 1 — Showcase, slides mode. All seven questions.</p></li>
+            <li><h4>58 to 60 &middot; slide 14 &middot; <code>card-close</code></h4><p>Tab 1 — Showcase, slides mode. All seven questions, then slide 15, the takeaway.</p></li>
+          </ol>
+          <aside class="callout callout--note">
+            <p class="callout-label">Note</p>
+            <p>Slides 1, 7 and 10 are the three section dividers. They need no tab and no talk track beyond naming the section.</p>
+          </aside>
+        </div>
+      </article>
+      </div>
+    </section>
+
+    <section class="chapter" id="ch-run">
+      <h2 class="chapter-label">Run of show</h2>
+
+      <article class="card" id="card-scene-thesis">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">00 to 02 — Static — Cold open and thesis</span>
+              <span class="card-sub">Tab 1. Two minutes, no tool switching.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <p><strong>Say:</strong> "An agent can write a plausible diff in ninety seconds. That stopped being the hard part. The hard part is seven questions, and not one of them is a model problem. Was the intent written down? Is the proposal reviewable? Is the evidence deterministic? Is the change allowed? Who is accountable for the merge? How does it reach production? And what did production say back? Mark each one native, integrated, or custom in whatever you run today. Over the next hour a single change answers all seven. Count the stages. One of them is coding."</p>
+          <p><strong>Expected:</strong> The thesis slide: the nine-stage loop, and the seven questions with the primitive each one needs.</p>
+          <p><strong>Stop:</strong> If the deck will not enter slides mode, present the article view and continue.</p>
+        </div>
+      </article>
+
+      <article class="card" id="card-scene-pulse">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">02 to 10 — Live — Repository pulse</span>
+              <span class="card-sub">Tab 3 first, then tab 2. Reasoning proposes one issue; a compiled contract bounds the write.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <p><strong>Do:</strong> Open Tab 3 and show the finished <code>[pulse]</code> issue immediately. The room sees the outcome inside fifteen seconds. Only then trigger a fresh run from Tab 2, leave it running in the background, and turn to the source.</p>
+          <p><strong>Say:</strong> "That issue was written by a workflow that read three weeks of committed telemetry — a file that went through a pull request, so it is reviewed repository content, not something an attacker controls. Now look at why you would trust the workflow itself. Six lines of frontmatter decide everything: what it can read, how long it may run, how many turns it may take, how much it may spend, and the exact shape of the one thing it may write. That is a code review, not a console setting. The job that runs the model holds read-only permissions, and the compiled lock excludes five named engine and MCP credentials from the model's sandbox. A separate job with a narrower grant creates exactly one issue with a fixed prefix and three allowed labels."</p>
+          <p><strong>Then, on product state:</strong> "To be exact about what this is: GitHub Agentic Workflows is in public preview, and this repository pins the compiler at gh-aw v0.86.2. What it produces is an ordinary Actions workflow file, committed and reviewable like any other. There is no separate runtime to trust."</p>
+          <p><strong>If the fresh run finishes before minute 8:</strong> put it beside the prepared issue and say "same bounded shape, different run." That is the whole payoff. <strong>If it has not finished, say nothing about it and move on</strong> — never draw attention to a queue.</p>
+          <p><strong>Expected:</strong> One issue, <code>[pulse]</code> prefix, labels showcase, pulse, needs-triage.</p>
+          <p><strong>Stop:</strong> Show the finished issue first, always. Never make the room watch a queue.</p>
+        </div>
+      </article>
+
+      <article class="card" id="card-scene-intake">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">10 to 13 — Prepared — Issue intake (experimental lane)</span>
+              <span class="card-sub">Tab 3. Give it exactly one attempt.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <p><strong>Say:</strong> "This one is deliberately not Copilot. Same brief, imported from the same file; one line differs, and that line is the engine. Note what changed here: an issue body is text anyone can write, so this lane gates on a specific label before any model runs. The pulse lane reads reviewed repository content and needs no such gate."</p>
+          <p><strong>Then, briefly:</strong> "The engine died, in fact. GitHub accepted a decision on the fourth of August to remove OpenCode as a supported experimental engine; it still ships as an unsupported sample. Meanwhile the ecosystem grew: Claude and Codex are documented third-party coding agents in public preview. Engines churn in both directions. The brief, the labels, the checks and the reviewer did not move. I run this prepared rather than live, because its compiled lock reports the egress firewall disabled and maps the Copilot token into the model sandbox as an OpenAI key."</p>
+          <p><strong>Expected:</strong> Prepared output: one comment with four headings, at most three allowlisted labels.</p>
+          <p><strong>Stop:</strong> Three minutes, hard. Prepared only: the OpenCode lock reports the firewall disabled and maps the Copilot token into the model sandbox. Never run this lane live.</p>
+        </div>
+      </article>
+
+      <article class="card" id="card-scene-refine">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">13 to 17 — Prepared — The contract</span>
+              <span class="card-sub">Tab 4. Repository content; it cannot fail.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <p><strong>Say:</strong> "An issue becomes a contract when it carries three things: one outcome, the constraints that must stay true, and acceptance criteria somebody could test without asking me. Ten criteria here. Each maps to exactly one named test, and the build fails if a criterion has no test. That mapping is the difference between a specification and a wish."</p>
+          <p><strong>Then:</strong> Thirty seconds on spec-kit. What it is, that this repository writes the same artefacts by hand, and that the value is every repository putting the contract in the same place.</p>
+          <p><strong>Expected:</strong> The specification beside the acceptance mapping.</p>
+        </div>
+      </article>
+
+      <article class="card" id="card-scene-lanes">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">17 to 21 — Static — Execution surfaces</span>
+              <span class="card-sub">Tab 1. Open no tool here.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <p><strong>Say:</strong> "Four surfaces, and they are categories, not a vendor count. The IDE — Cursor, VS Code. The command line — the OpenCode CLI, Copilot CLI, Claude Code. A purpose-built agent app. And GitHub-hosted cloud agents, which today means Copilot plus Claude and Codex in public preview. If your team likes Cursor, keep Cursor. Every one of them reads the same specification, is judged by the same tests, and lands in the same pull request under the same rules. That is what makes the choice reversible, and reversible is the only kind of choice worth making this year."</p>
+          <p><strong>Then, briefly:</strong> "One clarification, because it trips people up: the OpenCode CLI is a local command-line agent and nothing GitHub decided affects it. The thing that was removed was the separate integration that let it drive an agentic workflow inside Actions. And the honest case for the hosted lane is narrow: it starts from an issue rather than a chat nobody kept, it needs no developer machine, and its session, commits and pull request are attributable in the repository under the same rulesets as anyone else. That is a reason to try one surface, not to standardise on it."</p>
+          <p><strong>Expected:</strong> The four-tile comparison.</p>
+          <p><strong>Watch for:</strong> This is where a Cursor-preferring audience decides whether you are selling or explaining. Do not open a Copilot window in this segment.</p>
+        </div>
+      </article>
+
+      <article class="card" id="card-scene-delegate">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">21 to 27 — Prepared — Delegation</span>
+              <span class="card-sub">Tab 5. Say once that it already ran.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <p><strong>Say:</strong> "This delegation ran this morning, because it takes minutes and would spend two later segments. What it received was the issue, the specification, and the repository rules. What it did not receive was any secret, write access to the default branch, permission to add a dependency, or permission to touch a workflow file. Five files, two hundred lines, no dependency change. Small enough to read in this room, which is the actual test of whether the contract was right."</p>
+          <p><strong>Expected:</strong> The Files changed tab, scrolled to the new test file.</p>
+          <p><strong>Stop:</strong> Never start a fresh delegation live.</p>
+        </div>
+      </article>
+
+      <article class="card" id="card-scene-evidence">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">27 to 40 — Prepared — Evidence, policy, authority</span>
+              <span class="card-sub">One slide, four GitHub tabs. Move the screen, not the deck.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <p>The longest segment, carried by one slide. The screen changes because you move between GitHub tabs; the deck stays put.</p>
+          <ol class="steps">
+            <li><h4>27 to 31 — Deterministic checks</h4>
+              <p><strong>Do:</strong> Tab 6, the Checks tab. <strong>On screen:</strong> eight green checks.</p>
+              <p><strong>Say:</strong> "Eight checks, eight different questions, no model in any of them. Tests on Linux and Windows. Acceptance coverage. Every action pinned to a commit SHA, no <code>pull_request_target</code>, credentials not persisted. And a check that recompiles the agentic workflows and fails if a lock was hand-edited."</p></li>
+            <li><h4>31 to 34 — AI review is a reviewer</h4>
+              <p><strong>Do:</strong> Scroll to the Copilot review comment. <strong>On screen:</strong> the comment, checks still visible above it.</p>
+              <p><strong>Say:</strong> "It found the line that would have leaked the internal block. It cannot mark a check green and it cannot satisfy the code-owner requirement. If a probabilistic signal can close a gate, the gate is decorative."</p></li>
+            <li><h4>34 to 37 — The remediation</h4>
+              <p><strong>Do:</strong> Tab 5, Files changed, cursor on the <code>toPublicItem</code> line. <strong>On screen:</strong> that diff hunk.</p>
+              <p><strong>Say:</strong> "Spreading the catalogue item straight into the response would have carried four internal fields out. Routing it through <code>toPublicItem</code> makes AC-4 prove the boundary." Then name push protection, dependency review and CodeQL as three controls at three moments.</p></li>
+            <li><h4>37 to 40 — Authority</h4>
+              <p><strong>Do:</strong> Scroll to the merge box. <strong>On screen:</strong> required review, code-owner requirement, merge button state.</p>
+              <p><strong>Say:</strong> "Every automated actor here is read-only. One human writes to the default branch, and the approval carries a name and a commit. Autonomy and accountability are not in tension. They are in sequence."</p></li>
+          </ol>
+          <p><strong>Stop:</strong> If a check is still running after three minutes, switch to the prepared evidence artefact.</p>
+        </div>
+      </article>
+
+      <article class="card" id="card-scene-release">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">40 to 45 — Mixed — Release</span>
+              <span class="card-sub">Tab 7. Read the mode field aloud before you describe it.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <p><strong>Do first:</strong> Look at the <code>mode</code> field in the provenance record. If it says <code>simulated</code>, say so in the first sentence.</p>
+          <p><strong>Say:</strong> "Provenance answers where an artefact came from without anyone having to trust the answer. Merging is a code decision; deploying is an authority decision, and an environment keeps them separable. The deployment job asks for a short-lived token rather than holding a stored cloud credential. Terraform and Kubernetes are the same shape: the agent may write the plan, it may not apply it."</p>
+          <p><strong>Stop:</strong> Attestation needs an entitled repository. If unavailable, show the simulated record and say so out loud.</p>
+        </div>
+      </article>
+
+      <article class="card" id="card-scene-sre">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">45 to 51 — Prepared — Production feedback</span>
+              <span class="card-sub">Tab 1. Cited evidence. Never open a live cloud portal.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <p><strong>Say:</strong> "The pattern first, because it is cloud-neutral: any operational agent, on any cloud, can correlate production signal with the source that produced it and act under an identity scoped to one workload. What follows is one implementation that actually ran, on Azure, in a separate public repository. It proves the agent correlated live telemetry with connected GitHub source and named the configuration difference. It proves a write-capable subagent shifted all traffic back to the known-good revision, under an identity scoped to one container app."</p>
+          <p><strong>Then, mid-scene, without being asked:</strong> "What it does not prove is writing back to GitHub. The subagent's instructions tell it to raise an issue for source fixes, but its configured tool list has no GitHub connector. So that is a designed next step, not a demonstrated capability."</p>
+          <p><strong>Then finish on the bridge:</strong> "It also proves the Activity Log attributed that write to the agent and not to a person, and that recovery was verified rather than assumed. That is the shape that matters: production evidence, attributable, under a scoped identity, flowing back to the place the change came from. Whatever runs your production, that is the loop closing — and it is why the next five minutes are about what it costs to try."</p>
+          <p><strong>Do not raise MDASH here.</strong> It is reader depth in the article. Mention it only if someone asks.</p>
+          <p><strong>Stop:</strong> Never open a live cloud portal. This scene is cited evidence from a public repository.</p>
+        </div>
+      </article>
+
+      <article class="card" id="card-scene-coexist">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">51 to 58 — Static — Coexistence and adoption</span>
+              <span class="card-sub">Tab 1. Do not disparage anyone's current tooling.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <p><strong>Say:</strong> "Nothing here says replace Jira. Work management and engineering evidence are different systems of record. Jira keeps the planning and the reporting the business already reads. Bitbucket repositories stay exactly where they are — nothing migrates during the pilot. What moves closer to the code is the evidence an agent works from."</p>
+          <p><strong>Then, the cost, before anyone has to ask:</strong> "Three lines. Actions minutes, which the pilot bounds because it is one repository. Copilot AI credits for the Copilot-powered workflows, which every file here caps with <code>max-ai-credits</code>, so the ceiling is in the diff rather than the invoice. And Advanced Security licensing, which is what governs code scanning, secret scanning and dependency review on private repositories — public repositories get those without it. Confirm the current terms for your plan with your account team; I am not quoting a number from a slide."</p>
+          <p><strong>Then, the ask:</strong> "One repository, two weeks. Week one is observation only: AGENTS.md, one specification, one read-only workflow, nothing merges differently. Week two makes your existing checks required and adds CODEOWNERS and a ruleset. Three people, part time: the repository owner, a security reviewer, a platform engineer. We supply this repository, the workflow definitions and a walkthrough. By day 14 you have five artefacts — an agent-raised issue from your telemetry, a specification with mapped tests, a pull request small enough to read, a check run that blocked something, and an attributed approval. The decision on day 14 is whether to extend to a second repository. Not which agent to standardise on; that stays reversible."</p>
+          <p><strong>If asked about migration:</strong> Phases are time; dispositions are per repository. After the pilot each repository gets one of migrate, mirror, or leave in place, decided on evidence. <code>gh actions-importer</code> audits Bitbucket Pipelines and translates most of the mechanical shape; rewrite the security posture by hand. The path is cloud-neutral.</p>
+          <p><strong>Do not:</strong> disparage anyone's current tooling. The argument is about which primitives are native, integrated, or custom in their stack — they answer that themselves.</p>
+        </div>
+      </article>
+
+      <article class="card" id="card-scene-close">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">58 to 60 — Static — Close</span>
+              <span class="card-sub">Tab 1. One sentence, then stop talking.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <p><strong>Say:</strong> "The same workflow ran again after the change merged and raised the next issue by itself: thirty-two unmet requests, twenty-five now answered with an alternative, seven still not. Stage nine became stage one. Nine lifecycle stages, shown in eleven scenes. One of the nine was coding. The other eight are what made the coding safe to keep. All seven questions I opened with now have an answer that does not depend on which model wrote the code. Pick whichever agent you like, and change your mind next quarter. What must not churn is the place where intent, evidence, and authority live."</p>
+          <p><strong>Then, the one-line ask:</strong> "One repository, two weeks, three people, five artefacts, and a decision on day 14."</p>
+          <p><strong>Then:</strong> Stop. Take questions after this, not inside the hour.</p>
+          <p><strong>Expected:</strong> The close slide: follow-up counts, the seven answers, the ask. Then slide 15, the takeaway.</p>
+          <p><strong>Stop:</strong> None. Never cut the close.</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="chapter" id="ch-fallback">
+      <h2 class="chapter-label">The fallback ladder</h2>
+
+      <article class="card" id="card-ladder">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">Ten seconds to decide, and you never go back up the ladder</span>
+              <span class="card-sub">Four rungs. Each one is a complete presentation on its own.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <ol class="steps">
+            <li><h4>Rung 1 — Retry once, only if it is instant</h4><p>A page that did not load gets one reload. A workflow that failed does not get a second run.</p></li>
+            <li><h4>Rung 2 — Switch lane</h4><p>Only in the intake scene: the supported Copilot lane replaces the experimental one and produces the same shape.</p></li>
+            <li><h4>Rung 3 — Prepared artefact</h4><p>Open the prepared output for the scene from Tab 8. Say "this is the output from this morning's run" once, then carry on.</p></li>
+            <li><h4>Rung 4 — Offline fallback</h4><p><code>mission-control.html</code>. Every scene, click or keyboard, no network. Every simulated state is labelled on screen.</p></li>
+          </ol>
+          <aside class="callout callout--warning">
+            <p class="callout-label">Warning</p>
+            <p>Descending the ladder mid-scene is normal and costs nothing. Climbing back up mid-scene to retry a live path is what turns a small failure into a visible one.</p>
+          </aside>
+        </div>
+      </article>
+
+      <article class="card" id="card-fallback-map">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">Every artefact has a path, and the rehearsal proves each one resolves</span>
+              <span class="card-sub">Run the rehearsal in fallback mode to see the whole hour on rung four.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <div class="code">
+            <p class="code-label">prove the fallback path end to end</p>
+            <pre><code>npm run rehearse -- --fallback</code></pre>
+          </div>
+          <ul class="arrow-list">
+            <li>Signal issue: <code>fixtures/prepared/01-signal-issue.json</code></li>
+            <li>Intake comment and labels: <code>fixtures/prepared/02-intake-result.json</code></li>
+            <li>Refined contract: <code>fixtures/prepared/03-refined-spec.json</code></li>
+            <li>Lane comparison: <code>fixtures/prepared/04-lane-comparison.json</code></li>
+            <li>Delegated session and diff: <code>fixtures/prepared/05-delegated-session.json</code></li>
+            <li>Checks, review, remediation, authority: <code>fixtures/prepared/06-pr-evidence.json</code></li>
+            <li>Release and provenance: <code>fixtures/prepared/07-release-provenance.json</code></li>
+            <li>Incident evidence: <code>fixtures/prepared/08-sre-incident.json</code></li>
+            <li>Adoption matrix: <code>fixtures/prepared/09-adoption-matrix.json</code></li>
+            <li>Follow-up signal: <code>fixtures/prepared/10-followup.json</code></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card" id="card-compression">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">Two checkpoints, and only ever cut what has not happened yet</span>
+              <span class="card-sub">Checkpoint at minute 10 or 13; checkpoint at minute 27 or 29.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <p>A cut is only available before the scene runs. Look at the clock at each checkpoint, and take cuts from that checkpoint's list only.</p>
+          <ol class="steps">
+            <li><h4>Checkpoint 1 &mdash; minute 10 entering intake, and again at minute 13</h4><p><strong>Recoverable here: 5 minutes.</strong> If you are over at minute 10, cut intake to one sentence — state the swappability claim and skip the prepared comment body — which saves 3 minutes. At minute 13, if still over, skip spec-kit entirely in the contract scene for another 2 minutes; it is context, not argument.</p></li>
+            <li><h4>Checkpoint 2 &mdash; minute 27 entering evidence, and again at minute 29</h4><p><strong>Recoverable here: 11 minutes.</strong> In order: name the eight checks from the slide rather than opening the Checks tab (3 minutes); show the provenance record and skip the OIDC and Terraform detail (2 minutes); keep the four proven production claims and the one limitation but drop the architecture walk (3 minutes); keep the pilot shape, the three cost lines and the five artefacts but drop the disposition detail (3 minutes).</p></li>
+          </ol>
+          <aside class="callout callout--rule">
+            <p class="callout-label">Rule</p>
+            <p>Do not try to recover time from a scene that has already run, and never cut the close or the commercial ask. Finish at minute 60 with the seven questions answered and the pilot named, then take questions. Question time is after the hour, not inside it; say so at minute 0 so nobody interrupts to save you.</p>
+          </aside>
+        </div>
+      </article>
+
+      <article class="card" id="card-projector">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">Reveals are reader depth and never open on the projector</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <p>The article carries far more than the fifteen slides. That extra material sits inside reveals and inside cards that are deliberately not slides, and it is written for someone reading afterwards at their own pace.</p>
+          <p>In slides mode the runtime leaves reveals closed by design. Do not open one on stage: the text is sized for reading, not for the back of a room, and every reveal you open is a minute you did not budget.</p>
+          <aside class="callout callout--rule">
+            <p class="callout-label">Rule</p>
+            <p>If a point matters to the talk, it is already on the slide. If it is behind a reveal, it is an answer to a question you have not been asked yet. Send the article afterwards.</p>
+          </aside>
+        </div>
+      </article>
+    </section>
+
+    <section class="chapter" id="ch-after">
+      <h2 class="chapter-label">Afterwards</h2>
+
+      <article class="card" id="card-reset">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">Reset is local; cleanup is remote and needs an explicit confirmation</span>
+              <span class="card-sub">Neither can touch a repository you did not name.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <div class="code">
+            <p class="code-label">after the session</p>
+            <pre><code>npm run reset
+
+node scripts/cleanup.mjs --repo OWNER/REPO
+node scripts/cleanup.mjs --repo OWNER/REPO --confirm</code></pre>
+          </div>
+          <ul class="arrow-list">
+            <li><code>reset</code> clears generated output and <strong>rebuilds</strong> the standalone export from its source. It does not delete it, and it never discards your working tree.</li>
+            <li><code>cleanup</code> without <code>--confirm</code> lists what it would act on and changes nothing.</li>
+            <li><code>cleanup</code> only touches items carrying the demo marker and the uniquely prefixed labels the seed created. Anything else is listed and left alone, even with <code>--confirm</code>.</li>
+            <li>There is no default target repository. Omitting <code>--repo</code> is an error, by design.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card" id="card-resume">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">Running the session twice in one day needs one command between runs</span>
+              <span class="card-sub">Repeated setup and reset are covered by the test suite.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <div class="code">
+            <p class="code-label">between two sessions</p>
+            <pre><code>npm run reset
+npm run setup
+npm run preflight</code></pre>
+          </div>
+          <p>To seed a fresh repository for the live path, use the dry run first. It creates nothing until you pass <code>--apply</code>, and everything it creates carries the demo marker.</p>
+          <div class="code">
+            <p class="code-label">seeding a target repository</p>
+            <pre><code>node scripts/seed-remote.mjs --repo OWNER/REPO
+node scripts/seed-remote.mjs --repo OWNER/REPO --apply</code></pre>
+          </div>
+        </div>
+      </article>
+    </section>
+
+  </main>
+
+  <p class="takeaway">Every live path in this hour has a prepared answer, and the rehearsal command fails if one of them does not.</p>
+
+  <footer class="doc-footer">
+    <a href="index.html">Repository index</a>
+    <a href="showcase.html">The showcase</a>
+    <a href="mission-control.html">Offline fallback</a>
+    <a href="../AGENTS.md">Repository rules</a>
+  </footer>
+
+</div>
+
+</body>
+</html>

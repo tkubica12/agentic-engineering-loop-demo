@@ -1,0 +1,15 @@
+# The repository owner is the sole code owner here, which is enough to
+# demonstrate a required, attributed review. On adoption, replace these entries
+# with teams: one person is a bus factor, not a policy.
+
+*                               @tkubica12
+
+# The specification is the contract the agent works from.
+/docs/spec/                     @tkubica12
+
+# Workflow definitions decide what automation is allowed to do.
+/.github/workflows/             @tkubica12
+
+# The service boundary that must not leak internal classification fields.
+/app/src/catalog.js             @tkubica12
+/app/src/substitution.js        @tkubica12

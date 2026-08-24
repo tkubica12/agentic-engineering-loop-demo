@@ -1,0 +1,110 @@
+{
+  "artifactId": "06-pr-evidence",
+  "scene": "evidence",
+  "kind": "prepared-output",
+  "status": "prepared",
+  "labelInUi": "Prepared output — captured check, review, and policy state",
+  "capturedOn": "2026-08-23",
+  "deterministicChecks": [
+    {
+      "name": "tests / unit and contract tests (ubuntu-latest)",
+      "workflow": ".github/workflows/tests.yml",
+      "conclusion": "success",
+      "proves": "All 168 repository tests pass, including the 21 service tests that carry AC-1 to AC-10.",
+      "kind": "deterministic"
+    },
+    {
+      "name": "tests / unit and contract tests (windows-latest)",
+      "workflow": ".github/workflows/tests.yml",
+      "conclusion": "success",
+      "proves": "The service is cross-platform. The same command runs on both.",
+      "kind": "deterministic"
+    },
+    {
+      "name": "tests / acceptance criteria are all covered",
+      "workflow": ".github/workflows/tests.yml",
+      "conclusion": "success",
+      "proves": "Every criterion in SPEC-001 maps to a named test. A criterion without a test fails here.",
+      "kind": "deterministic"
+    },
+    {
+      "name": "content-validation / documents and prepared artefacts",
+      "workflow": ".github/workflows/content-validation.yml",
+      "conclusion": "success",
+      "proves": "Links, anchors, duplicate ids, synthetic-data rules, and the prepared fallback set.",
+      "kind": "deterministic"
+    },
+    {
+      "name": "workflow-security / workflow source rules",
+      "workflow": ".github/workflows/workflow-security.yml",
+      "conclusion": "success",
+      "proves": "Every third-party action is pinned to a full commit SHA in both the source and the compiled lock, no workflow uses pull_request_target, every checkout sets persist-credentials: false, no agent job holds a write permission, and the supported lanes exclude engine and MCP credentials from the model sandbox.",
+      "kind": "deterministic"
+    },
+    {
+      "name": "workflow-security / compile agentic workflows and verify lock freshness",
+      "workflow": ".github/workflows/workflow-security.yml",
+      "conclusion": "success",
+      "proves": "Each source is recompiled with the pinned compiler and the result is byte-compared with the committed .lock.yml. A source edit that was not recompiled fails here, and so does a hand-edited lock.",
+      "kind": "deterministic"
+    },
+    {
+      "name": "codeql / analyze javascript",
+      "workflow": ".github/workflows/codeql.yml",
+      "conclusion": "success",
+      "proves": "Static analysis with the security-extended query suite found no alert.",
+      "kind": "deterministic"
+    },
+    {
+      "name": "dependency-review / review dependency changes",
+      "workflow": ".github/workflows/dependency-review.yml",
+      "conclusion": "success",
+      "proves": "No dependency was added, so nothing to review. The check still runs so the first one that arrives is reviewed at the pull request.",
+      "kind": "deterministic"
+    }
+  ],
+  "aiReview": {
+    "producedBy": "Copilot code review",
+    "kind": "probabilistic",
+    "separationRule": "An AI review is a reviewer, not a gate. It cannot mark a check green and it cannot approve on behalf of a code owner.",
+    "finding": {
+      "file": "app/src/service.js",
+      "severity": "medium",
+      "summary": "The unavailable branch built its response object by spreading the catalogue item directly, which would have carried the internal block into the payload.",
+      "reviewerJudgement": "Correct and worth acting on. AC-4 would have caught it, but only after the fact; the reviewer caught it in the diff. Fixed before this pull request was ready to merge."
+    }
+  },
+  "remediation": {
+    "commit": "fix: project the suggestion through toPublicItem",
+    "diff": "-      suggestion: { ...substitute, siteId, available }\n+      suggestion: { ...toPublicItem(substitute), siteId, available: available(siteId, substitute.sku) }",
+    "recheck": "tests re-ran and stayed green; AC-4 now proves the boundary rather than assuming it"
+  },
+  "secretScanning": {
+    "state": "explained",
+    "note": "Push protection blocks a recognised secret at the push, before it reaches history. Availability depends on the plan and on repository settings, so this repository explains the control rather than staging a fake block.",
+    "capabilityFallback": "If push protection is not enabled on the demonstration repository, say so and show the setting instead of implying a block occurred."
+  },
+  "mdash": {
+    "codename": "MDASH",
+    "stage": "preview",
+    "positioning": "A Microsoft agentic code scanner in the Defender and Exposure Management family. It runs a multi-agent source-scanning pipeline and publishes its findings into Exposure Management.",
+    "relationToCodeQL": "It overlaps and complements CodeQL as a code scanner. It is not runtime or exposure context, and it does not replace static analysis. Nothing in this repository depends on it.",
+    "claimBoundary": "Named as a preview capability with its stage stated. No screenshot, no simulated finding, no claim that it ran here."
+  },
+  "credentialBoundary": {
+    "supportedLanes": "The agent job holds read-only GitHub permissions, and the compiled lock passes --exclude-env for COPILOT_GITHUB_TOKEN, GITHUB_MCP_SERVER_TOKEN and MCP_GATEWAY_API_KEY, so the engine and MCP credentials are withheld from the model sandbox. Both supported locks also set GH_AW_INFO_FIREWALL_ENABLED to true.",
+    "experimentalException": "The OpenCode sample lock maps OPENAI_API_KEY to the COPILOT_GITHUB_TOKEN secret and does not exclude that variable, so the Copilot token reaches the model sandbox under another name. It also sets GH_AW_INFO_FIREWALL_ENABLED to false. Both differences are material, and both are why that lane is prepared evidence rather than a live control path.",
+    "wording": "Never say the agent job holds no secret. Say what is true: read-only permissions, and engine credentials excluded from the sandbox by name."
+  },
+  "authority": {
+    "codeowners": ".github/CODEOWNERS requires an owner review on app/src/catalog.js, app/src/substitution.js, docs/spec/, and the workflow definitions.",
+    "ruleset": "A repository ruleset on main requires a pull request, requires the deterministic checks above, requires a code-owner review, and blocks force pushes.",
+    "humanApproval": "One named person approved. The approval is attributed, dated, and attached to a specific commit SHA.",
+    "whyItMatters": "Every automated actor in this loop is read-only. The only write to main goes through an accountable human decision."
+  },
+  "verifiableClaims": [
+    "The merge could not happen until the required checks were green.",
+    "The AI review could not satisfy the code-owner requirement.",
+    "The approval is attributed to a person and to a commit."
+  ]
+}

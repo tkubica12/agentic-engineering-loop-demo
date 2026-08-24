@@ -1,0 +1,67 @@
+{
+  "artifactId": "04-lane-comparison",
+  "scene": "lanes",
+  "kind": "reference",
+  "status": "prepared",
+  "labelInUi": "Reference table — no tool is opened live in this scene",
+  "capturedOn": "2026-08-23",
+  "premise": "The contract lives in the repository. The execution surface is a choice, and it is reversible.",
+  "$comment": "Four SURFACES, not four vendors. Products are named only as current examples of a surface; the surface is the durable idea and the example list will change.",
+  "sharedContract": [
+    "AGENTS.md — what may change and what must not",
+    "docs/spec/ — outcome, constraints, acceptance criteria",
+    "app/test/ — the acceptance criteria as executable checks",
+    ".github/workflows/ — the evidence that must pass",
+    ".github/CODEOWNERS — who must approve"
+  ],
+  "surfaces": [
+    {
+      "id": "ide",
+      "name": "IDE",
+      "examples": "Cursor, VS Code",
+      "runsWhere": "Developer machine",
+      "contractMechanism": "AGENTS.md and the repository files, read from the working tree",
+      "producesEvidenceIn": "The same pull request, checked by the same workflows",
+      "licensing": "Independent of GitHub Copilot licensing where the tool is",
+      "note": "A team that prefers its editor keeps its editor. Nothing in this repository is specific to one of them."
+    },
+    {
+      "id": "cli",
+      "name": "CLI",
+      "examples": "OpenCode, Copilot CLI, Claude Code",
+      "runsWhere": "Developer machine, or inside CI",
+      "contractMechanism": "AGENTS.md and the repository files; in Actions, a compiled workflow definition",
+      "producesEvidenceIn": "The same pull request, or safe outputs on an issue",
+      "licensing": "Varies by tool; model access can route through the Copilot provider or a separate key",
+      "note": "This is the surface the experimental intake lane uses, and it is shown as prepared output rather than run live."
+    },
+    {
+      "id": "app",
+      "name": "Purpose-built agent app",
+      "examples": "The GitHub Copilot app",
+      "runsWhere": "Developer machine",
+      "contractMechanism": "AGENTS.md and the repository files",
+      "producesEvidenceIn": "The same pull request",
+      "licensing": "GitHub Copilot",
+      "note": "A dedicated surface rather than an editor plugin. One option among the four, not the point of the session."
+    },
+    {
+      "id": "hosted",
+      "name": "GitHub-hosted cloud agents",
+      "examples": "Copilot cloud agent, plus documented preview partners",
+      "runsWhere": "GitHub-hosted",
+      "contractMechanism": "The issue, AGENTS.md, and the repository",
+      "producesEvidenceIn": "A pull request it opens itself",
+      "licensing": "Copilot; consumes Actions minutes and AI credits",
+      "note": "Needs no developer machine and starts from an issue. GitHub lists third-party partners in public preview, currently Anthropic Claude and OpenAI Codex, enabled and billed through Copilot policy. Nothing here depends on them."
+    }
+  ],
+  "whatDoesNotChangeBetweenSurfaces": [
+    "The specification the work starts from",
+    "The tests that decide whether it is correct",
+    "The checks that must be green",
+    "The reviewer who must approve",
+    "The rules that gate the merge"
+  ],
+  "citation": "Third-party partner state verified 2026-08-23 at https://docs.github.com/en/copilot/concepts/agents/about-third-party-coding-agents"
+}

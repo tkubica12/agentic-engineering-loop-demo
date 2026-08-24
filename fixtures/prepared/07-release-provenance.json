@@ -1,0 +1,46 @@
+{
+  "artifactId": "07-release-provenance",
+  "scene": "release",
+  "kind": "prepared-output",
+  "status": "prepared",
+  "labelInUi": "Prepared output — read the mode field before describing this on stage",
+  "capturedOn": "2026-08-23",
+  "modeContract": {
+    "attested": "actions/attest-build-provenance ran and GitHub issued a signed attestation. The attestation URL is real and verifiable with gh attestation verify.",
+    "simulated": "The attestation step did not run or was not entitled. The record below describes the shape of a provenance statement and proves nothing about this artefact.",
+    "rule": "Never describe a simulated record as a verified one. scripts/verify.mjs reads the mode field and prints it."
+  },
+  "record": {
+    "mode": "simulated",
+    "reason": "Captured on a repository without an attestation entitlement at capture time.",
+    "subject": "out/bundle/showcase-bundle.tar.gz",
+    "predicateType": "https://slsa.dev/provenance/v1",
+    "wouldProve": [
+      "Which workflow file built the artefact",
+      "Which commit SHA it was built from",
+      "Which runner and which run id produced it",
+      "That the artefact was not altered after the build"
+    ],
+    "verifyCommand": "gh attestation verify out/bundle/showcase-bundle.tar.gz --repo OWNER/REPO"
+  },
+  "environmentApproval": {
+    "environment": "from the active profile: governance.environmentName",
+    "control": "A GitHub environment holds required reviewers and the deployment secrets. A job targeting it waits for a named human before it runs.",
+    "whyItMatters": "The approval is on the deployment, not on the merge. Merging is a code decision; deploying is an authority decision, and they are separable."
+  },
+  "oidc": {
+    "control": "The deployment job requests a short-lived OIDC token with id-token: write and exchanges it with the cloud provider. No long-lived cloud credential is stored in the repository.",
+    "subjectPattern": "from the active profile: release.oidcSubjectPattern",
+    "whyItMatters": "The trust relationship names a repository, a branch or an environment. Widen it and you widen the blast radius; that is a reviewable line in a Terraform file, not a hidden setting."
+  },
+  "releasePattern": {
+    "terraform": "The deployment job runs plan on the pull request and apply after the environment approval. The plan is the reviewable proposal; the apply is the authorised act.",
+    "kubernetes": "The same shape with a manifest or a chart: render and diff on the pull request, apply after approval, and let the cluster's admission policy reject anything the pipeline did not sign.",
+    "commonProperty": "In both cases the agent may propose. It may not apply."
+  },
+  "verifiableClaims": [
+    "The workflow declares id-token: write and attestations: write only on the job that needs them.",
+    "Every third-party action in the release workflow is pinned to a full commit SHA.",
+    "The provenance record states its own mode, so a simulation cannot be mistaken for a verified attestation."
+  ]
+}

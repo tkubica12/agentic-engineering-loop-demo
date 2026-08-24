@@ -1,0 +1,132 @@
+{
+  "$comment": "Synthetic catalogue. No real product, pricing, or customer data. Generated for demonstration only.",
+  "generatedFor": "agentic-engineering-loop-showcase",
+  "items": [
+    {
+      "sku": "SKU-1001",
+      "name": "Paracetamol Tablets 500 mg",
+      "form": "tablet",
+      "strengthMg": 500,
+      "packSize": 20,
+      "status": "active",
+      "internal": {
+        "substituteGroup": "GRP-ANALGESIC-PARA",
+        "therapeuticClass": "N02BE01",
+        "marginTier": "T2",
+        "supplierCode": "SUP-A"
+      }
+    },
+    {
+      "sku": "SKU-1002",
+      "name": "Paracetamol Tablets 500 mg Large Pack",
+      "form": "tablet",
+      "strengthMg": 500,
+      "packSize": 50,
+      "status": "active",
+      "internal": {
+        "substituteGroup": "GRP-ANALGESIC-PARA",
+        "therapeuticClass": "N02BE01",
+        "marginTier": "T1",
+        "supplierCode": "SUP-B"
+      }
+    },
+    {
+      "sku": "SKU-1003",
+      "name": "Paracetamol Oral Suspension 250 mg/5 ml",
+      "form": "suspension",
+      "strengthMg": 250,
+      "packSize": 1,
+      "status": "active",
+      "internal": {
+        "substituteGroup": "GRP-ANALGESIC-PARA",
+        "therapeuticClass": "N02BE01",
+        "marginTier": "T3",
+        "supplierCode": "SUP-A"
+      }
+    },
+    {
+      "sku": "SKU-1004",
+      "name": "Paracetamol Tablets 1000 mg",
+      "form": "tablet",
+      "strengthMg": 1000,
+      "packSize": 20,
+      "status": "active",
+      "internal": {
+        "substituteGroup": "GRP-ANALGESIC-PARA",
+        "therapeuticClass": "N02BE01",
+        "marginTier": "T2",
+        "supplierCode": "SUP-C"
+      }
+    },
+    {
+      "sku": "SKU-1005",
+      "name": "Paracetamol Tablets 500 mg Withdrawn Batch",
+      "form": "tablet",
+      "strengthMg": 500,
+      "packSize": 20,
+      "status": "withdrawn",
+      "internal": {
+        "substituteGroup": "GRP-ANALGESIC-PARA",
+        "therapeuticClass": "N02BE01",
+        "marginTier": "T4",
+        "supplierCode": "SUP-D"
+      }
+    },
+    {
+      "sku": "SKU-2001",
+      "name": "Ibuprofen Tablets 400 mg",
+      "form": "tablet",
+      "strengthMg": 400,
+      "packSize": 24,
+      "status": "active",
+      "internal": {
+        "substituteGroup": "GRP-NSAID-IBU",
+        "therapeuticClass": "M01AE01",
+        "marginTier": "T2",
+        "supplierCode": "SUP-B"
+      }
+    },
+    {
+      "sku": "SKU-2002",
+      "name": "Ibuprofen Tablets 200 mg",
+      "form": "tablet",
+      "strengthMg": 200,
+      "packSize": 24,
+      "status": "active",
+      "internal": {
+        "substituteGroup": "GRP-NSAID-IBU",
+        "therapeuticClass": "M01AE01",
+        "marginTier": "T3",
+        "supplierCode": "SUP-A"
+      }
+    },
+    {
+      "sku": "SKU-3001",
+      "name": "Saline Nasal Spray 20 ml",
+      "form": "spray",
+      "strengthMg": 0,
+      "packSize": 1,
+      "status": "active",
+      "internal": {
+        "substituteGroup": "GRP-NASAL-SALINE",
+        "therapeuticClass": "R01AX10",
+        "marginTier": "T3",
+        "supplierCode": "SUP-C"
+      }
+    },
+    {
+      "sku": "SKU-4001",
+      "name": "Vitamin D3 Drops 400 IU",
+      "form": "drops",
+      "strengthMg": 0,
+      "packSize": 1,
+      "status": "active",
+      "internal": {
+        "substituteGroup": "GRP-VIT-D3",
+        "therapeuticClass": "A11CC05",
+        "marginTier": "T2",
+        "supplierCode": "SUP-A"
+      }
+    }
+  ]
+}

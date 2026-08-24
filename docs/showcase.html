@@ -1,0 +1,945 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GitHub Beyond Coding: The Agentic Engineering Loop</title>
+<meta name="description" content="A nine-stage engineering loop shown in eleven demo scenes: durable intent, reviewable proposals, deterministic evidence, policy, accountable authority, governed release, and production feedback.">
+<meta name="doc-id" content="agentic-engineering-loop-showcase">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+<script>
+(function () {
+  var d = document.documentElement;
+  d.classList.add("js");
+  var p = new URLSearchParams(location.search);
+  var t = p.get("theme");
+  if (t !== "light" && t !== "dark") {
+    try { t = localStorage.getItem("doc-theme"); } catch (e) { t = null; }
+  }
+  if (t !== "light" && t !== "dark") {
+    t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+  d.setAttribute("data-theme", t);
+  if (p.get("view") === "slides") d.setAttribute("data-view", "slides");
+})();
+</script>
+
+<style>
+:root {
+  color-scheme: light;
+  --bg: #ffffff; --surface: #ffffff; --surface-2: #f5f6f8; --surface-3: #eaecf0;
+  --border: #dee1e6; --border-strong: #c2c7cf;
+  --text: #14171a; --text-muted: #565c66; --text-faint: #767d87;
+  --accent: #0078d4; --accent-strong: #005a9e; --accent-quiet: #4a9fe0;
+  --accent-soft: #eaf3fb; --accent-border: #a9d0ef;
+  --warn: #8a5300; --warn-soft: #fdf5e8; --warn-border: #e6c99a;
+  --code-bg: #f5f6f8; --code-border: #e2e5ea;
+  --focus: #0078d4;
+  --shadow-1: 0 1px 2px rgba(16,19,23,.06);
+  --shadow-2: 0 2px 4px rgba(16,19,23,.06), 0 12px 28px rgba(16,19,23,.08);
+  --radius: 10px; --radius-sm: 6px; --canvas: 1160px;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Cascadia Mono", "Cascadia Code", ui-monospace, Consolas, "SF Mono", "Liberation Mono", Menlo, monospace;
+}
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0e1013; --surface: #15181d; --surface-2: #1b1f26; --surface-3: #232830;
+  --border: #2b313a; --border-strong: #3d4550;
+  --text: #eceef1; --text-muted: #a7aeb8; --text-faint: #868e99;
+  --accent: #4aa3e8; --accent-strong: #7cc0f3; --accent-quiet: #2f80c4;
+  --accent-soft: #142430; --accent-border: #2c4f6d;
+  --warn: #e0b055; --warn-soft: #241d10; --warn-border: #574627;
+  --code-bg: #12151a; --code-border: #262c34;
+  --focus: #6cb8f0;
+  --shadow-1: 0 1px 2px rgba(0,0,0,.4);
+  --shadow-2: 0 2px 4px rgba(0,0,0,.4), 0 12px 28px rgba(0,0,0,.45);
+}
+</style>
+
+<link rel="stylesheet" href="assets/article.css">
+<link rel="stylesheet" href="assets/slide-a11y.css">
+<script src="assets/article.js" defer></script>
+<script src="assets/slide-a11y.js" defer></script>
+</head>
+
+<body>
+
+<div class="controls" role="group" aria-label="Article controls">
+  <button type="button" class="ctrl" data-action="expand-all">Expand all</button>
+  <button type="button" class="ctrl" data-action="collapse-all">Collapse all</button>
+  <button type="button" class="ctrl" data-action="toggle-slides" aria-pressed="false">Slides</button>
+  <button type="button" class="ctrl" data-action="toggle-theme">Dark</button>
+</div>
+
+<div class="doc">
+
+  <header class="doc-header">
+    <p class="eyebrow">ENGINEERING PRACTICE</p>
+    <h1>GitHub Beyond Coding: The Agentic Engineering Loop</h1>
+    <p class="subtitle">A nine-stage engineering loop shown in eleven demo scenes; only one lifecycle stage is coding. By the end you can tell which stages an agent should own, which must stay with a named human, and which primitives your current stack already provides.</p>
+    <p class="meta"><time datetime="2026-08-23">23 August 2026</time> &middot; Product states verified 2026-08-23 &middot; Synthetic data only</p>
+  </header>
+
+  <nav class="doc-nav" aria-label="Related material">
+    <a href="index.html">Repository index</a>
+    <a href="presenter.html">Presenter guide</a>
+    <a href="mission-control.html">Offline fallback</a>
+  </nav>
+
+  <nav class="toc" aria-label="Contents">
+    <p class="toc-label">Contents</p>
+    <ol>
+      <li><a href="#ch-intent">Intent and contract</a></li>
+      <li><a href="#ch-proposal">Proposal and evidence</a></li>
+      <li><a href="#ch-outcome">Release, feedback, adoption</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <!-- ============================ CHAPTER 1 ============================ -->
+    <section class="chapter" id="ch-intent">
+      <h2 class="chapter-label">Intent and contract</h2>
+
+      <!-- SCENE 1 -->
+      <article class="card card--lead" id="card-thesis" data-open>
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="true">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">Nine stages carry one change, and only one is coding</span>
+              <span class="card-sub">Q1 to Q7 &middot; nothing migrates for this demonstration</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <figure class="figure">
+            <svg viewBox="0 0 1600 126" width="1600" height="126" style="width:100%;height:auto;display:block" role="img" aria-label="Nine stages arranged as a loop: Signal, Intent, Contract, Lane, Implementation, Evidence, Authority, Release, Production. A dashed arrow returns from Production to Signal; that return is the arrow back to stage one, not a tenth stage. Implementation is highlighted as the only coding stage.">
+              <style>
+                .b { fill: var(--surface); stroke: var(--border-strong); stroke-width: 2; }
+                .ba { fill: var(--accent-soft); stroke: var(--accent-border); stroke-width: 2; }
+                .t { fill: var(--text); font-size: 34px; font-weight: 600; }
+                .l { fill: var(--accent); font-size: 30px; }
+                .ln { stroke: var(--border-strong); stroke-width: 2; fill: none; }
+                .la { stroke: var(--accent); stroke-width: 2; fill: none; stroke-dasharray: 7 6; }
+                .h { fill: var(--border-strong); }
+                .ha { fill: var(--accent); }
+                text { font-family: var(--font-sans); }
+              </style>
+              <rect class="b" x="8" y="10" width="160" height="62" rx="8"/>
+              <text class="t" x="88" y="49" text-anchor="middle">Signal</text>
+              <rect class="b" x="185" y="10" width="160" height="62" rx="8"/>
+              <text class="t" x="265" y="49" text-anchor="middle">Intent</text>
+              <rect class="b" x="362" y="10" width="160" height="62" rx="8"/>
+              <text class="t" x="442" y="49" text-anchor="middle">Contract</text>
+              <rect class="b" x="539" y="10" width="160" height="62" rx="8"/>
+              <text class="t" x="619" y="49" text-anchor="middle">Lane</text>
+              <rect class="ba" x="716" y="10" width="176" height="62" rx="8"/>
+              <text class="t" x="804" y="49" text-anchor="middle">Implementation</text>
+              <rect class="b" x="909" y="10" width="160" height="62" rx="8"/>
+              <text class="t" x="989" y="49" text-anchor="middle">Evidence</text>
+              <rect class="b" x="1086" y="10" width="160" height="62" rx="8"/>
+              <text class="t" x="1166" y="49" text-anchor="middle">Authority</text>
+              <rect class="b" x="1263" y="10" width="160" height="62" rx="8"/>
+              <text class="t" x="1343" y="49" text-anchor="middle">Release</text>
+              <rect class="b" x="1440" y="10" width="152" height="62" rx="8"/>
+              <text class="t" x="1516" y="49" text-anchor="middle">Production</text>
+              <path class="ln" d="M168 41 H179"/><polygon class="h" points="185,41 175,37 175,45"/>
+              <path class="ln" d="M345 41 H356"/><polygon class="h" points="362,41 352,37 352,45"/>
+              <path class="ln" d="M522 41 H533"/><polygon class="h" points="539,41 529,37 529,45"/>
+              <path class="ln" d="M699 41 H710"/><polygon class="h" points="716,41 706,37 706,45"/>
+              <path class="ln" d="M892 41 H903"/><polygon class="h" points="909,41 899,37 899,45"/>
+              <path class="ln" d="M1069 41 H1080"/><polygon class="h" points="1086,41 1076,37 1076,45"/>
+              <path class="ln" d="M1246 41 H1257"/><polygon class="h" points="1263,41 1253,37 1253,45"/>
+              <path class="ln" d="M1423 41 H1434"/><polygon class="h" points="1440,41 1430,37 1430,45"/>
+              <path class="la" d="M1516 72 V104 H88 V78"/><polygon class="ha" points="88,72 84,82 92,82"/>
+              <text class="l" x="700" y="98" text-anchor="middle">the return to stage one, not a tenth stage</text>
+            </svg>
+            <figcaption>Implementation, stage five, is the only coding stage. Seven questions decide whether that diff survives.</figcaption>
+          </figure>
+          <ul class="arrow-list">
+            <li><strong>Q1 Intent</strong> — written down? Durable work items beside the code.</li>
+            <li><strong>Q2 Proposal</strong> — reviewable? A change set with line-level review.</li>
+            <li><strong>Q3 Evidence</strong> — deterministic? Checks bound to that change set.</li>
+            <li><strong>Q4 Policy</strong> — allowed? Branch rules as reviewable configuration.</li>
+            <li><strong>Q5 Accountability</strong> — who merged it? Named code-owner review.</li>
+            <li><strong>Q6 Release</strong> — how does it ship? Approval and federated identity.</li>
+            <li><strong>Q7 Feedback</strong> — what did production say? Back to stage one.</li>
+          </ul>
+          <p>Nothing migrates for this demonstration. Assess one repository, and compare which of these seven primitives are native, integrated, or custom in your current stack.</p>
+        </div>
+      </article>
+
+      <div>
+        <article class="card" id="card-primitives">
+          <h3 class="card-head">
+            <button type="button" class="card-toggle" aria-expanded="false">
+              <span class="card-num" aria-hidden="true"></span>
+              <span class="card-titles">
+                <span class="card-title">The argument is about primitives, not vendors</span>
+              </span>
+              <span class="card-mark" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="card-body">
+            <p>Most stacks have several of these primitives natively and bridge the rest. That is a legitimate position, and this session does not ask you to abandon it. Go down the seven and mark each primitive <strong>native</strong> in your current stack, <strong>integrated</strong> through a connector you did not write, or <strong>custom</strong>, meaning a system your own team maintains. The question is only how much of the bridge you are maintaining, and whether an agent can read across it.</p>
+            <p>Your repositories may be on Bitbucket and your planning in Jira. One repository is enough to test this loop, and migration is not required today.</p>
+            <aside class="callout callout--note">
+              <p class="callout-label">Note</p>
+              <p>An agent reads the repository. Intent that lives outside the repository has to be copied into it, and a copy is where accuracy is lost. That is the whole reason this argument is about where evidence lives rather than about which vendor wins.</p>
+            </aside>
+          </div>
+        </article>
+
+        <article class="card" id="card-counts">
+          <h3 class="card-head">
+            <button type="button" class="card-toggle" aria-expanded="false">
+              <span class="card-num" aria-hidden="true"></span>
+              <span class="card-titles">
+                <span class="card-title">Stages and scenes are different counts and must not be conflated</span>
+              </span>
+              <span class="card-mark" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="card-body">
+            <p>There are <strong>nine lifecycle stages</strong>: signal, intent, contract, lane, implementation, evidence, authority, release, production. That is what the loop is made of.</p>
+            <p>There are <strong>eleven demo scenes</strong> across fifteen slides. That is how one hour presents the loop. The counts differ because some stages need two scenes and some scenes cover no stage at all.</p>
+            <p><code>fixtures/prepared/manifest.json</code> holds both numbers, and a test fails the build if any document drifts from them.</p>
+          </div>
+        </article>
+      </div>
+
+      <!-- SCENE 2 -->
+      <article class="card" id="card-pulse">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">Reasoning proposes one issue; a compiled contract bounds the write</span>
+              <span class="card-sub">Q1 &middot; GitHub Agentic Workflows, public preview, pinned here at gh-aw v0.86.2</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <figure class="figure">
+            <svg viewBox="0 0 1000 224" width="1000" height="224" style="width:100%;height:auto;display:block" role="img" aria-label="An agentic workflow pipeline: a Markdown source is compiled to a committed lock file, which runs a read-only agent job, then threat detection inspects the proposal, then a separate scoped job performs the only write.">
+              <style>
+                .pb { fill: var(--surface); stroke: var(--border-strong); stroke-width: 2; }
+                .pq { fill: var(--surface-2); stroke: var(--border-strong); stroke-width: 2; }
+                .pa { fill: var(--accent-soft); stroke: var(--accent-border); stroke-width: 2; }
+                .pt { fill: var(--text); font-size: 23px; font-weight: 600; }
+                .ps { fill: var(--text-muted); font-size: 21px; }
+                .pm { fill: var(--text-muted); font-size: 20px; font-family: var(--font-mono); }
+                .pl { stroke: var(--border-strong); stroke-width: 2; fill: none; }
+                .ph { fill: var(--border-strong); }
+                text { font-family: var(--font-sans); }
+              </style>
+              <rect class="pb" x="4" y="4" width="300" height="84" rx="8"/>
+              <text class="pt" x="154" y="34" text-anchor="middle">Markdown source</text>
+              <text class="pm" x="154" y="68" text-anchor="middle">repository-pulse.md</text>
+              <rect class="pq" x="350" y="4" width="290" height="84" rx="8"/>
+              <text class="pt" x="495" y="34" text-anchor="middle">Compiler</text>
+              <text class="pm" x="495" y="68" text-anchor="middle">gh aw compile</text>
+              <rect class="pb" x="686" y="4" width="310" height="84" rx="8"/>
+              <text class="pt" x="841" y="34" text-anchor="middle">Committed lock</text>
+              <text class="pm" x="841" y="68" text-anchor="middle">*.lock.yml</text>
+              <path class="pl" d="M304 46 H344"/><polygon class="ph" points="350,46 340,42 340,50"/>
+              <path class="pl" d="M640 46 H680"/><polygon class="ph" points="686,46 676,42 676,50"/>
+              <path class="pl" d="M841 88 V104 H154 V122"/><polygon class="ph" points="154,128 150,118 158,118"/>
+              <rect class="pb" x="4" y="132" width="300" height="88" rx="8"/>
+              <text class="pt" x="154" y="162" text-anchor="middle">Agent job</text>
+              <text class="ps" x="154" y="190" text-anchor="middle">read-only permissions;</text>
+              <text class="ps" x="154" y="212" text-anchor="middle">no engine credentials</text>
+              <rect class="pb" x="350" y="132" width="290" height="88" rx="8"/>
+              <text class="pt" x="495" y="162" text-anchor="middle">Threat detection</text>
+              <text class="ps" x="495" y="190" text-anchor="middle">inspects the proposal,</text>
+              <text class="ps" x="495" y="212" text-anchor="middle">not the prompt</text>
+              <rect class="pa" x="686" y="132" width="310" height="88" rx="8"/>
+              <text class="pt" x="841" y="162" text-anchor="middle">Safe-output job</text>
+              <text class="ps" x="841" y="190" text-anchor="middle">one issue, fixed prefix,</text>
+              <text class="ps" x="841" y="212" text-anchor="middle">three allowlisted labels</text>
+              <path class="pl" d="M304 176 H344"/><polygon class="ph" points="350,176 340,172 340,180"/>
+              <path class="pl" d="M640 176 H680"/><polygon class="ph" points="686,176 676,172 676,180"/>
+            </svg>
+            <figcaption>The input is committed telemetry: reviewed repository content, not attacker-controlled. The compiled lock is ordinary committed Actions YAML.</figcaption>
+          </figure>
+          <div class="code">
+            <p class="code-label">.github/workflows/repository-pulse.md &mdash; the control contract, in review</p>
+            <pre><code>permissions:  { contents: read, issues: read }   # the agent job can write nothing
+timeout-minutes: 10    max-turns: 12    max-ai-credits: 300   # bounded cost
+safe-outputs:
+  threat-detection: true                          # inspects the proposal
+  create-issue: { title-prefix: "[pulse] ", labels: [showcase, pulse, needs-triage], max: 1 }</code></pre>
+          </div>
+        </div>
+      </article>
+
+      <div>
+        <article class="card" id="card-limits">
+          <h3 class="card-head">
+            <button type="button" class="card-toggle" aria-expanded="false">
+              <span class="card-num" aria-hidden="true"></span>
+              <span class="card-titles">
+                <span class="card-title">The wow is not the wait; it is that the guardrail is reviewable</span>
+              </span>
+              <span class="card-mark" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="card-body">
+            <p>Six lines of frontmatter decide what this agent may do: what it can read, how long it may run, how many turns it may take, how much it may spend, and the exact shape of the single thing it may write. That is a code review, not a console setting, and it is in the pull request like anything else.</p>
+            <p><code>gh aw compile</code> turns it into the committed <code>.lock.yml</code>. Validation recompiles with the pinned compiler and byte-compares against the committed lock, so a source change that was not recompiled fails the build, and so does a hand-edited lock.</p>
+            <aside class="callout callout--rule">
+              <p class="callout-label">Rule</p>
+              <p>If you cannot read an agent's limits in a diff, you do not have limits. You have hopes.</p>
+            </aside>
+          </div>
+        </article>
+
+        <article class="card" id="card-trust-model">
+          <h3 class="card-head">
+            <button type="button" class="card-toggle" aria-expanded="false">
+              <span class="card-num" aria-hidden="true"></span>
+              <span class="card-titles">
+                <span class="card-title">Not every input is hostile, and the difference decides the control</span>
+                <span class="card-sub">Committed telemetry is reviewed content; an issue body is not.</span>
+              </span>
+              <span class="card-mark" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="card-body">
+            <p>The pulse lane reads a file that went through a pull request. It is reviewed repository content, and treating it as attacker-controlled would be theatre. What bounds that lane is the control contract above.</p>
+            <p>The intake lane reads an issue body. Anyone can open an issue, so that text <em>is</em> attacker-controlled, and a model cannot reliably distinguish instructions in its prompt from instructions in the data it was asked to read. That lane needs an input gate, and it has one.</p>
+            <p>Five boundaries carry the load between them. Only the first is specific to the untrusted-input lane:</p>
+            <ol class="steps">
+              <li><h4>Triggering actor and label gate</h4><p>Intake only activates on a specific label, compiled into a job-level <code>if:</code> that short-circuits before any model runs. The pulse lane does not need this, and does not have it.</p></li>
+              <li><h4>Read-only GitHub permissions</h4><p>Both agent jobs hold <code>contents: read</code> and <code>issues: read</code>.</p></li>
+              <li><h4>Engine credentials excluded from the supported-lane sandbox</h4><p>The compiled lock passes <code>--exclude-env</code> for five named credentials, so the model's environment does not carry them.</p></li>
+              <li><h4>Threat detection</h4><p>It runs between the agent job and any write, inspecting the proposal rather than trusting the prompt.</p></li>
+              <li><h4>A separate, allowlisted safe-output job</h4><p>It can only perform what the frontmatter declared.</p></li>
+            </ol>
+            <aside class="callout callout--rule">
+              <p class="callout-label">Rule</p>
+              <p>Do not ask a model to refuse a malicious instruction. Arrange the system so that obeying one achieves nothing.</p>
+            </aside>
+          </div>
+        </article>
+      </div>
+
+      <!-- SCENE 3 -->
+      <article class="card" id="card-intake">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">Contracts outlive engines, and this one already proved it</span>
+              <span class="card-sub">Question 1 of 7 &middot; prepared output from an engine GitHub has since removed</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <p>Intake classifies the issue, checks duplicates, assesses feasibility against the codebase, and lists what is missing. One comment, at most three allowlisted labels. Two workflows import the identical brief from <code>shared/intake-brief.md</code> and differ in exactly one line: the engine.</p>
+          <div class="summary-grid">
+            <div class="summary-item"><span class="summary-label">Engine removed</span>ADR-50145, accepted 2026-08-04, removed OpenCode as a supported experimental gh-aw engine. It ships on as an unsupported sample.</div>
+            <div class="summary-item"><span class="summary-label">Ecosystem grew</span>GitHub now lists Anthropic Claude and OpenAI Codex as third-party coding agents in public preview, enabled through Copilot policy. Nothing in this repository depends on either.</div>
+            <div class="summary-item"><span class="summary-label">What changed here</span>One line. The brief, the labels, the comment shape, the checks and the reviewer were untouched.</div>
+          </div>
+          <aside class="callout callout--warning">
+            <p class="callout-label">Warning</p>
+            <p>This lane is shown as prepared output and is never run live: its compiled lock reports the egress firewall disabled, and maps the Copilot token into the model sandbox as <code>OPENAI_API_KEY</code> without excluding it. Both supported lanes do neither.</p>
+          </aside>
+        </div>
+      </article>
+
+      <div>
+        <article class="card" id="card-opencode-status">
+          <h3 class="card-head">
+            <button type="button" class="card-toggle" aria-expanded="false">
+              <span class="card-num" aria-hidden="true"></span>
+              <span class="card-titles">
+                <span class="card-title">A decision in someone else's repository ended a lane, and the contract did not move</span>
+              </span>
+              <span class="card-mark" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="card-body">
+            <p>ADR-50145 in <code>github/gh-aw</code> states: "We will remove <code>opencode</code> as a supported experimental engine from the gh-aw platform." Its changeset is marked <code>major</code> and says workflows using <code>engine: opencode</code> no longer compile or validate. The behaviour definition still ships under "Unsupported engine samples", carrying <code>experimental: true</code>, with no compatibility or maintenance commitment.</p>
+            <p>The vendored copy here is byte-identical to the upstream blob, and a test computes its git blob SHA to prove it. All commentary lives outside that file.</p>
+            <aside class="callout callout--source">
+              <p class="callout-label">Source</p>
+              <p>gh-aw <code>main</code> at <code>c453ed8</code>, read 2026-08-23. ADR blob <code>2b9a9f46</code>, changeset blob <code>a18ad374</code>, vendored definition blob <code>d875e158</code>. Third-party agent state verified the same day at <a href="https://docs.github.com/en/copilot/concepts/agents/about-third-party-coding-agents">the third-party coding agents page</a>.</p>
+            </aside>
+          </div>
+        </article>
+      </div>
+
+      <!-- SCENE 4 -->
+      <article class="card" id="card-refine">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">Ten acceptance criteria, ten named tests, checked both ways</span>
+              <span class="card-sub">Questions 1 and 2 of 7 &middot; intent becomes a contract</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <div class="summary-grid">
+            <div class="summary-item"><span class="summary-label">Outcome</span>An unavailable request returns one concrete alternative in the same response.</div>
+            <div class="summary-item"><span class="summary-label">Constraint</span>No internal classification field leaves the service.</div>
+            <div class="summary-item"><span class="summary-label">Constraint</span>One alternative only, chosen deterministically.</div>
+            <div class="summary-item"><span class="summary-label">Enforcement</span>A criterion without a test fails CI, and so does a test without a criterion.</div>
+          </div>
+          <p>Whichever surface does the work reads this same specification and is judged by these same tests. A constraint an agent cannot test is a hope.</p>
+        </div>
+      </article>
+
+      <div>
+        <article class="card" id="card-acceptance">
+          <h3 class="card-head">
+            <button type="button" class="card-toggle" aria-expanded="false">
+              <span class="card-num" aria-hidden="true"></span>
+              <span class="card-titles">
+                <span class="card-title">A constraint that cannot be tested is a hope</span>
+              </span>
+              <span class="card-mark" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="card-body">
+            <div class="code">
+              <p class="code-label">app/test/service.test.js</p>
+              <pre><code>test('AC-4 no internal classification field is ever serialised', () =&gt; {
+  const serialised = JSON.stringify(results);
+  for (const field of INTERNAL_ITEM_FIELDS) {
+    assert.ok(!serialised.includes(field), `internal field leaked: ${field}`);
+  }
+});</code></pre>
+            </div>
+            <p><a href="spec/SPEC-001-substitute-suggestion.md">The specification</a>, <a href="spec/acceptance-mapping.md">the mapping</a>, and <a href="spec/ADR-0001-substitute-selection.md">the decision record</a>. GitHub spec-kit packages this discipline when more than one team needs the same shape; this repository writes the three artefacts by hand to stay dependency-light and claims nothing further about it.</p>
+          </div>
+        </article>
+      </div>
+
+      <!-- SCENE 5 -->
+      <article class="card" id="card-lanes">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">Four execution surfaces, one repository contract</span>
+              <span class="card-sub">Question 2 of 7 &middot; the surface is a preference, not an architecture</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <div class="summary-grid">
+            <div class="summary-item"><span class="summary-label">IDE</span>Cursor, VS Code. Developer machine. If your team likes Cursor, keep Cursor.</div>
+            <div class="summary-item"><span class="summary-label">CLI</span>OpenCode CLI, Copilot CLI, Claude Code. Developer machine or CI.</div>
+            <div class="summary-item"><span class="summary-label">Agent app</span>A purpose-built agent application on the developer machine. The GitHub Copilot app is the example shown here.</div>
+            <div class="summary-item"><span class="summary-label">Cloud agents</span>GitHub-hosted. No developer machine: an issue becomes a traceable session, commit and pull request under the same rulesets as anyone.</div>
+          </div>
+          <p>The specification, the tests, the checks, the reviewer and the ruleset are identical in all four. That is what makes the choice reversible, and reversible is the only kind of choice worth making this year.</p>
+        </div>
+      </article>
+
+      <div>
+        <article class="card" id="card-hosted">
+          <h3 class="card-head">
+            <button type="button" class="card-toggle" aria-expanded="false">
+              <span class="card-num" aria-hidden="true"></span>
+              <span class="card-titles">
+                <span class="card-title">The OpenCode CLI is a local surface; the removed gh-aw engine was a separate integration</span>
+              </span>
+              <span class="card-mark" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="card-body">
+            <p>These are two different things and they are easy to conflate. <strong>The OpenCode CLI</strong> is a local command-line agent: it reads <code>AGENTS.md</code> and the repository from your working tree, and it is unaffected by anything GitHub decides. <strong>The OpenCode gh-aw engine</strong> was an integration that let that CLI run as the engine of an agentic workflow inside Actions, and it is that integration which ADR-50145 removed.</p>
+            <p>The positive case for the hosted surface is narrower than a slogan and worth stating plainly:</p>
+            <ul class="arrow-list">
+              <li>It starts from an issue, so durable intent is the input rather than a chat transcript nobody kept.</li>
+              <li>It needs no developer machine, so work can start when the issue is triaged rather than when someone is free at a laptop.</li>
+              <li>Its session, commits and pull request are attributable in the repository, so the trail survives the person.</li>
+              <li>It is subject to the same rulesets and <code>CODEOWNERS</code> as anyone else, because it proposes through a pull request.</li>
+            </ul>
+            <aside class="callout callout--verdict">
+              <p class="callout-label">Verdict</p>
+              <p>That is a reason to try one surface, not a reason to standardise on it. Nothing in this repository depends on it, which is exactly what makes trying it cheap.</p>
+            </aside>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================ CHAPTER 2 ============================ -->
+    <section class="chapter" id="ch-proposal">
+      <h2 class="chapter-label">Proposal and evidence</h2>
+
+      <!-- SCENE 6 -->
+      <article class="card" id="card-delegate">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">A good agent pull request is small enough to read in the room</span>
+              <span class="card-sub">Question 2 of 7 &middot; is the proposal reviewable?</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <div class="summary-grid">
+            <div class="summary-item"><span class="summary-label">Received</span>The issue, the specification, AGENTS.md, and the existing test file.</div>
+            <div class="summary-item"><span class="summary-label">Withheld</span>Every repository secret, and write access to the default branch.</div>
+            <div class="summary-item"><span class="summary-label">Forbidden</span>Adding a dependency or editing a workflow definition.</div>
+            <div class="summary-item"><span class="summary-label">Produced</span>Five files, 200 insertions, no manifest change.</div>
+          </div>
+          <p>Everything the agent needed was already written down for a human. That is the test of whether the contract is real. If the diff is too big to read, the contract was too big.</p>
+        </div>
+      </article>
+
+      <div>
+        <article class="card" id="card-handover">
+          <h3 class="card-head">
+            <button type="button" class="card-toggle" aria-expanded="false">
+              <span class="card-num" aria-hidden="true"></span>
+              <span class="card-titles">
+                <span class="card-title">Delegation is a handover of a contract, not a prompt</span>
+              </span>
+              <span class="card-mark" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="card-body">
+            <ul class="arrow-list">
+              <li>Each new test names the criterion it proves, so the diff is self-describing.</li>
+              <li>A decision record explains the ranking choice a reviewer would otherwise reverse-engineer.</li>
+              <li>No dependency manifest changed, which was a stated constraint and is now a checkable fact.</li>
+              <li>The branch is not the default branch, and the agent cannot merge its own work.</li>
+            </ul>
+            <aside class="callout callout--note">
+              <p class="callout-label">Note</p>
+              <p>This pull request was produced before the session. A delegation takes minutes; starting one live spends the budget of two later scenes and shows nothing the finished result does not.</p>
+            </aside>
+          </div>
+        </article>
+      </div>
+
+      <!-- SCENE 7 -->
+      <article class="card" id="card-evidence">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">Eight checks, one ruleset, one accountable human</span>
+              <span class="card-sub">Questions 3, 4 and 5 of 7 &middot; evidence, policy, accountability</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <ul class="arrow-list">
+            <li>tests / unit and contract tests (ubuntu-latest)</li>
+            <li>tests / unit and contract tests (windows-latest)</li>
+            <li>tests / acceptance criteria are all covered</li>
+            <li>content-validation / documents and prepared artefacts</li>
+            <li>workflow-security / workflow source rules</li>
+            <li>workflow-security / compile agentic workflows and verify lock freshness</li>
+            <li>codeql / analyze javascript</li>
+            <li>dependency-review / review dependency changes</li>
+          </ul>
+          <div class="summary-grid">
+            <div class="summary-item"><span class="summary-label">Policy</span>A ruleset on the default branch requires a pull request, these checks, and a code-owner review, and blocks force pushes.</div>
+            <div class="summary-item"><span class="summary-label">Accountability</span>CODEOWNERS names who must approve; the approval is attributed to a person and a commit SHA.</div>
+          </div>
+          <p>An AI review comments alongside all of this. It cannot mark a check green and it cannot satisfy the code-owner requirement.</p>
+        </div>
+      </article>
+
+      <div>
+        <article class="card" id="card-separation">
+          <h3 class="card-head">
+            <button type="button" class="card-toggle" aria-expanded="false">
+              <span class="card-num" aria-hidden="true"></span>
+              <span class="card-titles">
+                <span class="card-title">If a probabilistic signal can close a gate, the gate is decorative</span>
+              </span>
+              <span class="card-mark" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="card-body">
+            <p>Copilot code review is a reviewer. The reviewer count goes up; the number of things that can authorise a merge does not.</p>
+            <p>These checks are not ornamental here. CodeQL found a real high-severity reflected cross-site scripting alert on the pull request that built this showcase, and a second alert in a test that checked a URL by substring. Both were fixed before this pull request was ready to merge. The prepared feature pull request shown in this scene has a clean CodeQL check, which is what a healthy change looks like.</p>
+          </div>
+        </article>
+
+        <article class="card" id="card-finding">
+          <h3 class="card-head">
+            <button type="button" class="card-toggle" aria-expanded="false">
+              <span class="card-num" aria-hidden="true"></span>
+              <span class="card-titles">
+                <span class="card-title">The review caught the line that would have leaked the internal block</span>
+              </span>
+              <span class="card-mark" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="card-body">
+            <div class="code">
+              <p class="code-label">app/src/service.js</p>
+              <pre><code>-  suggestion: { ...substitute, siteId, available }
++  suggestion: { ...toPublicItem(substitute), siteId,
++                available: available(siteId, substitute.sku) }</code></pre>
+            </div>
+            <p>Spreading the catalogue item directly would have carried <code>substituteGroup</code>, <code>therapeuticClass</code>, <code>marginTier</code>, and <code>supplierCode</code> into the response. After the fix, AC-4 proves the boundary instead of assuming it.</p>
+          </div>
+        </article>
+
+        <article class="card" id="card-security">
+          <h3 class="card-head">
+            <button type="button" class="card-toggle" aria-expanded="false">
+              <span class="card-num" aria-hidden="true"></span>
+              <span class="card-titles">
+                <span class="card-title">Four security controls act at four different moments</span>
+              </span>
+              <span class="card-mark" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="card-body">
+            <ul class="arrow-list">
+              <li>Secret scanning push protection blocks a recognised secret at the push, before it reaches history.</li>
+              <li>Dependency review inspects what the pull request adds, not the whole tree.</li>
+              <li>CodeQL analyses the code and reports alerts that gate the merge.</li>
+              <li>Microsoft MDASH, a codename, is an agentic code scanner in preview.</li>
+            </ul>
+            <aside class="callout callout--warning">
+              <p class="callout-label">Warning</p>
+              <p>MDASH is a codename for a preview capability in the Microsoft Defender and Exposure Management family: an agentic code scanner that publishes findings into Exposure Management. It overlaps and complements CodeQL rather than adding runtime context, and nothing here depends on it. See <a href="https://learn.microsoft.com/en-us/security-exposure-management/ai-code-security-overview">the Microsoft Learn overview</a>. Push protection availability depends on plan and settings, so this repository explains that control rather than staging a block.</p>
+            </aside>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================ CHAPTER 3 ============================ -->
+    <section class="chapter" id="ch-outcome">
+      <h2 class="chapter-label">Release, feedback, adoption</h2>
+
+      <!-- SCENE 8 -->
+      <article class="card" id="card-release">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">Merging is a code decision; deploying is an authority decision</span>
+              <span class="card-sub">Question 6 of 7 &middot; how does it reach production?</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <ol class="sequence">
+            <li><span class="seq-title">Render</span><span class="seq-note">Plan, or template the manifest.</span></li>
+            <li><span class="seq-title">Review</span><span class="seq-note">The diff is the proposal.</span></li>
+            <li><span class="seq-title">Approve</span><span class="seq-note">A named human, on the environment.</span></li>
+            <li><span class="seq-title">Apply</span><span class="seq-note">Short-lived federated identity, not a stored key.</span></li>
+          </ol>
+          <div class="summary-grid">
+            <div class="summary-item"><span class="summary-label">Provenance</span>An attestation binds the artefact to the workflow, the commit, and the run. A simulated record says <code>mode: simulated</code> in the record itself.</div>
+            <div class="summary-item"><span class="summary-label">Authority</span>The environment approval is separate from the merge, and happens after it.</div>
+          </div>
+          <p>The agent may write the plan. It may not apply it.</p>
+        </div>
+      </article>
+
+      <div>
+        <article class="card" id="card-oidc">
+          <h3 class="card-head">
+            <button type="button" class="card-toggle" aria-expanded="false">
+              <span class="card-num" aria-hidden="true"></span>
+              <span class="card-titles">
+                <span class="card-title">Widening an OIDC subject pattern widens the blast radius</span>
+              </span>
+              <span class="card-mark" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="card-body">
+            <p>A GitHub environment holds required reviewers and the deployment configuration. The job requests a short-lived OIDC token and exchanges it with the cloud provider; no long-lived cloud credential is stored in the repository. Keep the trust relationship in a file that goes through review, not in a console setting nobody diffs.</p>
+            <p>In the Kubernetes case the cluster's admission policy can reject anything the pipeline did not produce, which closes the last gap between approved and running.</p>
+            <aside class="callout callout--warning">
+              <p class="callout-label">Warning</p>
+              <p>A simulated provenance record proves nothing about the artefact. <code>npm run verify -- --only provenance</code> prints the mode so it cannot be described as verified by accident.</p>
+            </aside>
+          </div>
+        </article>
+      </div>
+
+      <!-- SCENE 9 -->
+      <article class="card" id="card-sre">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">Production evidence returns to the repository under a scoped identity</span>
+              <span class="card-sub">Question 7 of 7 &middot; a cloud-neutral pattern; the Azure demo below is one concrete proof</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <p>Any operational agent, on any cloud, can correlate production signal with the source that produced it and act under an identity scoped to one workload. That is the pattern. What follows is one implementation of it that actually ran.</p>
+          <ul class="arrow-list">
+            <li>It correlates live telemetry with connected GitHub source and names the configuration difference between the failing revision and the known-good one.</li>
+            <li>A write-capable rollback subagent shifts all traffic back and drains the faulty revision to zero.</li>
+            <li>Its identity is scoped to that single application, plus a custom role granting only alert read and alert state change.</li>
+            <li>The cloud Activity Log attributes the write to the agent identity, so it is visibly not a human action, and recovery is verified rather than assumed.</li>
+          </ul>
+          <aside class="callout callout--warning">
+            <p class="callout-label">Warning</p>
+            <p>This demonstration proves source grounding and scoped remediation. It does not prove GitHub write-back: the rollback subagent is instructed to raise an issue for source fixes, but its configured tool list contains no GitHub connector, so that is a designed next step and not a demonstrated capability.</p>
+          </aside>
+        </div>
+      </article>
+
+      <div>
+        <article class="card" id="card-sre-source">
+          <h3 class="card-head">
+            <button type="button" class="card-toggle" aria-expanded="false">
+              <span class="card-num" aria-hidden="true"></span>
+              <span class="card-titles">
+                <span class="card-title">The incident, and exactly what it proves</span>
+              </span>
+              <span class="card-mark" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="card-body">
+            <p>A small storefront runs on Azure Container Apps with Application Insights, Log Analytics and Azure Monitor connected. A staged incident ships a revision with a payment-gateway configuration regression and gives it all the traffic; checkout starts returning HTTP 500. The rollback shifts 100% of traffic to the known-good revision under an identity holding Container Apps Contributor scoped to that one app.</p>
+            <p>Its configured tool list is <code>RunAzCliReadCommands</code>, <code>RunAzCliWriteCommands</code>, <code>QueryAppInsightsUsingAppId</code>, and <code>SearchMemory</code>. There is no GitHub connector in it.</p>
+            <aside class="callout callout--source">
+              <p class="callout-label">Source</p>
+              <p><a href="https://github.com/tkubica12/azure-sre-agent">tkubica12/azure-sre-agent</a>, MIT, Copyright (c) 2026 Tomáš Kubica. Scenario <code>bad-deployment</code>, read 2026-08-23. See <a href="../ATTRIBUTION.md">ATTRIBUTION.md</a>.</p>
+            </aside>
+          </div>
+        </article>
+      </div>
+
+      <!-- SCENE 10 -->
+      <article class="card" id="card-coexist">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">Keep Bitbucket and Jira; pilot one repository for two weeks</span>
+              <span class="card-sub">All seven questions &middot; the ask, and what it costs</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <p><strong>Jira</strong> keeps planning, reporting and cross-team work management. <strong>Bitbucket</strong> repositories stay exactly where they are: nothing migrates during the pilot. Afterwards, each repository gets one disposition &mdash; <strong>migrate</strong>, <strong>mirror</strong>, or <strong>leave in place</strong> &mdash; decided on evidence, not on a calendar.</p>
+          <div class="summary-grid">
+            <div class="summary-item"><span class="summary-label">Phase 1, week 1</span>Observation only. AGENTS.md, one specification, one read-only workflow. Nothing merges differently.</div>
+            <div class="summary-item"><span class="summary-label">Phase 2, week 2</span>Make existing checks required, add CODEOWNERS and a ruleset. Then choose a surface.</div>
+            <div class="summary-item"><span class="summary-label">Who</span>Repository owner, security reviewer, platform engineer. Part time. We supply this repository, the workflow definitions and a walkthrough.</div>
+            <div class="summary-item"><span class="summary-label">Cost</span>Actions minutes; Copilot AI credits, capped per workflow in the file; Advanced Security licensing for private-repository scanning.</div>
+          </div>
+          <p><strong>Five artefacts by day 14:</strong> an agent-raised issue from your telemetry, a specification with mapped tests, a pull request small enough to read, a check run that blocked something, an attributed approval. <strong>The decision:</strong> extend to a second repository, or stop. Not which agent to standardise on &mdash; that stays reversible.</p>
+        </div>
+      </article>
+
+      <div>
+        <article class="card" id="card-cost">
+          <h3 class="card-head">
+            <button type="button" class="card-toggle" aria-expanded="false">
+              <span class="card-num" aria-hidden="true"></span>
+              <span class="card-titles">
+                <span class="card-title">Two of the three cost lines are boundable in advance; one is not</span>
+              </span>
+              <span class="card-mark" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="card-body">
+            <ol class="steps">
+              <li><h4>GitHub Actions minutes</h4><p>Every workflow run consumes them. Public repositories run free on standard runners; private repositories draw on the plan's included minutes and then bill by the minute. Boundable, because the pilot is one repository.</p></li>
+              <li><h4>Copilot AI credits</h4><p>The Copilot-powered agentic workflows consume AI credits, which is why every workflow here declares <code>max-ai-credits</code>. Boundable, because the ceiling is in the file rather than in an invoice.</p></li>
+              <li><h4>GitHub Advanced Security licensing</h4><p>On public repositories, code scanning, secret scanning and dependency review are available without an Advanced Security licence. On private repositories they fall under Advanced Security, where code security and secret protection are licensed separately. Confirm the current terms for your plan with your account team rather than quoting a number from a slide.</p></li>
+            </ol>
+          </div>
+        </article>
+
+        <article class="card" id="card-pilot">
+          <h3 class="card-head">
+            <button type="button" class="card-toggle" aria-expanded="false">
+              <span class="card-num" aria-hidden="true"></span>
+              <span class="card-titles">
+                <span class="card-title">Five artefacts by day 14, and one decision</span>
+                <span class="card-sub">Three people, part time: a repository owner, a security reviewer, a platform engineer.</span>
+              </span>
+              <span class="card-mark" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="card-body">
+            <p>The pilot runs for two weeks on one repository. We supply this repository, the workflow definitions, and a walkthrough. You supply the repository, the telemetry, and the three people. By day 14 there are five artefacts on the table, and each one is either there or it is not.</p>
+            <ol class="steps">
+              <li><h4>An agent-raised issue from your own telemetry</h4><p>Not ours. If the workflow cannot find a signal in your data, that is a finding worth having on day 3.</p></li>
+              <li><h4>A specification with acceptance criteria mapped to tests</h4><p>Checked in both directions, so a criterion without a test fails the build.</p></li>
+              <li><h4>A pull request small enough to read in a meeting</h4><p>From whichever execution surface the team chose. The surface is not the point.</p></li>
+              <li><h4>A check run that blocked something</h4><p>A green wall proves nothing. One red check that stopped a merge proves the gate is real.</p></li>
+              <li><h4>An attributed approval on a commit SHA</h4><p>A named person, a code-owner requirement, a timestamp.</p></li>
+            </ol>
+            <p>The decision it exists to make is narrow and answerable: extend the loop to a second repository, or stop. It is deliberately not a decision about which agent to standardise on, because that one stays reversible for as long as the contract lives in the repository.</p>
+          </div>
+        </article>
+
+        <article class="card" id="card-dispositions">
+          <h3 class="card-head">
+            <button type="button" class="card-toggle" aria-expanded="false">
+              <span class="card-num" aria-hidden="true"></span>
+              <span class="card-titles">
+                <span class="card-title">Phases are time; dispositions are per repository</span>
+                <span class="card-sub">They are different axes and get confused constantly.</span>
+              </span>
+              <span class="card-mark" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="card-body">
+            <p>The pilot has two <strong>phases</strong>, which are periods of time: observation, then enforcement. Beyond the pilot, each repository gets a <strong>disposition</strong>, which is a decision about that repository and has nothing to do with the calendar.</p>
+            <ol class="steps">
+              <li><h4>Migrate</h4><p>Active development with existing tests. The loop is worth most where evidence already exists.</p></li>
+              <li><h4>Mirror</h4><p>Something others depend on, mid-assessment. Pick which side is writable and say so out loud.</p></li>
+              <li><h4>Leave in place</h4><p>Archived or genuinely inactive. Not everything needs to move.</p></li>
+            </ol>
+            <p>Assess pipeline definitions before moving anything: <code>gh actions-importer</code> audits Bitbucket Pipelines and other systems and translates most of the mechanical shape. The security posture is the part worth rewriting by hand rather than importing. The path is cloud-neutral: nothing here requires a particular hosting provider.</p>
+          </div>
+        </article>
+
+        <article class="card" id="card-capability">
+          <h3 class="card-head">
+            <button type="button" class="card-toggle" aria-expanded="false">
+              <span class="card-num" aria-hidden="true"></span>
+              <span class="card-titles">
+                <span class="card-title">Every capability this session touches, with its stage and its licensing</span>
+                <span class="card-sub">Verified 2026-08-23. GA, public preview, removed sample and simulation are four different things.</span>
+              </span>
+              <span class="card-mark" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="card-body">
+            <div class="detail-grid">
+              <div class="detail-row"><span class="detail-key">GitHub Actions</span><span class="detail-val"><strong>GA.</strong> Included, metered by minutes. Runs on private repositories with an allowance.</span></div>
+              <div class="detail-row"><span class="detail-key">GitHub Agentic Workflows (gh-aw)</span><span class="detail-val"><strong>Public preview.</strong> Uses Copilot AI credits. The Copilot engine is supported; this repository pins gh-aw v0.86.2.</span></div>
+              <div class="detail-row"><span class="detail-key">OpenCode engine for gh-aw</span><span class="detail-val"><strong>Removed upstream; ships as an unsupported sample.</strong> Copilot provider routing avoids a separate model subscription. ADR-50145, accepted 2026-08-04, removed it as a supported experimental engine; its changeset is marked major and says workflows using <code>engine: opencode</code> no longer compile or validate. The definition still ships under "Unsupported engine samples" with <code>experimental: true</code>.</span></div>
+              <div class="detail-row"><span class="detail-key">Third-party coding agents on GitHub</span><span class="detail-val"><strong>Public preview.</strong> Copilot; consumes Actions minutes and AI credits. GitHub currently lists Anthropic Claude and OpenAI Codex. Assignable to issues, opens pull requests, and subject to the same security validation as the Copilot cloud agent. Not used by this showcase.</span></div>
+              <div class="detail-row"><span class="detail-key">Copilot cloud agent</span><span class="detail-val"><strong>GA.</strong> Copilot subscription. One execution lane. Starts from an issue, needs no developer machine, and proposes through a pull request under the same rulesets as anyone else. The repository contract does not depend on it.</span></div>
+              <div class="detail-row"><span class="detail-key">Copilot code review</span><span class="detail-val"><strong>GA.</strong> Copilot subscription. A reviewer, never a required check.</span></div>
+              <div class="detail-row"><span class="detail-key">CodeQL</span><span class="detail-val"><strong>GA.</strong> Free on public repositories; Advanced Security on private. Deterministic. It gates.</span></div>
+              <div class="detail-row"><span class="detail-key">Secret scanning push protection</span><span class="detail-val"><strong>GA.</strong> Free on public repositories; Advanced Security on private. Blocks at push, before history.</span></div>
+              <div class="detail-row"><span class="detail-key">Dependency review</span><span class="detail-val"><strong>GA.</strong> Free on public repositories; Advanced Security on private. Reviews the change, not the whole tree.</span></div>
+              <div class="detail-row"><span class="detail-key">Artifact attestations</span><span class="detail-val"><strong>GA.</strong> Included. Needs an entitled repository. This showcase labels the simulated case.</span></div>
+              <div class="detail-row"><span class="detail-key">Environments and required reviewers</span><span class="detail-val"><strong>GA.</strong> Public repositories, or paid plans for private. Where the deploy authority boundary lives.</span></div>
+              <div class="detail-row"><span class="detail-key">Repository rulesets</span><span class="detail-val"><strong>GA.</strong> Public repositories, or paid plans for private. Policy as configuration, readable in the repository.</span></div>
+              <div class="detail-row"><span class="detail-key">Microsoft MDASH (codename)</span><span class="detail-val"><strong>Preview.</strong> Microsoft Defender and Exposure Management. An agentic code scanner: a multi-agent source-scanning pipeline that publishes findings into Exposure Management. It overlaps and complements CodeQL rather than adding runtime context. Not used by this repository.</span></div>
+              <div class="detail-row"><span class="detail-key">Azure SRE Agent</span><span class="detail-val"><strong>Available.</strong> Azure. Cited from a separate public repository. Its GitHub connector reads source; write-back is not demonstrated there.</span></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="card-low-risk">
+          <h3 class="card-head">
+            <button type="button" class="card-toggle" aria-expanded="false">
+              <span class="card-num" aria-hidden="true"></span>
+              <span class="card-titles">
+                <span class="card-title">The lowest-risk order to try this, one step at a time</span>
+                <span class="card-sub">Each step is useful on its own, and none of them needs the next one to be worth doing.</span>
+              </span>
+              <span class="card-mark" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="card-body">
+            <ol class="steps">
+              <li><h4>Write down the contract</h4><p>Put AGENTS.md and one specification in one repository. Nothing else changes.</p></li>
+              <li><h4>Make the existing evidence count</h4><p>Turn on the deterministic checks that already exist and make them required.</p></li>
+              <li><h4>Give approval a meaning</h4><p>Add CODEOWNERS so an approval means something.</p></li>
+              <li><h4>Let one agent propose</h4><p>Add one read-only agentic workflow with safe outputs. Watch what it writes for two weeks.</p></li>
+              <li><h4>Then, and only then, pick a lane</h4><p>Only then decide which execution lane the team prefers. That decision is now reversible.</p></li>
+            </ol>
+            <p><strong>Coexistence premise:</strong> Jira keeps planning and reporting; the repository keeps engineering evidence. <strong>Migration:</strong> the path is cloud-neutral, <code>gh actions-importer</code> audits Bitbucket Pipelines and translates most of the mechanical shape, and the security posture is worth rewriting by hand rather than importing.</p>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- SCENE 11 -->
+      <article class="card" id="card-close">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">The loop closed, and the follow-up issue proves it</span>
+              <span class="card-sub">All seven questions, answered &middot; nine stages, one of them coding</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <p>The same pulse workflow ran again after the change merged, and raised the next issue by itself: <strong>32 unmet requests</strong> in the window, <strong>25 now answered</strong> with an alternative, <strong>7 still not</strong> because no group member was in stock. Counts, not rates: this is a different measure from the opening percentages. Stage nine became stage one.</p>
+          <div class="summary-grid">
+            <div class="summary-item"><span class="summary-label">1 Intent</span>An issue with outcome, constraints, acceptance criteria.</div>
+            <div class="summary-item"><span class="summary-label">2 Proposal</span>A pull request small enough to read.</div>
+            <div class="summary-item"><span class="summary-label">3 Evidence</span>Eight checks, none of them a model.</div>
+            <div class="summary-item"><span class="summary-label">4 Policy</span>A ruleset on the default branch.</div>
+            <div class="summary-item"><span class="summary-label">5 Accountability</span>A named person, on a commit SHA.</div>
+            <div class="summary-item"><span class="summary-label">6 Release</span>An approved environment, a federated token.</div>
+            <div class="summary-item"><span class="summary-label">7 Feedback</span>The next signal, which is stage one again.</div>
+          </div>
+          <p><strong>The ask:</strong> one repository, two weeks, three people, five artefacts, and a decision on day 14.</p>
+        </div>
+      </article>
+
+      <div>
+        <article class="card" id="card-followup">
+          <h3 class="card-head">
+            <button type="button" class="card-toggle" aria-expanded="false">
+              <span class="card-num" aria-hidden="true"></span>
+              <span class="card-titles">
+                <span class="card-title">The residue is a different question, which is how you know the loop works</span>
+              </span>
+              <span class="card-mark" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="card-body">
+            <div class="code">
+              <p class="code-label">the next pulse issue</p>
+              <pre><code>[pulse] 7 unmet requests still end with no alternative because
+        no group member is in stock
+
+Unmet requests in the window:      32 requests
+Now answered with an alternative:  25 requests
+Still answered with nothing:        7 requests</code></pre>
+            </div>
+            <p>The change closed most of the gap. What is left is a sourcing question, not a response-shape question, and it arrived as a bounded issue rather than as a complaint. That is only possible because intent, evidence and telemetry all live where the code lives.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+  </main>
+
+  <p class="takeaway">Pick whichever execution surface you like, and change your mind next quarter; what must not churn is the place where intent, evidence, and authority live. The ask: one low-risk repository, two weeks, five evidence artefacts, a decision on day 14.</p>
+
+  <footer class="doc-footer">
+    <a href="index.html">Repository index</a>
+    <a href="presenter.html">Presenter guide</a>
+    <a href="mission-control.html">Offline fallback</a>
+    <a href="../AGENTS.md">Repository rules</a>
+    <a href="../ATTRIBUTION.md">Attribution</a>
+  </footer>
+
+</div>
+
+</body>
+</html>

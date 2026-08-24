@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Index — The Agentic Engineering Loop</title>
+<meta name="description" content="Entry point for the showcase repository: the article, the presenter guide, the offline fallback, the specification, and the commands that prove all of it.">
+<meta name="doc-id" content="agentic-engineering-loop-index">
+
+<script>
+(function () {
+  var d = document.documentElement;
+  d.classList.add("js");
+  var p = new URLSearchParams(location.search);
+  var t = p.get("theme");
+  if (t !== "light" && t !== "dark") {
+    try { t = localStorage.getItem("doc-theme"); } catch (e) { t = null; }
+  }
+  if (t !== "light" && t !== "dark") {
+    t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+  d.setAttribute("data-theme", t);
+  if (p.get("view") === "slides") d.setAttribute("data-view", "slides");
+})();
+</script>
+
+<style>
+:root {
+  color-scheme: light;
+  --bg: #ffffff; --surface: #ffffff; --surface-2: #f5f6f8; --surface-3: #eaecf0;
+  --border: #dee1e6; --border-strong: #c2c7cf;
+  --text: #14171a; --text-muted: #565c66; --text-faint: #767d87;
+  --accent: #0078d4; --accent-strong: #005a9e; --accent-quiet: #4a9fe0;
+  --accent-soft: #eaf3fb; --accent-border: #a9d0ef;
+  --warn: #8a5300; --warn-soft: #fdf5e8; --warn-border: #e6c99a;
+  --code-bg: #f5f6f8; --code-border: #e2e5ea;
+  --focus: #0078d4;
+  --shadow-1: 0 1px 2px rgba(16,19,23,.06);
+  --shadow-2: 0 2px 4px rgba(16,19,23,.06), 0 12px 28px rgba(16,19,23,.08);
+  --radius: 10px; --radius-sm: 6px; --canvas: 1160px;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Cascadia Mono", "Cascadia Code", ui-monospace, Consolas, "SF Mono", "Liberation Mono", Menlo, monospace;
+}
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0e1013; --surface: #15181d; --surface-2: #1b1f26; --surface-3: #232830;
+  --border: #2b313a; --border-strong: #3d4550;
+  --text: #eceef1; --text-muted: #a7aeb8; --text-faint: #868e99;
+  --accent: #4aa3e8; --accent-strong: #7cc0f3; --accent-quiet: #2f80c4;
+  --accent-soft: #142430; --accent-border: #2c4f6d;
+  --warn: #e0b055; --warn-soft: #241d10; --warn-border: #574627;
+  --code-bg: #12151a; --code-border: #262c34;
+  --focus: #6cb8f0;
+  --shadow-1: 0 1px 2px rgba(0,0,0,.4);
+  --shadow-2: 0 2px 4px rgba(0,0,0,.4), 0 12px 28px rgba(0,0,0,.45);
+}
+</style>
+
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/article.css">
+<link rel="stylesheet" href="assets/slide-a11y.css">
+<script src="assets/article.js" defer></script>
+<script src="assets/slide-a11y.js" defer></script>
+</head>
+
+<body>
+
+<div class="controls" role="group" aria-label="Index controls">
+  <button type="button" class="ctrl" data-action="expand-all">Expand all</button>
+  <button type="button" class="ctrl" data-action="collapse-all">Collapse all</button>
+  <button type="button" class="ctrl" data-action="toggle-theme">Dark</button>
+</div>
+
+<div class="doc">
+
+  <header class="doc-header">
+    <p class="eyebrow">REPOSITORY INDEX</p>
+    <h1>The Agentic Engineering Loop</h1>
+    <p class="subtitle">Source of truth for a sixty-minute presenter-led showcase. Three documents, one small service, three agentic workflows, and the commands that prove every claim made in them. A nine-stage engineering loop shown in eleven demo scenes; only one lifecycle stage is coding.</p>
+    <p class="meta"><time datetime="2026-08-23">23 August 2026</time> &middot; Product states verified 2026-08-23 &middot; Synthetic data only</p>
+  </header>
+
+  <main>
+
+    <section class="chapter" id="ch-index-docs">
+      <h2 class="chapter-label">Documents</h2>
+
+      <article class="card card--lead" id="card-index-start" data-open>
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="true">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">Start here, depending on why you opened this</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <ul class="arrow-list">
+            <li>Reading it: <a href="showcase.html">the showcase article</a>. Press Slides to present the same page.</li>
+            <li>Presenting it: <a href="presenter.html">the presenter guide</a>, on the second screen.</li>
+            <li>Presenting it with no network: <a href="mission-control.html">the offline fallback</a>.</li>
+            <li>Reviewing the engineering: <a href="spec/SPEC-001-substitute-suggestion.md">the specification</a> and <a href="spec/acceptance-mapping.md">the acceptance mapping</a>.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card" id="card-index-commands">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">Six commands prove the repository from a clean checkout</span>
+              <span class="card-sub">No dependency to install. Node 22 or newer.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <div class="code">
+            <p class="code-label">from the repository root</p>
+            <pre><code>npm run setup
+npm run preflight
+npm test
+npm run verify
+npm run validate:aw
+npm run rehearse</code></pre>
+          </div>
+          <p><code>npm run serve</code> then opens these documents at <code>http://127.0.0.1:8080/</code>.</p>
+        </div>
+      </article>
+
+      <article class="card" id="card-index-claims">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">What this repository claims, and what it refuses to claim</span>
+              <span class="card-sub">The distinction is enforced by tests, not by good intentions.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <div class="summary-grid">
+            <div class="summary-item"><span class="summary-label">Verified</span>Every product state carries the date it was checked: 2026-08-23.</div>
+            <div class="summary-item"><span class="summary-label">Labelled</span>Experimental, preview, and simulated states are named as such wherever they appear.</div>
+            <div class="summary-item"><span class="summary-label">Synthetic</span>All catalogue, stock, and telemetry data is generated. No real product or customer data exists here.</div>
+            <div class="summary-item"><span class="summary-label">Cited</span>External evidence is attributed and linked; see <a href="../ATTRIBUTION.md">ATTRIBUTION.md</a>.</div>
+          </div>
+          <p class="meta"><a href="../AGENTS.md">Repository rules</a> &middot; <a href="../README.md">README</a></p>
+        </div>
+      </article>
+    </section>
+
+  </main>
+
+  <p class="takeaway">Every document here is readable with JavaScript disabled and works offline from a memory stick.</p>
+
+  <footer class="doc-footer">
+    <a href="showcase.html">The showcase</a>
+    <a href="presenter.html">Presenter guide</a>
+    <a href="mission-control.html">Offline fallback</a>
+  </footer>
+
+</div>
+
+</body>
+</html>

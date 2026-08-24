@@ -1,0 +1,80 @@
+name: workflow-security
+
+# Checks the workflow sources themselves: action pinning, trigger safety,
+# permission scope, and lock-file freshness for the agentic workflows.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: workflow-security-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static:
+    name: workflow source rules
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+
+      - name: Enforce workflow security rules
+        run: node --test "test/workflow-security.test.js"
+
+  agentic-lock-freshness:
+    name: compile agentic workflows and verify lock freshness
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+
+      # gh aw is a GitHub CLI extension and the freshness check cannot run
+      # without it. This step is NOT continue-on-error: if the extension cannot
+      # be installed the job fails here rather than proceeding to a green check
+      # that never actually validated anything.
+      #
+      # Pinned to v0.86.2: the compiler version is part of the lock contract
+      # (each lock header records "compiler_version":"v0.86.2"), so CI installs
+      # the exact org (github/gh-aw) and version the committed locks were
+      # produced with. validate-aw.mjs re-checks that the installed version
+      # matches the locks and fails with the exact install command otherwise.
+      - name: Install the agentic workflow extension
+        id: install-aw
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh extension install github/gh-aw --pin v0.86.2
+
+      # validate-aw.mjs --ci independently confirms gh aw is runnable (by exit
+      # status), runs strict validation, and byte-compares each freshly compiled
+      # lock against the committed one. It exits non-zero — failing the job — if
+      # gh aw is missing or any lock is stale. There is no silent pass.
+      - name: Validate and check lock freshness
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/validate-aw.mjs --ci

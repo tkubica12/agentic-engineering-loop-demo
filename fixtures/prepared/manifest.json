@@ -1,0 +1,565 @@
+{
+  "$comment": "The showcase spine. Every consumer reads this file: the rehearsal script, the mission-control fallback, the presenter guide, and the repository tests. Change the sequence here and nowhere else.",
+  "title": "GitHub Beyond Coding: The Agentic Engineering Loop",
+  "durationMinutes": 60,
+  "productValidationDate": "2026-08-23",
+  "shape": {
+    "lifecycleStages": 9,
+    "demoScenes": 11,
+    "codingStages": 1,
+    "slides": 15,
+    "slideLayout": "3 section dividers + 11 scene presentation cards + 1 closing takeaway",
+    "sentence": "A nine-stage engineering loop shown in eleven demo scenes; only one lifecycle stage is coding.",
+    "note": "The return to the next signal is the arrow back to stage one, not a tenth stage. Scenes are how the hour is presented; stages are what the loop is made of. Never conflate the two counts.",
+    "stages": [
+      "Signal",
+      "Intent",
+      "Contract",
+      "Lane",
+      "Implementation",
+      "Evidence",
+      "Authority",
+      "Release",
+      "Production"
+    ],
+    "questions": [
+      "Was the intent written down?",
+      "Is the proposal reviewable?",
+      "Does deterministic evidence exist?",
+      "Does policy allow it?",
+      "Who is accountable for the merge?",
+      "How does it reach production?",
+      "What does production say afterwards?"
+    ],
+    "primitives": [
+      "Durable, assignable work items an agent can read where the code lives",
+      "A reviewable change set with line-level discussion",
+      "Deterministic checks bound to that change set",
+      "Branch rules expressed as reviewable configuration",
+      "Required review by named owners, attributed to a person",
+      "Environment approval, federated credentials, build provenance",
+      "A path for production signal to become the next work item"
+    ]
+  },
+  "tabs": [
+    {
+      "number": 1,
+      "label": "Showcase, slides mode",
+      "opens": "showcase.html?view=slides"
+    },
+    {
+      "number": 2,
+      "label": "Actions",
+      "opens": "The repository's Actions tab, filtered to the pulse workflow"
+    },
+    {
+      "number": 3,
+      "label": "The signal issue",
+      "opens": "The [pulse] issue, with the intake comment below it"
+    },
+    {
+      "number": 4,
+      "label": "The specification",
+      "opens": "docs/spec/SPEC-001-substitute-suggestion.md"
+    },
+    {
+      "number": 5,
+      "label": "The pull request, Files changed",
+      "opens": "The prepared pull request, on the diff"
+    },
+    {
+      "number": 6,
+      "label": "The pull request, Checks",
+      "opens": "The same pull request, checks tab"
+    },
+    {
+      "number": 7,
+      "label": "Release run",
+      "opens": "The release workflow run and its provenance record"
+    },
+    {
+      "number": 8,
+      "label": "Offline fallback",
+      "opens": "mission-control.html, kept open all session"
+    }
+  ],
+  "chapters": [
+    {
+      "id": "ch-intent",
+      "label": "Intent and contract",
+      "scenes": [
+        "thesis",
+        "pulse",
+        "intake",
+        "refine",
+        "lanes"
+      ]
+    },
+    {
+      "id": "ch-proposal",
+      "label": "Proposal and evidence",
+      "scenes": [
+        "delegate",
+        "evidence"
+      ]
+    },
+    {
+      "id": "ch-outcome",
+      "label": "Release, feedback, adoption",
+      "scenes": [
+        "release",
+        "sre",
+        "coexist",
+        "close"
+      ]
+    }
+  ],
+  "executionSurfaces": [
+    {
+      "id": "ide",
+      "name": "IDE",
+      "examples": "Cursor, VS Code",
+      "runsWhere": "Developer machine"
+    },
+    {
+      "id": "cli",
+      "name": "CLI",
+      "examples": "OpenCode CLI, Copilot CLI, Claude Code",
+      "runsWhere": "Developer machine or CI"
+    },
+    {
+      "id": "app",
+      "name": "Purpose-built agent app",
+      "examples": "The GitHub Copilot app",
+      "runsWhere": "Developer machine"
+    },
+    {
+      "id": "hosted",
+      "name": "GitHub-hosted cloud agents",
+      "examples": "Copilot cloud agent, plus documented preview partners",
+      "runsWhere": "GitHub-hosted"
+    }
+  ],
+  "commands": {
+    "Check the machine": "npm run preflight",
+    "Prepare the working directory": "npm run setup",
+    "Walk the whole hour offline": "npm run rehearse",
+    "Prove the repository's own claims": "npm run verify",
+    "Validate the agentic workflows": "npm run validate:aw",
+    "Validate the documents": "npm run validate:docs",
+    "Serve the documents locally": "npm run serve",
+    "Run every test": "npm test",
+    "Return to a clean state": "npm run reset"
+  },
+  "scenes": [
+    {
+      "id": "thesis",
+      "order": 1,
+      "slideIndex": 2,
+      "card": "card-thesis",
+      "chapter": "ch-intent",
+      "tab": 1,
+      "tabLabel": "1 — Showcase, slides mode",
+      "tabRouting": "Stay on tab 1 for the whole scene.",
+      "questions": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "start": 0,
+      "end": 2,
+      "title": "Nine stages carry one change, and only one is coding",
+      "presenterTitle": "Static — Cold open and thesis",
+      "mode": "static",
+      "surface": "article",
+      "artifact": null,
+      "expectedState": "The nine-stage loop with the seven questions and their primitives beneath it, so the room can audit its own stack while listening.",
+      "stopCondition": "If the deck will not enter slides mode, present the article view and continue.",
+      "fallback": [
+        {
+          "kind": "file",
+          "target": "docs/showcase.standalone.html",
+          "label": "Present the single-file export"
+        },
+        {
+          "kind": "doc-scene",
+          "target": "thesis",
+          "label": "Offline fallback scene: thesis"
+        }
+      ]
+    },
+    {
+      "id": "pulse",
+      "order": 2,
+      "slideIndex": 3,
+      "card": "card-pulse",
+      "chapter": "ch-intent",
+      "tab": 3,
+      "tabLabel": "3 — The signal issue",
+      "tabRouting": "Open tab 3 first for the finished issue, then tab 2 for the source and the run.",
+      "questions": [
+        1
+      ],
+      "start": 2,
+      "end": 10,
+      "title": "Reasoning proposes one issue; a compiled contract bounds the write",
+      "presenterTitle": "Live — Repository pulse",
+      "mode": "live",
+      "surface": "github-actions",
+      "artifact": "fixtures/prepared/01-signal-issue.json",
+      "expectedState": "The finished issue on screen within fifteen seconds, then the pipeline and the bounded control contract in the frontmatter. A fresh run is triggered into the background only.",
+      "stopCondition": "Show the finished issue first, always. Never make the room watch a queue.",
+      "trustModel": {
+        "input": "Committed synthetic telemetry",
+        "attackerControlled": false,
+        "labelGate": false,
+        "note": "The input is committed synthetic telemetry: reviewed repository content, not attacker-controlled. The control that matters here is the bounded, code-reviewable contract in the frontmatter, not an input gate."
+      },
+      "fallback": [
+        {
+          "kind": "file",
+          "target": "fixtures/prepared/01-signal-issue.json",
+          "label": "Prepared signal issue"
+        },
+        {
+          "kind": "doc-scene",
+          "target": "pulse",
+          "label": "Offline fallback scene: pulse"
+        }
+      ]
+    },
+    {
+      "id": "intake",
+      "order": 3,
+      "slideIndex": 4,
+      "card": "card-intake",
+      "chapter": "ch-intent",
+      "tab": 3,
+      "tabLabel": "3 — The signal issue",
+      "tabRouting": "Stay on tab 3; scroll to the intake comment.",
+      "questions": [
+        1
+      ],
+      "start": 10,
+      "end": 13,
+      "title": "Contracts outlive engines, and this one already proved it",
+      "presenterTitle": "Prepared — Issue intake (experimental lane)",
+      "mode": "prepared",
+      "surface": "github-issue",
+      "artifact": "fixtures/prepared/02-intake-result.json",
+      "expectedState": "Prepared output: one comment with four headings and at most three allowlisted labels, beside the engine-churn point.",
+      "stopCondition": "Three minutes, hard. Prepared only: the OpenCode lock reports the firewall disabled and maps the Copilot token into the model sandbox. Never run this lane live.",
+      "trustModel": {
+        "input": "Issue title and body",
+        "attackerControlled": true,
+        "labelGate": true,
+        "note": "Issue text is attacker-controlled. This lane is the one that needs the label and actor gate, and it has one; the pulse lane does not need it because its input is committed content."
+      },
+      "fallback": [
+        {
+          "kind": "file",
+          "target": "fixtures/prepared/02-intake-result.json",
+          "label": "Prepared intake result"
+        },
+        {
+          "kind": "doc-scene",
+          "target": "intake",
+          "label": "Offline fallback scene: intake"
+        }
+      ]
+    },
+    {
+      "id": "refine",
+      "order": 4,
+      "slideIndex": 5,
+      "card": "card-refine",
+      "chapter": "ch-intent",
+      "tab": 4,
+      "tabLabel": "4 — The specification",
+      "tabRouting": "Move to tab 4.",
+      "questions": [
+        1,
+        2
+      ],
+      "start": 13,
+      "end": 17,
+      "title": "Ten acceptance criteria, ten named tests, checked both ways",
+      "presenterTitle": "Prepared — The contract",
+      "mode": "prepared",
+      "surface": "repository",
+      "artifact": "fixtures/prepared/03-refined-spec.json",
+      "expectedState": "SPEC-001 open beside the acceptance mapping table.",
+      "stopCondition": "None. This scene is repository content and cannot fail.",
+      "fallback": [
+        {
+          "kind": "file",
+          "target": "docs/spec/SPEC-001-substitute-suggestion.md",
+          "label": "The specification itself"
+        },
+        {
+          "kind": "doc-scene",
+          "target": "refine",
+          "label": "Offline fallback scene: refine"
+        }
+      ]
+    },
+    {
+      "id": "lanes",
+      "order": 5,
+      "slideIndex": 6,
+      "card": "card-lanes",
+      "chapter": "ch-intent",
+      "tab": 1,
+      "tabLabel": "1 — Showcase, slides mode",
+      "tabRouting": "First backwards jump: return to tab 1.",
+      "backwardsJump": true,
+      "questions": [
+        2
+      ],
+      "start": 17,
+      "end": 21,
+      "title": "Four execution surfaces, one repository contract",
+      "presenterTitle": "Static — Execution surfaces",
+      "mode": "static",
+      "surface": "article",
+      "artifact": "fixtures/prepared/04-lane-comparison.json",
+      "expectedState": "The four surfaces on screen: IDE, CLI, purpose-built agent app, GitHub-hosted cloud agents. No tool is opened live.",
+      "stopCondition": "None.",
+      "fallback": [
+        {
+          "kind": "file",
+          "target": "fixtures/prepared/04-lane-comparison.json",
+          "label": "Execution surface comparison"
+        },
+        {
+          "kind": "doc-scene",
+          "target": "lanes",
+          "label": "Offline fallback scene: lanes"
+        }
+      ]
+    },
+    {
+      "id": "delegate",
+      "order": 6,
+      "slideIndex": 8,
+      "card": "card-delegate",
+      "chapter": "ch-proposal",
+      "tab": 5,
+      "tabLabel": "5 — The pull request, Files changed",
+      "tabRouting": "Move forward to tab 5.",
+      "questions": [
+        2
+      ],
+      "start": 21,
+      "end": 27,
+      "title": "A good agent pull request is small enough to read in the room",
+      "presenterTitle": "Prepared — Delegation",
+      "mode": "prepared",
+      "surface": "github-pr",
+      "artifact": "fixtures/prepared/05-delegated-session.json",
+      "expectedState": "Prepared agent session and its pull request, opened on the diff.",
+      "stopCondition": "Never start a fresh delegation live.",
+      "fallback": [
+        {
+          "kind": "file",
+          "target": "fixtures/prepared/05-delegated-session.json",
+          "label": "Prepared delegated session and diff"
+        },
+        {
+          "kind": "doc-scene",
+          "target": "delegate",
+          "label": "Offline fallback scene: delegate"
+        }
+      ]
+    },
+    {
+      "id": "evidence",
+      "order": 7,
+      "slideIndex": 9,
+      "card": "card-evidence",
+      "chapter": "ch-proposal",
+      "tab": 6,
+      "tabLabel": "6 — The pull request, Checks",
+      "tabRouting": "Move forward to tab 6.",
+      "questions": [
+        3,
+        4,
+        5
+      ],
+      "start": 27,
+      "end": 40,
+      "title": "Eight checks, one ruleset, one accountable human",
+      "presenterTitle": "Prepared — Evidence, policy, authority",
+      "mode": "prepared",
+      "surface": "github-pr",
+      "artifact": "fixtures/prepared/06-pr-evidence.json",
+      "expectedState": "All eight deterministic checks, the ruleset and CODEOWNERS requirement, and the attributed approval, all visible on one slide.",
+      "stopCondition": "If a check is still running after three minutes, switch to the prepared evidence artefact.",
+      "fallback": [
+        {
+          "kind": "file",
+          "target": "fixtures/prepared/06-pr-evidence.json",
+          "label": "Prepared checks, review, and authority state"
+        },
+        {
+          "kind": "doc-scene",
+          "target": "evidence",
+          "label": "Offline fallback scene: evidence"
+        }
+      ]
+    },
+    {
+      "id": "release",
+      "order": 8,
+      "slideIndex": 11,
+      "card": "card-release",
+      "chapter": "ch-outcome",
+      "tab": 7,
+      "tabLabel": "7 — Release run",
+      "tabRouting": "Move forward to tab 7.",
+      "questions": [
+        6
+      ],
+      "start": 40,
+      "end": 45,
+      "title": "Merging is a code decision; deploying is an authority decision",
+      "presenterTitle": "Mixed — Release",
+      "mode": "mixed",
+      "surface": "github-actions",
+      "artifact": "fixtures/prepared/07-release-provenance.json",
+      "expectedState": "The provenance record with its mode field, the environment approval gate, and the federated identity.",
+      "stopCondition": "Attestation needs an entitled repository. If unavailable, show the simulated record and say so out loud.",
+      "fallback": [
+        {
+          "kind": "file",
+          "target": "fixtures/prepared/07-release-provenance.json",
+          "label": "Prepared provenance record"
+        },
+        {
+          "kind": "doc-scene",
+          "target": "release",
+          "label": "Offline fallback scene: release"
+        }
+      ]
+    },
+    {
+      "id": "sre",
+      "order": 9,
+      "slideIndex": 12,
+      "card": "card-sre",
+      "chapter": "ch-outcome",
+      "tab": 1,
+      "tabLabel": "1 — Showcase, slides mode",
+      "tabRouting": "Second backwards jump: return to tab 1 and stay there to the end.",
+      "backwardsJump": true,
+      "questions": [
+        7
+      ],
+      "start": 45,
+      "end": 51,
+      "title": "Production evidence returns to the repository under a scoped identity",
+      "presenterTitle": "Prepared — Production feedback",
+      "mode": "prepared",
+      "surface": "external-evidence",
+      "artifact": "fixtures/prepared/08-sre-incident.json",
+      "expectedState": "The cloud-neutral pattern stated first, then the Azure implementation as one concrete proof, then the stated limitation.",
+      "stopCondition": "Never open a live cloud portal. This scene is cited evidence from a public repository.",
+      "fallback": [
+        {
+          "kind": "file",
+          "target": "fixtures/prepared/08-sre-incident.json",
+          "label": "Cited incident evidence"
+        },
+        {
+          "kind": "doc-scene",
+          "target": "sre",
+          "label": "Offline fallback scene: sre"
+        }
+      ]
+    },
+    {
+      "id": "coexist",
+      "order": 10,
+      "slideIndex": 13,
+      "card": "card-coexist",
+      "chapter": "ch-outcome",
+      "tab": 1,
+      "tabLabel": "1 — Showcase, slides mode",
+      "tabRouting": "Stay on tab 1.",
+      "questions": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "start": 51,
+      "end": 58,
+      "title": "Keep Bitbucket and Jira; pilot one repository for two weeks",
+      "presenterTitle": "Static — Coexistence and adoption",
+      "mode": "static",
+      "surface": "article",
+      "artifact": "fixtures/prepared/09-adoption-matrix.json",
+      "expectedState": "Bitbucket and Jira coexistence, the three cost lines, the two phases, the three dispositions, the pilot participants, the five artefacts and the day-14 decision, all visible.",
+      "stopCondition": "None. This is the commercial ask and it is never cut.",
+      "fallback": [
+        {
+          "kind": "file",
+          "target": "fixtures/prepared/09-adoption-matrix.json",
+          "label": "Adoption model and capability matrix"
+        },
+        {
+          "kind": "doc-scene",
+          "target": "coexist",
+          "label": "Offline fallback scene: coexist"
+        }
+      ]
+    },
+    {
+      "id": "close",
+      "order": 11,
+      "slideIndex": 14,
+      "card": "card-close",
+      "chapter": "ch-outcome",
+      "tab": 1,
+      "tabLabel": "1 — Showcase, slides mode",
+      "tabRouting": "Stay on tab 1 through the takeaway.",
+      "questions": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "start": 58,
+      "end": 60,
+      "title": "The loop closed, and the follow-up issue proves it",
+      "presenterTitle": "Static — Close",
+      "mode": "static",
+      "surface": "article",
+      "artifact": "fixtures/prepared/10-followup.json",
+      "expectedState": "The follow-up counts, the seven questions answered, and the pilot action, then the closing takeaway. Questions are taken after this, not inside the hour.",
+      "stopCondition": "None. Never cut the close.",
+      "fallback": [
+        {
+          "kind": "narrate",
+          "target": "",
+          "label": "Say the closing line from the presenter guide"
+        },
+        {
+          "kind": "doc-scene",
+          "target": "close",
+          "label": "Offline fallback scene: close"
+        }
+      ]
+    }
+  ]
+}

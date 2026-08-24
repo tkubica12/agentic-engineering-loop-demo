@@ -1,0 +1,5 @@
+{
+  "$comment": "Scopes the vendored html-docs runtime as CommonJS. The repository root declares type: module; validate.js and bundle.js ship as CommonJS. This file keeps both true without editing the vendored runtime.",
+  "type": "commonjs",
+  "private": true
+}

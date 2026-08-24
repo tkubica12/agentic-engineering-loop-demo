@@ -1,0 +1,48 @@
+{
+  "artifactId": "05-delegated-session",
+  "scene": "delegate",
+  "kind": "prepared-output",
+  "status": "prepared",
+  "labelInUi": "Prepared output — a delegation that already ran",
+  "capturedOn": "2026-08-23",
+  "why": "A delegation takes minutes, not seconds. Starting one live spends the budget of two later scenes and demonstrates nothing that the finished pull request does not.",
+  "handover": {
+    "whatTheAgentReceived": [
+      "The issue: outcome, constraints, ten acceptance criteria",
+      "docs/spec/SPEC-001-substitute-suggestion.md",
+      "AGENTS.md",
+      "The existing test file, which already named the criteria"
+    ],
+    "whatTheAgentWasNotGiven": [
+      "Any secret",
+      "Write access to main",
+      "Permission to add a dependency",
+      "Permission to change the workflow definitions"
+    ]
+  },
+  "pullRequest": {
+    "title": "Suggest one compatible in-stock substitute when a SKU is unavailable",
+    "closes": "the [change] issue",
+    "filesChanged": [
+      { "path": "app/src/substitution.js", "added": 46, "removed": 0, "note": "New. Total ordering and candidate filter." },
+      { "path": "app/src/service.js", "added": 18, "removed": 4, "note": "Calls the selector on the unavailable path and projects through toPublicItem." },
+      { "path": "app/src/server.js", "added": 6, "removed": 2, "note": "Maps outcome to 201, 409, 422." },
+      { "path": "app/test/service.test.js", "added": 78, "removed": 0, "note": "AC-1 to AC-10." },
+      { "path": "docs/spec/ADR-0001-substitute-selection.md", "added": 52, "removed": 0, "note": "Records why ranking is a total order." }
+    ],
+    "diffSummary": "5 files changed, 200 insertions, 6 deletions",
+    "noDependencyChange": true,
+    "lane": "Copilot cloud agent"
+  },
+  "reviewablePropertiesToPointAt": [
+    "The diff is small enough to read in the room.",
+    "Every new test names the criterion it proves.",
+    "The decision record explains a choice a reviewer would otherwise have to reverse-engineer.",
+    "No dependency manifest changed, which is a constraint the issue set."
+  ],
+  "verifiableClaims": [
+    "The pull request exists in the repository and its checks ran.",
+    "The branch is not main, and main is protected by a ruleset.",
+    "The agent could not merge its own work."
+  ]
+}

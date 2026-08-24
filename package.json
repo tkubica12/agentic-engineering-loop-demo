@@ -1,0 +1,30 @@
+{
+  "name": "agentic-engineering-loop-showcase",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Source of truth for the presenter-led showcase: GitHub Beyond Coding — The Agentic Engineering Loop.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node scripts/run-tests.mjs",
+    "test:app": "node scripts/run-tests.mjs app",
+    "test:repo": "node scripts/run-tests.mjs repo",
+    "preflight": "node scripts/preflight.mjs",
+    "setup": "node scripts/setup.mjs",
+    "verify": "node scripts/verify.mjs",
+    "rehearse": "node scripts/rehearse.mjs",
+    "reset": "node scripts/reset.mjs",
+    "cleanup": "node scripts/cleanup.mjs",
+    "seed:remote": "node scripts/seed-remote.mjs",
+    "aw:install": "gh extension install github/gh-aw --pin v0.86.2",
+    "aw:compile": "gh aw compile",
+    "validate:aw": "node scripts/validate-aw.mjs",
+    "validate:docs": "node scripts/validate-docs.mjs",
+    "build:standalone": "node scripts/build-standalone.mjs",
+    "serve": "node scripts/serve.mjs",
+    "start": "node app/src/index.js"
+  }
+}

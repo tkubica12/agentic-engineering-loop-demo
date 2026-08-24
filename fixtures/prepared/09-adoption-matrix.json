@@ -1,0 +1,135 @@
+{
+  "artifactId": "09-adoption-matrix",
+  "scene": "coexist",
+  "kind": "reference",
+  "status": "prepared",
+  "labelInUi": "Reference tables — capability states are honest, including the ones that are not available",
+  "capturedOn": "2026-08-23",
+  "phases": [
+    {
+      "id": "observe",
+      "label": "Phase 1, week 1",
+      "kind": "time",
+      "what": "Observation only. Add AGENTS.md, one specification, and one read-only agentic workflow with safe outputs.",
+      "changes": "Nothing merges differently. No policy is enforced yet.",
+      "exit": "The team has seen what the agent writes for a full week."
+    },
+    {
+      "id": "enforce",
+      "label": "Phase 2, week 2",
+      "kind": "time",
+      "what": "Turn the checks that already exist into required checks, add CODEOWNERS and a ruleset. Then, and only then, choose an execution surface.",
+      "changes": "Merges now require evidence and an attributed approval.",
+      "exit": "A pull request has merged through required checks and a code-owner review."
+    }
+  ],
+  "dispositions": [
+    {
+      "id": "migrate",
+      "label": "Migrate",
+      "kind": "per-repository",
+      "when": "Active development with existing tests. The loop is worth most where evidence already exists.",
+      "cost": "One-off history import and pipeline translation."
+    },
+    {
+      "id": "mirror",
+      "label": "Mirror",
+      "kind": "per-repository",
+      "when": "Something other teams depend on, while it is being assessed.",
+      "cost": "Two sources of truth for a bounded period. Pick which side is writable and say so out loud."
+    },
+    {
+      "id": "leave",
+      "label": "Leave in place",
+      "kind": "per-repository",
+      "when": "Archived, vendored, or genuinely inactive.",
+      "cost": "None. Not everything needs to move."
+    }
+  ],
+  "axisNote": "Phases are periods of time inside the pilot. Dispositions are decisions about individual repositories and have nothing to do with the calendar. Conflating them is the most common way this plan gets misread.",
+  "costLines": [
+    {
+      "id": "actions-minutes",
+      "label": "GitHub Actions minutes",
+      "what": "Every workflow run consumes Actions minutes. Public repositories run free on standard runners; private repositories draw on the plan's included minutes and then bill per minute.",
+      "boundable": "Yes, because the pilot is one repository."
+    },
+    {
+      "id": "ai-credits",
+      "label": "Copilot AI credits",
+      "what": "The Copilot-powered agentic workflows consume Copilot AI credits. Every workflow in this repository declares max-ai-credits, so the ceiling is in the file rather than in an invoice.",
+      "boundable": "Yes, because the cap is declared per workflow."
+    },
+    {
+      "id": "advanced-security",
+      "label": "GitHub Advanced Security licensing",
+      "what": "On public repositories, code scanning, secret scanning and dependency review are available without an Advanced Security licence. On private repositories these fall under GitHub Advanced Security, where code security and secret protection are licensed separately.",
+      "boundable": "Confirm with your account team for your plan rather than quoting a number from a slide.",
+      "citation": "GitHub Docs, GitHub Advanced Security billing and features. Verify current terms at the time of the pilot."
+    }
+  ],
+  "pilotAsk": {
+    "participants": [
+      "The repository owner",
+      "One security reviewer",
+      "One platform engineer"
+    ],
+    "commitment": "Two weeks, part time.",
+    "presenterSupplies": [
+      "This repository as a worked reference",
+      "The workflow definitions and the specification shape",
+      "A run-of-show walkthrough with the team"
+    ],
+    "evidenceArtifacts": [
+      "A bounded issue an agent raised from the team's own telemetry",
+      "A specification whose every criterion has a named test",
+      "A pull request small enough to read in one sitting",
+      "A check run that blocked something",
+      "An attributed approval on a specific commit"
+    ],
+    "reviewPoint": "Day 14",
+    "decision": "Whether the evidence trail is worth extending to a second repository. Not which agent to standardise on: that decision stays reversible."
+  },
+  "coexistence": {
+    "premise": "Work management and engineering evidence are different systems of record. They do not have to be the same product, and forcing them together is a migration risk with no engineering payoff.",
+    "jira": {
+      "keeps": ["Portfolio and programme planning", "Cross-team work management", "Reporting that the business already reads", "Non-engineering workflows"],
+      "gains": "Engineering evidence is linked from the ticket instead of retyped into it.",
+      "mechanism": "Commit and pull request references carry the ticket key. Jira's GitHub integration shows the branch, the pull request, and the deployment against the ticket."
+    },
+    "github": {
+      "holds": ["Durable intent close to the code", "Reviewable proposals", "Deterministic evidence", "Policy and accountable authority", "Governed release and provenance"],
+      "why": "An agent works from the repository. Intent that lives outside the repository has to be copied into it, and a copy is where accuracy is lost."
+    },
+    "tone": "Atlassian tooling is not the problem here. The question is where engineering evidence lives, not which vendor wins."
+  },
+  "migrationPath": {
+    "premise": "Migration is a per-repository decision, taken repository by repository using the dispositions above. There is no single switch and no numbered wave plan.",
+    "cloudNeutral": "Nothing in this path requires a particular hosting provider or cloud. The primitives are the same wherever the workload runs.",
+    "pipelineNote": "Assess pipeline definitions before moving anything. gh actions-importer audits Bitbucket Pipelines and other systems and translates most of the mechanical shape. The security posture in this repository is the part worth rewriting by hand rather than importing.",
+    "sequencing": "During the pilot, no repository moves at all. Dispositions are assigned afterwards, on evidence."
+  },
+  "capabilityMatrix": [
+    { "capability": "GitHub Actions", "state": "GA", "licensing": "Included, metered by minutes", "notes": "Runs on private repositories with an allowance." },
+    { "capability": "GitHub Agentic Workflows (gh-aw)", "state": "Public preview", "licensing": "Uses Copilot AI credits", "notes": "Verified 2026-08-23. The Copilot engine is supported." },
+    { "capability": "OpenCode engine for gh-aw", "state": "Removed upstream; ships as an unsupported sample", "licensing": "Copilot provider routing avoids a separate model subscription", "notes": "ADR-50145 accepted 2026-08-04 removed it as a supported experimental engine; its changeset is major and says workflows using engine: opencode no longer compile or validate. The definition still ships under 'Unsupported engine samples' with experimental: true. Verified 2026-08-23." },
+    { "capability": "Third-party coding agents on GitHub", "state": "Public preview", "licensing": "Copilot; consumes Actions minutes and AI credits", "notes": "GitHub currently lists Anthropic Claude and OpenAI Codex. Assignable to issues, opens pull requests, and subject to the same security validation as the Copilot cloud agent. Not used by this showcase. Verified 2026-08-23 at https://docs.github.com/en/copilot/concepts/agents/about-third-party-coding-agents" },
+    { "capability": "Copilot cloud agent", "state": "GA", "licensing": "Copilot subscription", "notes": "One execution lane. Starts from an issue, needs no developer machine, and proposes through a pull request under the same rulesets as anyone else. The repository contract does not depend on it." },
+    { "capability": "Copilot code review", "state": "GA", "licensing": "Copilot subscription", "notes": "A reviewer, never a required check." },
+    { "capability": "CodeQL", "state": "GA", "licensing": "Free on public repositories; Advanced Security on private", "notes": "Deterministic. It gates." },
+    { "capability": "Secret scanning push protection", "state": "GA", "licensing": "Free on public repositories; Advanced Security on private", "notes": "Blocks at push, before history." },
+    { "capability": "Dependency review", "state": "GA", "licensing": "Free on public repositories; Advanced Security on private", "notes": "Reviews the change, not the whole tree." },
+    { "capability": "Artifact attestations", "state": "GA", "licensing": "Included", "notes": "Needs an entitled repository. This showcase labels the simulated case." },
+    { "capability": "Environments and required reviewers", "state": "GA", "licensing": "Public repositories, or paid plans for private", "notes": "Where the deploy authority boundary lives." },
+    { "capability": "Repository rulesets", "state": "GA", "licensing": "Public repositories, or paid plans for private", "notes": "Policy as configuration, readable in the repository." },
+    { "capability": "Microsoft MDASH (codename)", "state": "Preview", "licensing": "Microsoft Defender and Exposure Management", "notes": "An agentic code scanner: a multi-agent source-scanning pipeline that publishes findings into Exposure Management. It overlaps and complements CodeQL rather than adding runtime context. Not used by this repository." },
+    { "capability": "Azure SRE Agent", "state": "Available", "licensing": "Azure", "notes": "Cited from a separate public repository. Its GitHub connector reads source; write-back is not demonstrated there." }
+  ],
+  "lowRiskAdoptionPath": [
+    "Put AGENTS.md and one specification in one repository. Nothing else changes.",
+    "Turn on the deterministic checks that already exist and make them required.",
+    "Add CODEOWNERS so an approval means something.",
+    "Add one read-only agentic workflow with safe outputs. Watch what it writes for two weeks.",
+    "Only then decide which execution lane the team prefers. That decision is now reversible."
+  ]
+}

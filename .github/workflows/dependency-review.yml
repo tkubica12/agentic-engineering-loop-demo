@@ -1,0 +1,68 @@
+name: dependency-review
+
+# The repository has no runtime dependency today, but every pinned GitHub
+# Action is a dependency, so this check is not decorative.
+#
+# Dependency review needs the dependency graph. On a repository or a fork where
+# it is unavailable, the job reports the capability gap in plain words instead
+# of reporting a pass it did not earn.
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions: {}
+
+jobs:
+  review:
+    name: review dependency changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Check whether the dependency graph is available
+        id: capability
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if gh api "repos/${GITHUB_REPOSITORY}/dependency-graph/compare/${BASE}...${HEAD}" >/dev/null 2>&1; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Review dependency changes
+        if: steps.capability.outputs.available == 'true'
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        with:
+          fail-on-severity: moderate
+          comment-summary-in-pr: on-failure
+
+      - name: Report the outcome honestly
+        env:
+          AVAILABLE: ${{ steps.capability.outputs.available }}
+        run: |
+          if [ "$AVAILABLE" = "true" ]; then
+            echo "ENFORCED: dependency review ran and gated this pull request." >> "$GITHUB_STEP_SUMMARY"
+            echo "ENFORCED: dependency review ran and gated this pull request."
+          else
+            {
+              echo "## Dependency review did NOT run"
+              echo ""
+              echo "The dependency graph is not available on this repository, so this"
+              echo "control was not enforced for this pull request. Enable the dependency"
+              echo "graph in Settings, Code security, to turn this into a real gate."
+              echo ""
+              echo "This job is green because nothing failed, not because anything passed."
+            } >> "$GITHUB_STEP_SUMMARY"
+            echo "NOT ENFORCED: the dependency graph is unavailable on this repository."
+          fi

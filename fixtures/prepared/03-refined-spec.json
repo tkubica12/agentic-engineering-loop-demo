@@ -1,0 +1,48 @@
+{
+  "artifactId": "03-refined-spec",
+  "scene": "refine",
+  "kind": "repository-content",
+  "status": "prepared",
+  "labelInUi": "Repository content — this is the committed contract, not a simulation",
+  "capturedOn": "2026-08-23",
+  "featureIssue": {
+    "title": "[change] Suggest one compatible in-stock substitute when a SKU is unavailable",
+    "labels": ["showcase", "ready-for-spec", "size/medium"],
+    "outcome": "A counter assistant who requests a pack that is not on the shelf gets one concrete alternative in the same response, instead of a bare failure that sends them back to a separate lookup.",
+    "constraints": [
+      "No internal classification field leaves the service.",
+      "At most one substitute is offered.",
+      "Selection is deterministic.",
+      "A substitute must be immediately reservable at the same site for the whole requested quantity.",
+      "A SKU whose status is not active is never suggested.",
+      "No new runtime dependency."
+    ],
+    "acceptanceCriteria": [
+      "AC-1 An in-stock request is reserved and carries no suggestion.",
+      "AC-2 An out-of-stock request returns exactly one substitute.",
+      "AC-3 The substitute is the closest active in-stock member of the group.",
+      "AC-4 No internal classification field is ever serialised.",
+      "AC-5 A withdrawn SKU is never suggested.",
+      "AC-6 With no in-stock alternative the suggestion is null.",
+      "AC-7 The suggestion is stable across repeated identical requests.",
+      "AC-8 Held reservations reduce availability for later callers.",
+      "AC-9 Releasing a reservation restores availability.",
+      "AC-10 An inactive SKU is rejected rather than substituted."
+    ]
+  },
+  "documents": {
+    "specification": "docs/spec/SPEC-001-substitute-suggestion.md",
+    "decisionRecord": "docs/spec/ADR-0001-substitute-selection.md",
+    "acceptanceMapping": "docs/spec/acceptance-mapping.md"
+  },
+  "specKit": {
+    "what": "GitHub spec-kit is an open-source toolkit for spec-driven development: it gives a repository a standard place and a standard shape for the specification, the plan, and the tasks that an agent works from.",
+    "url": "https://github.com/github/spec-kit",
+    "howItRelates": "This repository writes the same three artefacts by hand so the showcase stays dependency-light. spec-kit is the packaged version of the same discipline, and is the thing to reach for when more than one team needs the shape to be identical.",
+    "claimBoundary": "Mentioned as an available toolkit. This repository does not run spec-kit, and does not claim to."
+  },
+  "verifiableClaims": [
+    "Every acceptance criterion in the specification maps to exactly one named test.",
+    "The mapping is checked in CI by scripts/verify.mjs --only acceptance, so a criterion without a test fails the build."
+  ]
+}

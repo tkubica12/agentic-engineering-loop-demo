@@ -1,0 +1,68 @@
+name: release-provenance
+
+# Builds the shareable bundle and attaches build provenance to it.
+#
+# Attestation requires the `attestations: write` permission and an entitled
+# repository. When the attestation step cannot run, the workflow records a
+# clearly labelled simulation instead. A simulated attestation is never
+# presented as a verified one: scripts/verify.mjs reads the marker and reports
+# the mode.
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Attestation mode
+        type: choice
+        default: auto
+        options: [auto, simulate]
+  push:
+    tags: ['v*']
+
+permissions: {}
+
+jobs:
+  build:
+    name: build and attest
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+
+      - name: Build the release bundle
+        run: node scripts/build-bundle.mjs
+
+      - name: Attest build provenance
+        id: attest
+        if: inputs.mode != 'simulate'
+        continue-on-error: true
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: out/bundle/showcase-bundle.tar.gz
+
+      - name: Record attestation mode
+        env:
+          ATTEST_OUTCOME: ${{ steps.attest.outcome }}
+          ATTEST_URL: ${{ steps.attest.outputs.attestation-url }}
+        run: node scripts/record-provenance.mjs
+
+      - name: Publish the bundle and its provenance record
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: showcase-bundle
+          path: |
+            out/bundle/showcase-bundle.tar.gz
+            out/bundle/provenance-record.json
+          retention-days: 14

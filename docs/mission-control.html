@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Offline fallback — The Agentic Engineering Loop</title>
+<meta name="description" content="Every scene of the sixty-minute showcase as a self-contained offline view, with each simulated state labelled, for use when GitHub or the network is unavailable.">
+<meta name="doc-id" content="agentic-engineering-loop-mission-control">
+
+<script>
+(function () {
+  var d = document.documentElement;
+  d.classList.add("js");
+  var p = new URLSearchParams(location.search);
+  var t = p.get("theme");
+  if (t !== "light" && t !== "dark") {
+    try { t = localStorage.getItem("doc-theme"); } catch (e) { t = null; }
+  }
+  if (t !== "light" && t !== "dark") {
+    t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+  d.setAttribute("data-theme", t);
+  if (p.get("view") === "slides") d.setAttribute("data-view", "slides");
+})();
+</script>
+
+<style>
+:root {
+  color-scheme: light;
+  --bg: #ffffff; --surface: #ffffff; --surface-2: #f5f6f8; --surface-3: #eaecf0;
+  --border: #dee1e6; --border-strong: #c2c7cf;
+  --text: #14171a; --text-muted: #565c66; --text-faint: #767d87;
+  --accent: #0078d4; --accent-strong: #005a9e; --accent-quiet: #4a9fe0;
+  --accent-soft: #eaf3fb; --accent-border: #a9d0ef;
+  --warn: #8a5300; --warn-soft: #fdf5e8; --warn-border: #e6c99a;
+  --code-bg: #f5f6f8; --code-border: #e2e5ea;
+  --focus: #0078d4;
+  --shadow-1: 0 1px 2px rgba(16,19,23,.06);
+  --shadow-2: 0 2px 4px rgba(16,19,23,.06), 0 12px 28px rgba(16,19,23,.08);
+  --radius: 10px; --radius-sm: 6px; --canvas: 1160px;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Cascadia Mono", "Cascadia Code", ui-monospace, Consolas, "SF Mono", "Liberation Mono", Menlo, monospace;
+}
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0e1013; --surface: #15181d; --surface-2: #1b1f26; --surface-3: #232830;
+  --border: #2b313a; --border-strong: #3d4550;
+  --text: #eceef1; --text-muted: #a7aeb8; --text-faint: #868e99;
+  --accent: #4aa3e8; --accent-strong: #7cc0f3; --accent-quiet: #2f80c4;
+  --accent-soft: #142430; --accent-border: #2c4f6d;
+  --warn: #e0b055; --warn-soft: #241d10; --warn-border: #574627;
+  --code-bg: #12151a; --code-border: #262c34;
+  --focus: #6cb8f0;
+  --shadow-1: 0 1px 2px rgba(0,0,0,.4);
+  --shadow-2: 0 2px 4px rgba(0,0,0,.4), 0 12px 28px rgba(0,0,0,.45);
+}
+</style>
+
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/article.css">
+<link rel="stylesheet" href="assets/slide-a11y.css">
+<script src="assets/article.js" defer></script>
+<script src="assets/slide-a11y.js" defer></script>
+</head>
+
+<body>
+
+<div class="controls" role="group" aria-label="Fallback controls">
+  <button type="button" class="ctrl" data-action="expand-all">Expand all</button>
+  <button type="button" class="ctrl" data-action="collapse-all">Collapse all</button>
+  <button type="button" class="ctrl" data-action="toggle-slides" aria-pressed="false">Slides</button>
+  <button type="button" class="ctrl" data-action="toggle-theme">Dark</button>
+</div>
+
+<div class="doc">
+
+  <header class="doc-header">
+    <p class="eyebrow">OFFLINE FALLBACK</p>
+    <h1>Every scene, with no network</h1>
+    <p class="subtitle">The complete sixty-minute journey as eleven self-contained demo scenes covering a nine-stage engineering loop. Nothing here contacts GitHub, nothing here is live, and every state on this page is labelled as what it is.</p>
+    <p class="meta"><time datetime="2026-08-23">23 August 2026</time> &middot; Captured from prepared artefacts under <code>fixtures/prepared/</code></p>
+  </header>
+
+  <nav class="doc-nav" aria-label="Related material">
+    <a href="index.html">Repository index</a>
+    <a href="showcase.html">The showcase</a>
+    <a href="presenter.html">Presenter guide</a>
+  </nav>
+
+  <nav class="toc" aria-label="Contents">
+    <p class="toc-label">Contents</p>
+    <ol>
+      <li><a href="#ch-mc-use">Using this page</a></li>
+      <li><a href="#ch-mc-open">Scenes 1 to 4</a></li>
+      <li><a href="#ch-mc-build">Scenes 5 to 7</a></li>
+      <li><a href="#ch-mc-land">Scenes 8 to 11</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <section class="chapter" id="ch-mc-use">
+      <h2 class="chapter-label">Using this page</h2>
+
+      <article class="card card--lead" id="card-mc-how" data-open data-scene="how">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="true">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">Press Slides, then advance with a click or an arrow key</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <p>Each card below is one scene of the hour, in order, with its minute window. In slides mode a click anywhere advances, arrow keys step, <kbd>O</kbd> opens the scene index, and <kbd>F</kbd> goes full screen. <kbd>Escape</kbd> leaves presentation and returns you to this article view, where the same cards read as a list; the <strong>Slides</strong> button in the top-right resumes presenting from where you were.</p>
+          <p>The page is a single file plus a local assets folder. It has no network dependency and works from a memory stick.</p>
+          <aside class="callout callout--warning">
+            <p class="callout-label">Warning</p>
+            <p>Every state shown on this page is reproduced from a prepared artefact. None of it is happening now. Say that once when you switch to this page, then present normally.</p>
+          </aside>
+        </div>
+      </article>
+    </section>
+
+    <section class="chapter" id="ch-mc-open">
+      <h2 class="chapter-label">Scenes 1 to 4</h2>
+
+      <article class="card" id="card-mc-thesis" data-scene="thesis">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">00 to 02 — Thesis</span>
+              <span class="card-sub">Static content. Nothing is simulated in this scene.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <p>One change is followed from a telemetry signal to a governed release and back. Nine lifecycle stages carry it, shown here in eleven demo scenes. Only one lifecycle stage is coding, and the ninth returns to the first.</p>
+          <p>The seven questions that decide whether an agent's diff survives contact with a real system are platform questions: was intent written down, is the proposal reviewable, does deterministic evidence exist, does policy allow it, who is accountable, how does it reach production, and what does production say afterwards.</p>
+          <p>Live equivalent: the showcase article, chapter one.</p>
+        </div>
+      </article>
+
+      <article class="card" id="card-mc-pulse" data-scene="pulse">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">02 to 10 — Repository pulse</span>
+              <span class="card-sub">Simulated view of a live scene. Reasoning proposes one issue; a compiled contract bounds the write.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <div class="code">
+            <p class="code-label">SIMULATED — the issue the workflow creates</p>
+            <pre><code>[pulse] SITE-NORTH SKU-1001 unavailable rate rose from 23% to 78%
+labels: showcase, pulse, needs-triage
+
+## Signal
+Requests in window: 57      Unavailable outcomes: 32
+First third: 23%            Last third: 78%
+Repository-wide: 11.3% of 959 events
+Window: 2026-08-02 to 2026-08-22</code></pre>
+          </div>
+          <p>The agent job that produced this held <code>contents: read</code> and <code>issues: read</code> with no write permission, and the compiled lock excluded the engine and MCP credentials from the model sandbox by name. A separate job created the issue.</p>
+          <p>Prepared artefact: <code>fixtures/prepared/01-signal-issue.json</code>. Numbers recomputed by <code>npm run verify -- --only signal</code>.</p>
+        </div>
+      </article>
+
+      <article class="card" id="card-mc-intake" data-scene="intake">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">10 to 13 — Issue intake</span>
+              <span class="card-sub">Simulated view of the experimental OpenCode lane.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <div class="code">
+            <p class="code-label">SIMULATED — the one comment, abridged to its headings</p>
+            <pre><code>Produced by the OpenCode engine (experimental sample lane).
+
+## Classification      Bounded change in app/src.
+## Duplicate check     Compared against all open issues. Not a duplicate.
+## Feasibility         catalog.js already separates public from internal
+                       fields; a suggestion can project through toPublicItem.
+## Missing             5 questions before this can become a specification.
+
+labels applied: needs-detail, size/medium</code></pre>
+          </div>
+          <p>Verified 2026-08-23 against gh-aw <code>main</code>: ADR-50145, accepted 4 August 2026, removed OpenCode as a first-class experimental engine, and its changeset is <code>major</code>. It still ships as an unsupported sample with <code>experimental: true</code>. The supported Copilot lane imports the identical brief and produces the same shape, which is why the removal costs this showcase nothing.</p>
+          <p>Prepared artefact: <code>fixtures/prepared/02-intake-result.json</code>.</p>
+        </div>
+      </article>
+
+      <article class="card" id="card-mc-refine" data-scene="refine">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">13 to 17 — The contract</span>
+              <span class="card-sub">Repository content. Nothing is simulated in this scene.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <div class="summary-grid">
+            <div class="summary-item"><span class="summary-label">Outcome</span>An unavailable request returns one concrete alternative in the same response.</div>
+            <div class="summary-item"><span class="summary-label">Constraints</span>No internal field leaves the service; one alternative only; deterministic; no new dependency.</div>
+            <div class="summary-item"><span class="summary-label">Criteria</span>Ten, each mapped to exactly one named test.</div>
+            <div class="summary-item"><span class="summary-label">Enforcement</span><code>verify --only acceptance</code> fails if the mapping and the tests disagree.</div>
+          </div>
+          <p>Files: <code>docs/spec/SPEC-001-substitute-suggestion.md</code>, <code>docs/spec/ADR-0001-substitute-selection.md</code>, <code>docs/spec/acceptance-mapping.md</code>.</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="chapter" id="ch-mc-build">
+      <h2 class="chapter-label">Scenes 5 to 7</h2>
+
+      <article class="card" id="card-mc-lanes" data-scene="lanes">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">17 to 21 — Execution surfaces</span>
+              <span class="card-sub">Reference content. Nothing is simulated in this scene.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <div class="summary-grid">
+            <div class="summary-item"><span class="summary-label">IDE</span>Cursor, VS Code. Developer machine, reads the repository contract.</div>
+            <div class="summary-item"><span class="summary-label">CLI</span>OpenCode, Copilot CLI, Claude Code. Developer machine or CI.</div>
+            <div class="summary-item"><span class="summary-label">Agent app</span>The GitHub Copilot app. Purpose-built, developer machine.</div>
+            <div class="summary-item"><span class="summary-label">Cloud agents</span>GitHub-hosted. Copilot, plus documented preview partners.</div>
+          </div>
+          <p>The specification, the tests, the checks, the reviewer, and the rules are identical in all four.</p>
+          <p>Prepared artefact: <code>fixtures/prepared/04-lane-comparison.json</code>.</p>
+        </div>
+      </article>
+
+      <article class="card" id="card-mc-delegate" data-scene="delegate">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">21 to 27 — Delegation</span>
+              <span class="card-sub">Simulated view of a pull request that already exists.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <div class="code">
+            <p class="code-label">SIMULATED — Files changed</p>
+            <pre><code>app/src/substitution.js                   +46  -0   new
+app/src/service.js                        +18  -4
+app/src/server.js                          +6  -2
+app/test/service.test.js                  +78  -0   AC-1 to AC-10
+docs/spec/ADR-0001-substitute-selection.md +52 -0
+
+5 files changed, 200 insertions, 6 deletions
+package.json unchanged</code></pre>
+          </div>
+          <p>The agent received the issue, the specification, and the repository rules. It received no repository secret, no write access to the default branch, and no permission to add a dependency or edit a workflow.</p>
+          <p>Prepared artefact: <code>fixtures/prepared/05-delegated-session.json</code>.</p>
+        </div>
+      </article>
+
+      <article class="card" id="card-mc-evidence" data-scene="evidence">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">27 to 40 — Evidence and authority</span>
+              <span class="card-sub">Simulated view of the checks and review state.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <div class="code">
+            <p class="code-label">SIMULATED — Checks</p>
+            <pre><code>tests / unit and contract tests (ubuntu-latest)                       success
+tests / unit and contract tests (windows-latest)                     success
+tests / acceptance criteria are all covered                          success
+content-validation / documents and prepared artefacts                success
+workflow-security / workflow source rules                            success
+workflow-security / compile agentic workflows and verify lock freshness  success
+codeql / analyze javascript                                          success
+dependency-review / review dependency changes                        success
+
+Copilot code review: 1 finding (reviewer, not a gate)
+Code owner review: 1 required, 1 approved</code></pre>
+          </div>
+          <p>The AI finding was the one line that would have carried the internal classification block into the response. The remediation routes the suggestion through <code>toPublicItem</code>, after which AC-4 proves the boundary.</p>
+          <p>Prepared artefact: <code>fixtures/prepared/06-pr-evidence.json</code>.</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="chapter" id="ch-mc-land">
+      <h2 class="chapter-label">Scenes 8 to 11</h2>
+
+      <article class="card" id="card-mc-release" data-scene="release">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">40 to 45 — Release</span>
+              <span class="card-sub">Simulated provenance record. It proves nothing about any artefact.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <div class="code">
+            <p class="code-label">SIMULATED — provenance-record.json</p>
+            <pre><code>{
+  "mode": "simulated",
+  "reason": "Attestation needs an entitled repository. This record
+             describes the shape of a provenance statement only.",
+  "subject": "out/bundle/showcase-bundle.tar.gz",
+  "predicateType": "https://slsa.dev/provenance/v1"
+}</code></pre>
+          </div>
+          <p>Merging is a code decision; deploying is an authority decision. An environment holds required reviewers, and the deployment job exchanges a short-lived token rather than holding a stored cloud credential.</p>
+          <p>Prepared artefact: <code>fixtures/prepared/07-release-provenance.json</code>.</p>
+        </div>
+      </article>
+
+      <article class="card" id="card-mc-sre" data-scene="sre">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">45 to 51 — Production feedback</span>
+              <span class="card-sub">Cited evidence from a separate public repository. Not simulated, not live.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <p>A staged incident ships a Container Apps revision with a payment-gateway configuration regression. Checkout returns HTTP 500. Azure SRE Agent correlates telemetry with connected GitHub source, a rollback subagent shifts all traffic to the known-good revision under an identity scoped to that one app, the Activity Log attributes the write to the agent, and recovery is verified rather than assumed.</p>
+          <aside class="callout callout--warning">
+            <p class="callout-label">Warning</p>
+            <p>It does not prove GitHub write-back. The subagent's instructions tell it to raise an issue for source fixes, but its configured tool list has no GitHub connector. That is a designed next step.</p>
+          </aside>
+          <p>Source: <a href="https://github.com/tkubica12/azure-sre-agent">tkubica12/azure-sre-agent</a>, MIT. Prepared artefact: <code>fixtures/prepared/08-sre-incident.json</code>.</p>
+        </div>
+      </article>
+
+      <article class="card" id="card-mc-coexist" data-scene="coexist">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">51 to 58 — Coexistence and adoption</span>
+              <span class="card-sub">Reference content. Nothing is simulated in this scene.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <p>Work management and engineering evidence are different systems of record. Jira keeps planning and reporting; the evidence an agent works from moves closer to the code. Each repository later gets one disposition: Migrate, Mirror, or Leave in place. Those are per-repository decisions, not calendar phases.</p>
+          <ul class="arrow-list">
+            <li>Phase 1, week 1: observation only, contract in one repository.</li>
+            <li>Phase 2, week 2: make existing checks required.</li>
+            <li>Add CODEOWNERS and a ruleset so approval means something.</li>
+            <li>Add one read-only agent with safe outputs.</li>
+            <li>Then pick a lane, when the decision is reversible.</li>
+          </ul>
+          <p>Prepared artefact: <code>fixtures/prepared/09-adoption-matrix.json</code>.</p>
+        </div>
+      </article>
+
+      <article class="card" id="card-mc-close" data-scene="close">
+        <h3 class="card-head">
+          <button type="button" class="card-toggle" aria-expanded="false">
+            <span class="card-num" aria-hidden="true"></span>
+            <span class="card-titles">
+              <span class="card-title">58 to 60 — Close</span>
+              <span class="card-sub">Simulated view of the follow-up signal that restarts the loop.</span>
+            </span>
+            <span class="card-mark" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="card-body">
+          <div class="code">
+            <p class="code-label">SIMULATED — the next pulse issue</p>
+            <pre><code>[pulse] 7 unmet requests still end with no alternative because
+        no group member is in stock
+
+Unmet requests in the window:      32 requests
+Now answered with an alternative:  25 requests
+Still answered with nothing:        7 requests
+
+Counts, not rates. Not comparable with the opening percentages.</code></pre>
+          </div>
+          <p>Nine lifecycle stages, one of them coding. The change was measured by the same signal that motivated it, which is only possible because intent, evidence, and telemetry all live where the code lives.</p>
+          <p>Prepared artefact: <code>fixtures/prepared/10-followup.json</code>.</p>
+        </div>
+      </article>
+    </section>
+
+  </main>
+
+  <p class="takeaway">A fallback that covers only the parts you expected to fail is not a fallback.</p>
+
+  <footer class="doc-footer">
+    <a href="index.html">Repository index</a>
+    <a href="showcase.html">The showcase</a>
+    <a href="presenter.html">Presenter guide</a>
+  </footer>
+
+</div>
+
+</body>
+</html>

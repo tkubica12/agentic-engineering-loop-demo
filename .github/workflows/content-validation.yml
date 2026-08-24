@@ -1,0 +1,50 @@
+name: content-validation
+
+# Validates the attendee-facing artefacts: internal links, anchors, duplicate
+# ids, synthetic-data rules, and the prepared fallback set.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: content-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  content:
+    name: documents and prepared artefacts
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+
+      - name: Validate documents and fixtures
+        run: node scripts/validate-docs.mjs
+
+      - name: Rehearse the full sequence offline
+        run: node scripts/rehearse.mjs --fast
+
+      - name: Publish the rehearsal transcript
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: rehearsal-transcript
+          path: out/rehearsal/
+          if-no-files-found: warn
+          retention-days: 7

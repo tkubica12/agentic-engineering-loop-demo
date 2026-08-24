@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Presenter guide
+    url: https://github.com/tkubica12/agentic-engineering-loop-demo/blob/main/docs/presenter.html
+    about: Minute-by-minute run of show, preparation checklists, and the fallback ladder.
+  - name: Repository rules
+    url: https://github.com/tkubica12/agentic-engineering-loop-demo/blob/main/AGENTS.md
+    about: What agents and humans may change here, and the accuracy rules that apply.

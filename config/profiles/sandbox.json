@@ -1,0 +1,37 @@
+{
+  "id": "sandbox",
+  "label": "Sandbox",
+  "description": "A personal or team repository with no enterprise policy attached. Everything that can run live runs live; everything that needs an entitlement falls back to a labelled simulation.",
+  "target": {
+    "$comment": "Never hard-code a real organisation. Supply OWNER/REPO on the command line.",
+    "owner": null,
+    "repo": null
+  },
+  "capabilities": {
+    "agenticWorkflows": "live",
+    "opencodeEngine": "removed-ships-as-sample",
+    "copilotCodeReview": "live",
+    "codeql": "live",
+    "secretScanningPush": "depends-on-plan",
+    "dependencyReview": "live",
+    "artifactAttestation": "live",
+    "environmentApproval": "depends-on-plan",
+    "rulesets": "depends-on-plan",
+    "mdash": "not-available"
+  },
+  "governance": {
+    "environmentName": "showcase-staging",
+    "rulesetName": "showcase-main-protection",
+    "requiredReviewers": 1,
+    "requireCodeOwnerReview": true
+  },
+  "release": {
+    "provenance": "live-if-entitled",
+    "deploymentTarget": "none",
+    "oidcSubjectPattern": "repo:OWNER/REPO:environment:showcase-staging"
+  },
+  "limits": {
+    "agentTimeoutMinutes": 12,
+    "agentMaxTurns": 14
+  }
+}

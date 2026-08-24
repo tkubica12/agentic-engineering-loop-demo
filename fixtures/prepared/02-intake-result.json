@@ -1,0 +1,48 @@
+{
+  "artifactId": "02-intake-result",
+  "scene": "intake",
+  "kind": "prepared-output",
+  "status": "prepared",
+  "labelInUi": "Prepared output — experimental OpenCode lane",
+  "capturedOn": "2026-08-23",
+  "producedBy": {
+    "workflow": ".github/workflows/issue-intake-opencode.md",
+    "engine": "opencode",
+    "engineVersion": "1.2.14",
+    "supportStatus": "removed-upstream-ships-as-unsupported-sample",
+    "supportNote": "ADR-50145 in github/gh-aw, accepted 2026-08-04, removed OpenCode as a first-class experimental engine; its changeset is marked major and states that workflows using engine: opencode no longer compile or validate. The behaviour definition still ships upstream under 'Unsupported engine samples' with engine.experimental: true and no compatibility or maintenance commitment. Verified 2026-08-23 against gh-aw main c453ed80. On gh-aw v0.86.2 this workflow still compiles and passes gh aw validate --strict, because it imports the vendored definition rather than a built-in engine identifier, and gh aw compile prints 'Using experimental OpenCode support'.",
+    "sources": {
+      "adr": "github/gh-aw docs/adr/50145-remove-opencode-engine-from-workflows.md, blob 2b9a9f468691497687f9111dcb3282d64f4b5113",
+      "changeset": "github/gh-aw .changeset/major-remove-opencode-engine.md, blob a18ad3749be79330e0e07fd5875fe516a381e717",
+      "engineReference": "https://github.github.com/gh-aw/reference/engines/",
+      "vendoredDefinition": ".github/workflows/shared/opencode.md, blob d875e158b1500f7adc3e8c8616a5b849f2dd44d7"
+    },
+    "modelRouting": "copilot/claude-sonnet-4.5 — model access goes through the GitHub Copilot provider, so this lane needs no separate Anthropic or OpenAI subscription.",
+    "safeOutputs": ["add-labels", "add-comment"]
+  },
+  "fallbackLane": {
+    "workflow": ".github/workflows/issue-intake.md",
+    "engine": "copilot",
+    "supportStatus": "supported",
+  "note": "Same imported brief, same allowed labels, same one-comment limit. It exists because ADR-50145 says the experimental lane will stop compiling."
+  },
+  "labelsApplied": ["needs-detail", "size/medium"],
+  "labelsRemovedFromCandidates": {
+    "ready-for-spec": "acceptance criteria were absent",
+    "duplicate": "no open issue described the same outcome",
+    "out-of-scope": "the change lands in app/src, which is in scope"
+  },
+  "comment": "Produced by the OpenCode engine (experimental sample lane).\n\n## Classification\n\nBounded change to this repository, in `app/src`.\n\n## Duplicate check\n\nCompared against every open issue. No open issue describes an alternative for an unmet request. The closest neighbour is the availability lookup work, which reports stock rather than proposing an action. Not a duplicate.\n\n## Feasibility\n\nReachable without a new runtime dependency. `app/src/catalog.js` already separates public item fields from an `internal` block, so a suggestion can be projected through `toPublicItem` without exposing `substituteGroup`, `therapeuticClass`, `marginTier`, or `supplierCode`. `app/src/service.js` already computes availability net of held reservations, which is the number a suggestion has to respect.\n\nThe constraint that matters is the serialisation boundary. A suggestion assembled anywhere other than `toPublicItem` would leak the internal block.\n\n## Missing before this can become a specification\n\n1. How many alternatives are offered? One, or a ranked list?\n2. What makes two SKUs interchangeable here, and is that a clinical or a commercial decision?\n3. Must an alternative be reservable for the whole requested quantity, or is a partial match useful?\n4. What happens when the group has no in-stock member at all?\n5. Does the alternative have to be at the same site?\n",
+  "verifiableClaims": [
+    "Exactly one comment was written.",
+    "Every applied label came from the allowed list in the workflow frontmatter.",
+    "The agent job held read-only GitHub permissions; labels and the comment were applied by a separate scoped safe-output job.",
+    "Threat detection ran between the agent job and the safe-output job."
+  ],
+  "whyPreparedRatherThanLive": {
+    "summary": "This lane is shown as prepared output. Two properties of its compiled lock, both readable in the committed file, make it unsuitable as a live control path on stage.",
+    "firewall": "The OpenCode lock sets GH_AW_INFO_FIREWALL_ENABLED to \"false\", while both supported Copilot locks set it to \"true\". Firewall containers remain pinned in the manifest and AWF configuration still constrains egress, so a presenter should expect the run summary to report the firewall as disabled and should say so rather than be surprised by it.",
+    "credentials": "The OpenCode lock maps OPENAI_API_KEY to the COPILOT_GITHUB_TOKEN secret and does not add that variable to the sandbox --exclude-env list, so the Copilot token reaches the model's environment under another name. Neither supported lock contains that mapping.",
+    "conclusion": "The swappability argument does not need this lane to run live. Prepared evidence makes the same point without putting a credential difference on stage."
+  }
+}

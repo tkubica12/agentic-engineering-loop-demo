@@ -1,0 +1,34 @@
+{
+  "$comment": "Synthetic on-hand quantities per site. No real stock levels.",
+  "generatedFor": "agentic-engineering-loop-showcase",
+  "sites": [
+    {
+      "siteId": "SITE-NORTH",
+      "stock": {
+        "SKU-1001": 0,
+        "SKU-1002": 12,
+        "SKU-1003": 4,
+        "SKU-1004": 7,
+        "SKU-1005": 30,
+        "SKU-2001": 0,
+        "SKU-2002": 0,
+        "SKU-3001": 9,
+        "SKU-4001": 15
+      }
+    },
+    {
+      "siteId": "SITE-SOUTH",
+      "stock": {
+        "SKU-1001": 6,
+        "SKU-1002": 0,
+        "SKU-1003": 0,
+        "SKU-1004": 0,
+        "SKU-1005": 0,
+        "SKU-2001": 11,
+        "SKU-2002": 3,
+        "SKU-3001": 0,
+        "SKU-4001": 2
+      }
+    }
+  ]
+}
