@@ -7,11 +7,12 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import {
   createChecker, repoPath, readText, readJson, loadManifest, loadProfile, log, parseArgs, exists, requireProfile } from './lib/repo.mjs';
+import { loadReplayInput, replayFollowUp } from './lib/followup.mjs';
 
 const args = parseArgs();
 const only = args.options.only;
 
-const GROUPS = ['acceptance', 'signal', 'provenance', 'coverage', 'profiles'];
+const GROUPS = ['acceptance', 'signal', 'followup', 'provenance', 'coverage', 'profiles'];
 
 if (args.flags.has('only') && only === undefined) {
   log.fail(`verify: --only requires a group name. Valid groups: ${GROUPS.join(', ')}`);
@@ -126,6 +127,101 @@ if (section('signal')) {
   checker.check(
     prepared.derivedFrom.events === events.length,
     `the prepared artefact records the real event count (${events.length})`
+  );
+}
+
+// --- the closing payoff is recomputed, never restated ------------------------
+//
+// The hour ends on 32 / 25 / 7. Those numbers are the argument, so they are
+// derived here from the real requests and the real selection logic rather than
+// read out of a fixture. See scripts/lib/followup.mjs for what is read and what
+// is declared.
+
+if (section('followup')) {
+  log.head('Follow-up replay');
+  const input = loadReplayInput();
+  const result = replayFollowUp(input);
+  const expected = input.expected;
+  const followup = readJson('fixtures', 'prepared', '10-followup.json');
+
+  log.info(`replayed ${result.requestsReplayed} unmet request(s) from the telemetry, in timestamp order`);
+  log.info(`answered with a substitute: ${result.answeredWithSubstitute}; unresolved: ${result.unresolved}`);
+  log.info(`substitutes taken: ${JSON.stringify(result.substitutesBySku)}; units dispensed: ${result.unitsDispensed}`);
+
+  // The replay input must declare itself synthetic and must not be mistaken for
+  // a second observed window. This is the honesty rule, checked rather than
+  // trusted.
+  checker.check(input.status === 'synthetic', 'the replay input declares itself synthetic');
+  checker.check(
+    /not a second production run/i.test(input.labelInUi),
+    'the replay input denies being a second production run'
+  );
+  checker.check(
+    /replay/i.test(followup.labelInUi) && !/second (production )?run/i.test(followup.replay?.claims ?? ''),
+    'the closing artefact labels itself as a replayed window'
+  );
+
+  // The requests are read, not declared, so the replay cannot pick a friendlier
+  // set of inputs than the ones the opening signal was computed from.
+  checker.check(
+    !Array.isArray(input.replayWindow.requests),
+    'the replay reads its requests from the telemetry instead of declaring them'
+  );
+
+  checker.check(
+    result.requestsReplayed === expected.requestsReplayed,
+    `the window holds ${result.requestsReplayed} unmet request(s), and the input expects ${expected.requestsReplayed}`
+  );
+  checker.check(
+    result.answeredWithSubstitute === expected.answeredWithSubstitute,
+    `the replay answers ${result.answeredWithSubstitute} with a substitute, and the input expects ${expected.answeredWithSubstitute}`
+  );
+  checker.check(
+    result.unresolved === expected.unresolved,
+    `the replay leaves ${result.unresolved} unresolved, and the input expects ${expected.unresolved}`
+  );
+  checker.check(
+    result.unitsDispensed === expected.unitsDispensed,
+    `the replay dispenses ${result.unitsDispensed} unit(s), and the input expects ${expected.unitsDispensed}`
+  );
+  checker.check(
+    JSON.stringify(result.substitutesBySku) === JSON.stringify(expected.substitutesBySku),
+    'the replay reaches for the same group members the input expects'
+  );
+  checker.check(
+    JSON.stringify(result.closingStock) === JSON.stringify(expected.closingStock),
+    'the replay leaves the shelf where the input expects'
+  );
+
+  // The three numbers must add up, and must be the three the closing artefact
+  // publishes to the room.
+  checker.check(
+    result.answeredWithSubstitute + result.unresolved === result.requestsReplayed,
+    'the answered and unresolved counts account for every request in the window'
+  );
+  const body = followup.followUpIssue.body;
+  checker.check(
+    body.includes(`Unmet requests in the window: ${result.requestsReplayed} requests`),
+    `the closing issue states the recomputed request count (${result.requestsReplayed})`
+  );
+  checker.check(
+    body.includes(`Now answered with an alternative: ${result.answeredWithSubstitute} requests`),
+    `the closing issue states the recomputed substitute count (${result.answeredWithSubstitute})`
+  );
+  checker.check(
+    body.includes(`Still answered with nothing: ${result.unresolved} requests`),
+    `the closing issue states the recomputed residue (${result.unresolved})`
+  );
+  checker.check(
+    followup.followUpIssue.title.includes(`${result.unresolved} unmet requests`),
+    'the closing issue title states the recomputed residue'
+  );
+
+  // The residue is only interesting because the shelf actually ran out. If some
+  // group member still had free units the claim would be false.
+  checker.check(
+    Object.values(result.closingStock).every((units) => units === 0),
+    'every active group member is at zero free units when the window closes'
   );
 }
 

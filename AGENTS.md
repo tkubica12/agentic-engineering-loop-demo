@@ -15,7 +15,7 @@ without advancing it, remove the change.
 ## Product accuracy
 
 1. **Date every product claim.** The verification date for this repository is
-   2026-08-23. If you change a claim, change the date and say what you checked.
+   2026-08-24. If you change a claim, change the date and say what you checked.
 2. **Name the stage.** GA, public preview, private preview, experimental sample, and
    simulation are five different things. Use the right word every time the
    capability appears. "Preview" on its own is not a stage.

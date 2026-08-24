@@ -25,6 +25,13 @@
   /* No article to enhance: leave silently. */
   if (!main || typeof MutationObserver === "undefined") return;
 
+  /* The runtime's last slide is the closing takeaway, and that element is a
+     SIBLING of <main>, not a descendant of it. Watching only <main> therefore
+     missed the final slide entirely: the live region kept announcing slide 14's
+     title while slide 15 was on screen, and focus never moved. Observe and
+     query the whole document container instead, which covers both. */
+  var scope = document.querySelector(".doc") || document.body;
+
   /* Matches the runtime's MIN_ZOOM floor logic: below ~0.85 the body text is
      getting hard to read from the back of a room, so surface it once. */
   var LEGIBLE_ZOOM = 0.85;
@@ -83,8 +90,36 @@
   /* The slide's own title, not just its number. A card exposes .card-title; a
      chapter exposes .chapter-label; the closing panel is the takeaway. The
      .card-title lookup is guarded to a card node because a chapter *contains*
-     cards and would otherwise borrow a nested card's title. */
+     cards and would otherwise borrow a nested card's title.
+
+     One chapter is special. The first divider is presented as the cover, so the
+     screen shows the document's title and subtitle and hides the chapter label
+     entirely. Announcing "Intent and contract" there would name something the
+     slide does not show, so the cover announces what it does show. The cover is
+     detected by the same condition the stylesheet uses: the document header is
+     visible while this chapter is the current slide. */
+  function coverHeading(node) {
+    if (!node.classList.contains("chapter")) return null;
+    var header = document.querySelector(".doc .doc-header");
+    if (!header) return null;
+    var visible;
+    try {
+      visible = getComputedStyle(header).display !== "none";
+    } catch (e) {
+      return null;
+    }
+    if (!visible) return null;
+    var h1 = header.querySelector("h1");
+    var subtitle = header.querySelector(".subtitle");
+    var title = h1 && h1.textContent.trim();
+    if (!title) return null;
+    var sub = subtitle && subtitle.textContent.trim();
+    return sub ? title + ". " + sub : title;
+  }
+
   function slideTitle(node) {
+    var cover = coverHeading(node);
+    if (cover) return cover;
     var title = null;
     if (node.classList.contains("card")) title = node.querySelector(".card-title");
     if (!title) title = node.querySelector(":scope > .chapter-label") || node.querySelector(".chapter-label");
@@ -160,7 +195,7 @@
   }
 
   function currentSlide() {
-    return main.querySelector("[data-slide-current]");
+    return scope.querySelector("[data-slide-current]");
   }
 
   function onChange() {
@@ -168,8 +203,9 @@
     handle(currentSlide());
   }
 
-  /* The runtime marks the active slide with data-slide-current inside <main>.
-     Slides are descendants, so observe the subtree for that one attribute. */
+  /* The runtime marks the active slide with data-slide-current. Slides are
+     descendants of the document container, so observe that subtree for the one
+     attribute; <main> alone would miss the closing takeaway beside it. */
   var observer = new MutationObserver(function (records) {
     for (var i = 0; i < records.length; i++) {
       var target = records[i].target;
@@ -179,7 +215,7 @@
       }
     }
   });
-  observer.observe(main, {
+  observer.observe(scope, {
     subtree: true,
     attributes: true,
     attributeFilter: ["data-slide-current"]

@@ -144,3 +144,15 @@
   margin-top: 1.4em;
   font-size: clamp(0.85rem, 1.5vh, 1.05rem);
 }
+
+/* The cover's dateline sits on the opening slide, which is the one thing the
+   room reads while people are still finding a seat. article.css sets .meta to
+   --text-faint, which is the right weight for a dateline inside a scrolling
+   article but is the lowest-contrast text on the page. WCAG 2.2 SC 1.4.3
+   requires 4.5:1 for body-size text, and --text-faint on --bg is close enough
+   to that line to be a bad bet on a projector with its own gamma. --text-muted
+   is the next token up and clears the ratio comfortably in both themes. This
+   picks a different existing token; it defines no token and states no colour. */
+[data-view="slides"] .doc:has(#ch-intent[data-slide-current]) .doc-header .meta {
+  color: var(--text-muted);
+}

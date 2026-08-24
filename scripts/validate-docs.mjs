@@ -138,7 +138,9 @@ if (screened === null) {
   log.info(`the local screen never reads its own declaration: ${screened.exempt.join(', ')}`);
   checker.check(
     screened.offenders.length === 0,
-    `local screen over ${screened.terms} presenter term(s) found nothing${screened.offenders.length ? `: ${screened.offenders.join('; ')}` : ''}`
+    screened.offenders.length
+      ? `local screen over ${screened.terms} presenter term(s) found ${screened.offenders.length} match(es): ${screened.offenders.join('; ')}`
+      : `local screen over ${screened.terms} presenter term(s) found nothing in ${screened.scanned} file(s)`
   );
 }
 

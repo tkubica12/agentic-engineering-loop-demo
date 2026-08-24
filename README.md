@@ -34,6 +34,21 @@ npm run rehearse     # walk all eleven scenes offline
 npm run serve        # http://127.0.0.1:8080/
 ```
 
+`npm run verify` proves its claims group by group, and each group can be run on
+its own. Two of them recompute the numbers the hour opens and closes on:
+
+```bash
+npm run verify -- --only signal     # the opening 23% to 78%, from the telemetry
+npm run verify -- --only followup   # the closing 32 / 25 / 7, replayed
+```
+
+The follow-up group replays the thirty-two unmet requests through the service's
+own `selectSubstitute`, so the closing payoff is derived rather than restated. It
+is a **prepared replay**: the requests are the real ones from the telemetry, and
+the shelf state afterwards is declared synthetic in
+`fixtures/telemetry/post-change-stock.json`. No second production window was
+observed, and nothing in the repository claims one was.
+
 `npm run rehearse -- --fallback` walks the same hour entirely on prepared artefacts, resolving every fallback target, which is the check that the fallback path has no gaps.
 
 ## The seven questions this loop answers
@@ -79,7 +94,7 @@ Every agent job holds read-only GitHub permissions, caps its time, turns, and AI
 
 ## Honesty rules this repository enforces
 
-- Product states carry the date they were verified: **2026-08-23**.
+- Product states carry the date they were verified: **2026-08-24**.
 - Experimental, preview, and simulated states are labelled everywhere they appear.
 - A simulated provenance record declares `mode: simulated` and is never described as an attestation.
 - No customer or tenant identifier is committed. Neutrality is structural: no profile holds a concrete organisation, tenant, subscription or directory value, and attendee-facing documents may use only an allowlisted set of scenario and product proper nouns. Tests enforce both, and an unrecognised name fails the build. A presenter's engagement-specific terms live in an untracked `.showcase.local.json` (see `.showcase.local.example.json`) and are never committed. This public repository's own owner and name are present, because the standalone export needs them to rewrite sibling links.

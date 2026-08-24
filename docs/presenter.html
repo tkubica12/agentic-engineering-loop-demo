@@ -68,7 +68,6 @@
 <div class="controls" role="group" aria-label="Guide controls">
   <button type="button" class="ctrl" data-action="expand-all">Expand all</button>
   <button type="button" class="ctrl" data-action="collapse-all">Collapse all</button>
-  <button type="button" class="ctrl" data-action="toggle-slides" aria-pressed="false">Slides</button>
   <button type="button" class="ctrl" data-action="toggle-theme">Dark</button>
 </div>
 
@@ -78,7 +77,7 @@
     <p class="eyebrow">OPERATOR DOCUMENT</p>
     <h1>Presenter guide</h1>
     <p class="subtitle">Everything needed to run the sixty minutes from a cold machine: what to prepare, what to say, what should be on screen, when to abandon a live path, and how to get back to a clean state afterwards.</p>
-    <p class="meta"><time datetime="2026-08-23">23 August 2026</time> &middot; Read this once at T-24h and keep it open on the second screen</p>
+    <p class="meta"><time datetime="2026-08-24">24 August 2026</time> &middot; Read this once at T-24h and keep it open on the second screen</p>
   </header>
 
   <nav class="doc-nav" aria-label="Related material">
@@ -152,12 +151,14 @@ npm run rehearse</code></pre>
           <div class="code">
             <p class="code-label">to rehearse the enterprise profile as well</p>
             <pre><code># PowerShell
-$env:SHOWCASE_PROFILE = "enterprise"; npm run preflight; npm run verify
+$env:SHOWCASE_PROFILE = "enterprise"
+npm run preflight
+if ($LASTEXITCODE -eq 0) { npm run verify }
 
 # bash, zsh, or any POSIX shell
 SHOWCASE_PROFILE=enterprise npm run preflight &amp;&amp; SHOWCASE_PROFILE=enterprise npm run verify</code></pre>
           </div>
-          <p>An unknown profile name fails immediately with one line and exit code 2, so a typo cannot silently fall back to the sandbox profile.</p>
+          <p>An unknown profile name fails immediately with one line and exit code 2, so a typo cannot silently fall back to the sandbox profile. The PowerShell form checks the exit code between the two commands: <code>;</code> would have run <code>verify</code> even after <code>preflight</code> failed, which is the opposite of what a preflight is for.</p>
           <div class="reveal">
             <button type="button" class="reveal-toggle" aria-expanded="false">Show what each command proves</button>
             <div class="reveal-body">
@@ -165,7 +166,7 @@ SHOWCASE_PROFILE=enterprise npm run preflight &amp;&amp; SHOWCASE_PROFILE=enterp
                 <li><code>setup</code> creates the output directories and clears the previous transcript. It installs nothing.</li>
                 <li><code>preflight</code> checks Node, the documents, the fixtures, and the optional tooling, then prints the capability state for the active profile.</li>
                 <li><code>test</code> runs the service tests and the repository tests.</li>
-                <li><code>verify</code> recomputes the telemetry signal and fails if the prepared issue disagrees with the data.</li>
+                <li><code>verify</code> recomputes the telemetry signal and fails if the prepared issue disagrees with the data. It also replays the closing window: <code>npm run verify -- --only followup</code> derives the 32 / 25 / 7 from the real requests and the shipped selection logic.</li>
                 <li><code>aw:install</code> installs <code>gh aw</code> at the version the committed locks record, removing a different one first if it finds it. It is idempotent and never installs the latest release.</li>
                 <li><code>validate:aw</code> runs <code>gh aw validate --strict</code> and checks that every lock file was compiled rather than written. It first asserts that this checkout is the git working-tree root, so the freshness comparison cannot pass by recompiling a different repository's workflows.</li>
                 <li><code>rehearse</code> walks all eleven scenes and fails if any one lacks an artefact, a fallback, an expected state, or a stop condition.</li>
@@ -189,6 +190,7 @@ SHOWCASE_PROFILE=enterprise npm run preflight &amp;&amp; SHOWCASE_PROFILE=enterp
         <div class="card-body">
           <div class="summary-grid">
             <div class="summary-item"><span class="summary-label">Always available</span>Every prepared artefact, the showcase, this guide and the offline fallback.</div>
+            <div class="summary-item"><span class="summary-label">Needs your own copy</span>Tab 2, Actions. The pulse runs only in a fork or copy <em>you</em> own.</div>
             <div class="summary-item"><span class="summary-label">Needs a seeded target</span>Tab 3, the signal issue. The seeding script creates it in a repository you name.</div>
             <div class="summary-item"><span class="summary-label">Needs a real run</span>The pull request, its checks and the release run. Nothing here creates them: tabs 5, 6, 7.</div>
           </div>
@@ -200,7 +202,7 @@ npm run seed:remote -- --repo OWNER/REPO --apply</code></pre>
           <p>No default target, by design; <code>--apply</code> is required before anything is written. Seeding creates the labels and the signal issue only, and starts no agentic workflow.</p>
           <aside class="callout callout--warning">
             <p class="callout-label">Warning</p>
-            <p>Be honest about the gap. Seeding does not create the pull request on tab 5, the checks on tab 6, or the release run on tab 7, and no script in this repository does. Those tabs exist only once somebody has run the loop in your repository. Until then treat tabs 3, 5, 6 and 7 as <strong>optional</strong> and say so once.</p>
+            <p>Be honest about the gap. Seeding installs <strong>no workflow</strong>: the pulse on tab 2 runs only where <code>.github/workflows/</code> already lives, which means a fork or copy of this repository that you own, with Actions enabled and Copilot AI credits and policy available to it. Seeding also does not create the pull request on tab 5, the checks on tab 6, or the release run on tab 7, and no script here does. Until you have verified each one, treat tabs 2, 3, 5, 6 and 7 as <strong>optional</strong>, present those scenes from the prepared artefacts, and say so once.</p>
           </aside>
           <p>Rung four of the fallback ladder is a complete presentation on its own: an unseeded session is smaller, not failed.</p>
         </div>
@@ -244,9 +246,9 @@ npm run seed:remote -- --repo OWNER/REPO --apply</code></pre>
             <div class="summary-item"><span class="summary-label">Go 1</span><code>npm run preflight</code> exits zero.</div>
             <div class="summary-item"><span class="summary-label">Go 2</span>The showcase opens in slides mode with a clean console.</div>
             <div class="summary-item"><span class="summary-label">Go 3</span>The offline fallback loads and its first scene renders.</div>
-            <div class="summary-item"><span class="summary-label">Go 4</span>The prepared pull request and issue tabs are open and readable.</div>
+            <div class="summary-item"><span class="summary-label">Go 4</span>Tabs 2, 3, 5, 6 and 7 are open and readable — which requires a fork or copy you own, with Actions and Copilot credits, and a run that has already happened there.</div>
           </div>
-          <p>Conditions 1 to 3 are hard. If any fails, do not present. Condition 4 failing costs the live path only.</p>
+          <p>Conditions 1 to 3 are hard. If any fails, do not present. Condition 4 failing costs the live path only: the pulse then runs as prepared evidence like every other scene, and rung four of the ladder is still a complete hour.</p>
           <p>If GitHub or the network is unavailable, open with: "Two segments would normally run live. They ran this morning instead, and I will show you the output and the workflow that produced it." Then never mention it again.</p>
         </div>
       </article>
@@ -269,7 +271,7 @@ npm run seed:remote -- --repo OWNER/REPO --apply</code></pre>
         <div class="card-body">
           <ol class="steps">
             <li><h4>1 — Showcase, slides mode</h4><p><code>showcase.html?view=slides</code>. The spine. You return here between every other tab.</p></li>
-            <li><h4>2 — Actions</h4><p>The repository's Actions tab, filtered to the pulse workflow.</p></li>
+            <li><h4>2 — Actions</h4><p>The repository's Actions tab, filtered to the pulse workflow. Needs a fork or copy you own with Actions and Copilot credits; optional until verified.</p></li>
             <li><h4>3 — The signal issue</h4><p>The <code>[pulse]</code> issue, with the intake comment below it. Needs a seeded target repository; optional until then.</p></li>
             <li><h4>4 — The specification</h4><p><code>docs/spec/SPEC-001-substitute-suggestion.md</code> in the repository view.</p></li>
             <li><h4>5 — The pull request, Files changed</h4><p>Opened on the diff, not on the conversation. Needs a real run in the target repository; optional until then.</p></li>
@@ -292,23 +294,23 @@ npm run seed:remote -- --repo OWNER/REPO --apply</code></pre>
           </button>
         </h3>
         <div class="card-body">
-          <p>Fifteen slides: three section dividers, eleven scene cards, one closing takeaway. The first divider is the cover, so slide 1 shows the title, the subtitle and the thesis rather than a section name. The slide number is what the corner counter shows.</p>
+          <p>Fifteen slides: three section dividers, eleven scene cards, one closing takeaway. The first divider is the cover, so slide 1 shows the title, the subtitle and the thesis rather than a section name. Every scene names the lifecycle stage it puts on the screen and the questions it answers, in that order, and the slide shows the same marker. Nine stages, eleven scenes: they are different counts.</p>
           <ol class="steps">
-            <li><h4>00 to 02 &middot; slide 2 &middot; <code>card-thesis</code></h4><p>Tab 1 — Showcase, slides mode. Questions 1 to 7.</p></li>
-            <li><h4>02 to 10 &middot; slide 3 &middot; <code>card-pulse</code></h4><p>Tab 3 — The signal issue, with tab 2 — Actions triggered in the background. Question 1.</p></li>
-            <li><h4>10 to 13 &middot; slide 4 &middot; <code>card-intake</code></h4><p>Tab 3 — The signal issue. Question 1. Prepared output only.</p></li>
-            <li><h4>13 to 17 &middot; slide 5 &middot; <code>card-refine</code></h4><p>Tab 4 — The specification. Questions 1 and 2.</p></li>
-            <li><h4>17 to 21 &middot; slide 6 &middot; <code>card-lanes</code></h4><p>Back to tab 1 — Showcase, slides mode. Question 2. First backwards jump.</p></li>
-            <li><h4>21 to 27 &middot; slide 8 &middot; <code>card-delegate</code></h4><p>Tab 5 — The pull request, Files changed. Question 2.</p></li>
-            <li><h4>27 to 40 &middot; slide 9 &middot; <code>card-evidence</code></h4><p>Tab 6 — The pull request, Checks. Questions 3, 4 and 5.</p></li>
-            <li><h4>40 to 45 &middot; slide 11 &middot; <code>card-release</code></h4><p>Tab 7 — Release run. Question 6.</p></li>
-            <li><h4>45 to 51 &middot; slide 12 &middot; <code>card-sre</code></h4><p>Back to tab 1 — Showcase, slides mode. Question 7. Second backwards jump.</p></li>
-            <li><h4>51 to 58 &middot; slide 13 &middot; <code>card-coexist</code></h4><p>Tab 1 — Showcase, slides mode. All seven questions.</p></li>
-            <li><h4>58 to 60 &middot; slide 14 &middot; <code>card-close</code></h4><p>Tab 1 — Showcase, slides mode. All seven questions, then slide 15, <code>card-takeaway</code>.</p></li>
+            <li><h4>00 to 02 &middot; slide 2 &middot; <code>card-thesis</code></h4><p>All nine stages &middot; Q1 to Q7. Tab 1 — Showcase, slides mode.</p></li>
+            <li><h4>02 to 10 &middot; slide 3 &middot; <code>card-pulse</code></h4><p>Stage 1 Signal &middot; Q1 of 7. Tab 3 — The signal issue, with tab 2 — Actions in the background.</p></li>
+            <li><h4>10 to 13 &middot; slide 4 &middot; <code>card-intake</code></h4><p>Stage 2 Intent &middot; Q1 of 7. Tab 3 — The signal issue. Prepared output only.</p></li>
+            <li><h4>13 to 17 &middot; slide 5 &middot; <code>card-refine</code></h4><p>Stage 3 Contract &middot; Q1 and Q2 of 7. Tab 4 — The specification.</p></li>
+            <li><h4>17 to 21 &middot; slide 6 &middot; <code>card-lanes</code></h4><p>Stage 4 Lane &middot; Q2 of 7. Back to tab 1 — Showcase, slides mode. First backwards jump.</p></li>
+            <li><h4>21 to 27 &middot; slide 8 &middot; <code>card-delegate</code></h4><p>Stage 5 Implementation &middot; Q2 of 7. Tab 5 — The pull request, Files changed.</p></li>
+            <li><h4>27 to 40 &middot; slide 9 &middot; <code>card-evidence</code></h4><p>Stages 6 and 7, Evidence and Authority &middot; Q3, Q4 and Q5 of 7. Tab 6 — The pull request, Checks.</p></li>
+            <li><h4>40 to 45 &middot; slide 11 &middot; <code>card-release</code></h4><p>Stage 8 Release &middot; Q6 of 7. Tab 7 — Release run.</p></li>
+            <li><h4>45 to 51 &middot; slide 12 &middot; <code>card-sre</code></h4><p>Stage 9 Production &middot; Q7 of 7. Back to tab 1 — Showcase, slides mode. Second backwards jump.</p></li>
+            <li><h4>51 to 58 &middot; slide 13 &middot; <code>card-coexist</code></h4><p>Across all nine stages &middot; Q1 to Q7. Tab 1 — Showcase, slides mode.</p></li>
+            <li><h4>58 to 60 &middot; slide 14 &middot; <code>card-close</code></h4><p>Stage 9 back to stage 1 &middot; Q1 to Q7. Tab 1 — Showcase, slides mode. Then slide 15, <code>card-takeaway</code>.</p></li>
           </ol>
           <aside class="callout callout--note">
             <p class="callout-label">Note</p>
-            <p>Slides 1, 7 and 10 are the three section dividers. Slide 1 is the cover and carries the title, the subtitle and the thesis; slides 7 and 10 need no tab and no talk track beyond naming the section.</p>
+            <p>Slides 1, 7 and 10 are the three section dividers. Slide 1 is the cover and carries the title, the subtitle and the thesis; slides 7 and 10 need no tab and no talk track beyond naming the section. Three scenes are marked as spanning the loop rather than demonstrating one stage of it: the thesis, the adoption ask, and the close. Every one of the nine stages is demonstrated by one of the other eight.</p>
           </aside>
         </div>
       </article>
@@ -526,13 +528,17 @@ npm run seed:remote -- --repo OWNER/REPO --apply</code></pre>
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
               <span class="card-title">58 to 60 — Static — Close</span>
-              <span class="card-sub">Tab 1. One sentence, then stop talking.</span>
+              <span class="card-sub">Tab 1. Say prepared replay once, then one sentence and stop talking.</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
         </h3>
         <div class="card-body">
-          <p><strong>Say:</strong> "The same workflow ran again after the change merged and raised the next issue by itself: thirty-two unmet requests, twenty-five now answered with an alternative, seven still not. Stage nine became stage one. Nine lifecycle stages, shown in eleven scenes. One of the nine was coding. The other eight are what made the coding safe to keep. All seven questions I opened with now have an answer that does not depend on which model wrote the code. Pick whichever agent you like, and change your mind next quarter. What must not churn is the place where intent, evidence, and authority live."</p>
+          <aside class="callout callout--rule">
+            <p class="callout-label">Rule</p>
+            <p>Say <strong>prepared replay</strong>, out loud, before you say the numbers. The thirty-two requests are the real ones from the opening telemetry; what the shelf held afterwards is declared synthetic, and the answer is computed from both by the shipped selection logic. It is <em>not</em> a second production run, and no second window was observed. <code>npm run verify -- --only followup</code> recomputes it in front of anyone who asks.</p>
+          </aside>
+          <p><strong>Say:</strong> "This is a prepared replay: the same unmet requests, run through the code that shipped. Thirty-two unmet requests, twenty-five now answered with an alternative, seven still not — because by then nothing in the group was left on the shelf. Stage nine became stage one. Nine lifecycle stages, shown in eleven scenes. One of the nine was coding. The other eight are what made the coding safe to keep. All seven questions I opened with now have an answer that does not depend on which model wrote the code. Pick whichever agent you like, and change your mind next quarter. What must not churn is the place where intent, evidence, and authority live."</p>
           <p><strong>Then, the one-line ask:</strong> "One repository, two weeks, three people, five artefacts, and a decision on day 14."</p>
           <p><strong>Then:</strong> Stop. Take questions after this, not inside the hour.</p>
           <p><strong>Expected:</strong> The close slide: follow-up counts, the seven answers, the ask. Then slide 15, the takeaway.</p>

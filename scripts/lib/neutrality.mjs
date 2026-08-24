@@ -29,14 +29,15 @@ const SENTENCE_WORDS = new Set([
   'Given', 'Has', 'How', 'If', 'In', 'Is', 'It', 'Its', 'Keep', 'Leave', 'Migrate', 'Mirror',
   'Most', 'Never', 'Nine', 'No', 'Not', 'Nothing', 'Now', 'On', 'One', 'Only', 'Or', 'Other',
   'Pick', 'Product', 'Ran', 'Read', 'Repository', 'Runs', 'Said', 'Say', 'Seven', 'Show',
-  'Since', 'So', 'Some', 'Source', 'Still', 'Stop', 'Take', 'Tab', 'Ten', 'That', 'The',
+  'Since', 'So', 'Some', 'Source', 'Still', 'Stop', 'Take', 'Tab', 'Tabs', 'Ten', 'That', 'The',
   'Their', 'Then', 'There', 'These', 'They', 'This', 'Those', 'Three', 'To', 'Two', 'Use',
   'Was', 'We', 'What', 'When', 'Where', 'Which', 'While', 'Who', 'Why', 'Will', 'With',
   'Would', 'Write', 'You', 'Your', 'Article', 'Activity', 'Experimental', 'Expected',
   'Prepared', 'Live', 'Static', 'Verdict', 'Rule', 'Note', 'Warning', 'Question', 'Phase',
   'Cut', 'Checkpoint', 'Contents', 'Intent', 'Proposal', 'Evidence', 'Policy',
   'Accountability', 'Release', 'Feedback', 'Signal', 'Contract', 'Lane', 'Implementation',
-  'Authority', 'Production', 'Observation', 'Reveals', 'Slide', 'Say', 'Watch'
+  'Authority', 'Production', 'Observation', 'Reveals', 'Slide', 'Say', 'Watch',
+  'Stage', 'Stages', 'Capability', 'Replay', 'Replayed'
 ]);
 
 /** Strip code, markup and entities so only attendee-visible prose remains. */

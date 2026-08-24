@@ -10,7 +10,7 @@
       "name": "tests / unit and contract tests (ubuntu-latest)",
       "workflow": ".github/workflows/tests.yml",
       "conclusion": "success",
-      "proves": "All 187 repository tests pass, including the 21 service tests that carry AC-1 to AC-10.",
+      "proves": "All 203 repository tests pass, including the 21 service tests that carry AC-1 to AC-10.",
       "kind": "deterministic"
     },
     {
@@ -87,7 +87,10 @@
   "mdash": {
     "codename": "MDASH",
     "stage": "private preview",
-    "stageSource": "https://learn.microsoft.com/en-us/security-exposure-management/ai-code-security-overview",
+    "stageSource": "https://learn.microsoft.com/en-us/security-exposure-management/mdash-initiative",
+    "stageSourceQuote": "Codename MDASH - Agentic code scanner initiative (private preview)",
+    "stageSourceNote": "The overview page describes the capability but does not carry the stage. The initiative page's own title does, so the stage is cited from there and quoted rather than paraphrased.",
+    "stageSourceReadOn": "2026-08-24",
     "positioning": "A Microsoft agentic code scanner in the Defender and Exposure Management family. It runs a multi-agent source-scanning pipeline and publishes its findings into Exposure Management.",
     "relationToCodeQL": "It overlaps and complements CodeQL as a code scanner. It is not runtime or exposure context, and it does not replace static analysis. Nothing in this repository depends on it.",
     "claimBoundary": "Named as a private preview capability with its stage stated. No screenshot, no simulated finding, no claim that it ran here."

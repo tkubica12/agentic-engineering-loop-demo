@@ -79,7 +79,7 @@
     <h1>GitHub Beyond Coding</h1>
     <p class="subtitle">The Agentic Engineering Loop</p>
     <p class="subtitle">A nine-stage engineering loop shown in eleven demo scenes; only one lifecycle stage is coding. The business case is in the other eight, where cycle time, rework and audit effort accumulate. By the end you can tell which stages an agent should own, which must stay with a named human, and which primitives your current stack already provides.</p>
-    <p class="meta"><time datetime="2026-08-23">23 August 2026</time> &middot; Product states verified 2026-08-23 &middot; Synthetic data only</p>
+    <p class="meta"><time datetime="2026-08-24">24 August 2026</time> &middot; Product states verified 2026-08-24 &middot; Synthetic data only</p>
   </header>
 
   <nav class="doc-nav" aria-label="Related material">
@@ -110,7 +110,7 @@
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
               <span class="card-title">Nine stages carry one change, and only one is coding</span>
-              <span class="card-sub">Q1 to Q7 &middot; Bitbucket and Jira may remain; nothing migrates for this demonstration</span>
+              <span class="card-sub">All nine stages &middot; Q1 to Q7 &middot; Bitbucket and Jira may remain; nothing migrates</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
@@ -169,7 +169,7 @@
             <li><strong>Q6 Release</strong> — how does it ship? Approval and federated identity.</li>
             <li><strong>Q7 Feedback</strong> — what did production say? Back to stage one.</li>
           </ul>
-          <p><strong>Nothing migrates for this demonstration.</strong> Your Bitbucket repositories and your Jira projects may remain exactly where they are. Assess one repository, and compare which of these seven primitives are native, integrated, or custom in your current stack.</p>
+          <p><strong>Nothing migrates for this demonstration.</strong> Your Bitbucket repositories and your Jira projects may remain exactly where they are. Assess one repository, and mark each of these seven primitives <strong>native</strong>, <strong>integrated</strong>, or <strong>custom</strong> in your current stack. The maintained bridges behind the custom ones are the platform cost.</p>
         </div>
       </article>
 
@@ -219,7 +219,7 @@
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
               <span class="card-title">Reasoning proposes one issue; a compiled contract bounds the write</span>
-              <span class="card-sub">Q1 &middot; GitHub Agentic Workflows, public preview, pinned here at gh-aw v0.86.2</span>
+              <span class="card-sub">Stage 1 Signal &middot; Q1 of 7 &middot; GitHub Agentic Workflows, public preview, pinned at gh-aw v0.86.2</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
@@ -228,7 +228,7 @@
           <p><strong>The opening number.</strong> For the synthetic pair <code>SITE-NORTH</code> / <code>SKU-1001</code>, the unavailable rate rose from <strong>23%</strong> to <strong>78%</strong> across the window. The counts quoted at the close are a different measure, not a comparison with these percentages.</p>
           <p>The input is committed telemetry: reviewed repository content, not attacker-controlled. What bounds the run is the frontmatter below, and the compiled lock it produces is ordinary committed Actions YAML.</p>
           <div class="code">
-            <p class="code-label">.github/workflows/repository-pulse.md &mdash; the control contract, in review</p>
+            <p class="code-label">control contract, abridged from .github/workflows/repository-pulse.md</p>
             <pre><code>permissions:  { contents: read, issues: read }   # the agent job can write nothing
 timeout-minutes: 10    max-turns: 12    max-ai-credits: 300   # bounded cost
 safe-outputs:
@@ -338,7 +338,7 @@ safe-outputs:
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
               <span class="card-title">Contracts outlive engines, and this one already proved it</span>
-              <span class="card-sub">Question 1 of 7 &middot; prepared output from an engine GitHub has since removed</span>
+              <span class="card-sub">Stage 2 Intent &middot; Q1 of 7 &middot; prepared output from an engine GitHub has since removed</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
@@ -391,7 +391,7 @@ safe-outputs:
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
               <span class="card-title">Ten acceptance criteria, ten named tests, checked both ways</span>
-              <span class="card-sub">Questions 1 and 2 of 7 &middot; intent becomes a contract</span>
+              <span class="card-sub">Stage 3 Contract &middot; Q1 and Q2 of 7 &middot; intent becomes a contract</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
@@ -440,7 +440,7 @@ safe-outputs:
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
               <span class="card-title">Four execution surfaces, one repository contract</span>
-              <span class="card-sub">Question 2 of 7 &middot; the surface is a preference, not an architecture</span>
+              <span class="card-sub">Stage 4 Lane &middot; Q2 of 7 &middot; the surface is a preference, not an architecture</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
@@ -496,7 +496,7 @@ safe-outputs:
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
               <span class="card-title">A good agent pull request is small enough to read in the room</span>
-              <span class="card-sub">Question 2 of 7 &middot; is the proposal reviewable?</span>
+              <span class="card-sub">Stage 5 Implementation &middot; Q2 of 7 &middot; is the proposal reviewable?</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
@@ -545,7 +545,7 @@ safe-outputs:
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
               <span class="card-title">Eight checks, one ruleset, one accountable human</span>
-              <span class="card-sub">Questions 3, 4 and 5 of 7 &middot; evidence, policy, accountability</span>
+              <span class="card-sub">Stages 6 and 7, Evidence and Authority &middot; Q3, Q4 and Q5 of 7 &middot; evidence, policy, accountability</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
@@ -644,7 +644,7 @@ safe-outputs:
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
               <span class="card-title">Merging is a code decision; deploying is an authority decision</span>
-              <span class="card-sub">Question 6 of 7 &middot; how does it reach production?</span>
+              <span class="card-sub">Stage 8 Release &middot; Q6 of 7 &middot; how does it reach production?</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
@@ -693,7 +693,7 @@ safe-outputs:
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
               <span class="card-title">Production signal correlated to source under an identity scoped to one workload</span>
-              <span class="card-sub">Question 7 of 7 &middot; a cloud-neutral pattern; the Azure demo below is one concrete proof. GitHub write-back is the named next step, not proof.</span>
+              <span class="card-sub">Stage 9 Production &middot; Q7 of 7 &middot; a cloud-neutral pattern; GitHub write-back is the named next step, not proof</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
@@ -742,7 +742,7 @@ safe-outputs:
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
               <span class="card-title">Keep Bitbucket and Jira; pilot one repository for two weeks</span>
-              <span class="card-sub">All seven questions &middot; the ask, and what it costs</span>
+              <span class="card-sub">Across all nine stages &middot; Q1 to Q7 &middot; the ask, and what it costs</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
@@ -755,7 +755,7 @@ safe-outputs:
             <div class="summary-item"><span class="summary-label">Who</span>Repository owner, security reviewer, platform engineer. Part time. We supply this repository, the workflow definitions and a walkthrough.</div>
             <div class="summary-item"><span class="summary-label">Cost</span>Actions minutes; Copilot AI credits, capped per workflow in the file; Advanced Security licensing for private-repository scanning.</div>
           </div>
-          <p><strong>Five artefacts by day 14:</strong> an agent-raised issue from your telemetry, a specification with mapped tests, a pull request small enough to read, a check run that blocked something, an attributed approval. <strong>The decision:</strong> extend to a second repository, or stop. Not which agent to standardise on &mdash; that stays reversible.</p>
+          <p><strong>Five artefacts by day 14:</strong> an agent-raised issue from your telemetry, a specification with mapped tests, a pull request small enough to read, a check run that blocked something, an attributed approval. The pilot measures one thing you cannot read off a price list: what it costs your team to keep the bridges behind your custom primitives working. <strong>The decision:</strong> extend to a second repository, or stop.</p>
         </div>
       </article>
 
@@ -831,7 +831,7 @@ safe-outputs:
               <span class="card-num" aria-hidden="true"></span>
               <span class="card-titles">
                 <span class="card-title">Every capability this session touches, with its stage and its licensing</span>
-                <span class="card-sub">Verified 2026-08-23. GA, public preview, private preview, removed sample and simulation are five different things.</span>
+                <span class="card-sub">Verified 2026-08-24. GA, public preview, private preview, removed sample and simulation are five different things.</span>
               </span>
               <span class="card-mark" aria-hidden="true"></span>
             </button>
@@ -888,21 +888,21 @@ safe-outputs:
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
               <span class="card-title">The loop closed, and the follow-up issue proves it</span>
-              <span class="card-sub">All seven questions, answered &middot; nine stages, one of them coding</span>
+              <span class="card-sub">Stage 9 back to stage 1 &middot; Q1 to Q7 &middot; prepared replay of the real unmet requests</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
         </h3>
         <div class="card-body">
-          <p>The same pulse workflow ran again after the change merged, and raised the next issue by itself: <strong>32 unmet requests</strong> in the window, <strong>25 now answered</strong> with an alternative, <strong>7 still not</strong> because no group member was in stock. Counts, not rates: this is a different measure from the opening percentages. Stage nine became stage one.</p>
+          <p>The change was measured by the same signal that motivated it. Replaying the <strong>32 unmet requests</strong> of the window through the shipped selection logic, <strong>25 are now answered</strong> with an alternative and <strong>7 still are not</strong>, because by then no active group member had free stock at that site. Counts, not rates: a different measure from the opening percentages. Stage nine became stage one.</p>
           <div class="summary-grid">
-            <div class="summary-item"><span class="summary-label">1 Intent</span>An issue with outcome, constraints, acceptance criteria.</div>
-            <div class="summary-item"><span class="summary-label">2 Proposal</span>A pull request small enough to read.</div>
-            <div class="summary-item"><span class="summary-label">3 Evidence</span>Eight checks, none of them a model.</div>
-            <div class="summary-item"><span class="summary-label">4 Policy</span>A ruleset on the default branch.</div>
-            <div class="summary-item"><span class="summary-label">5 Accountability</span>A named person, on a commit SHA.</div>
-            <div class="summary-item"><span class="summary-label">6 Release</span>An approved environment, a federated token.</div>
-            <div class="summary-item"><span class="summary-label">7 Feedback</span>The next signal, which is stage one again.</div>
+            <div class="summary-item"><span class="summary-label">Q1 Intent</span>An issue with outcome, constraints, acceptance criteria.</div>
+            <div class="summary-item"><span class="summary-label">Q2 Proposal</span>A pull request small enough to read.</div>
+            <div class="summary-item"><span class="summary-label">Q3 Evidence</span>Eight checks, none of them a model.</div>
+            <div class="summary-item"><span class="summary-label">Q4 Policy</span>A ruleset on the default branch.</div>
+            <div class="summary-item"><span class="summary-label">Q5 Accountability</span>A named person, on a commit SHA.</div>
+            <div class="summary-item"><span class="summary-label">Q6 Release</span>An approved environment, a federated token.</div>
+            <div class="summary-item"><span class="summary-label">Q7 Feedback</span>The next signal, which is stage one again.</div>
           </div>
           <p><strong>The ask:</strong> one repository, two weeks, three people, five artefacts, and a decision on day 14.</p>
         </div>
@@ -930,6 +930,7 @@ Now answered with an alternative:  25 requests
 Still answered with nothing:        7 requests</code></pre>
             </div>
             <p>The change closed most of the gap. What is left is a sourcing question, not a response-shape question, and it arrived as a bounded issue rather than as a complaint. That is only possible because intent, evidence and telemetry all live where the code lives.</p>
+            <p><strong>Prepared replay, not a second production run.</strong> The thirty-two unmet requests are read from the same telemetry the opening signal came from; what the shelf held afterwards is declared synthetic; the twenty-five and the seven are then computed by the same <code>selectSubstitute</code> the service ships. Run <code>npm run verify -- --only followup</code> to recompute all three numbers, and the check fails if the catalogue, the ranking, the telemetry or the declared stock ever disagrees with them.</p>
           </div>
         </article>
       </div>

@@ -76,7 +76,20 @@ On gh-aw v0.86.2 a workflow importing this definition still compiles and passes
   Claude and OpenAI Codex:
   <https://docs.github.com/en/copilot/concepts/agents/about-third-party-coding-agents>
 
-Both read 2026-08-23. Neither is reproduced here beyond short quotations.
+First read 2026-08-23 and **re-read 2026-08-24**, which is this repository's
+product validation date. What was re-checked on that date, and what it said:
+
+- the engine reference still carries the heading "Unsupported engine samples"
+  and still states that those integrations "are samples only. They are not
+  officially supported by gh-aw and have no compatibility or maintenance
+  commitment", and OpenCode is still listed among them;
+- the third-party agents page still opens with "Third-party coding agents are
+  currently in public preview", and still lists exactly Anthropic Claude and
+  OpenAI Codex under "Supported coding agents".
+
+Neither page is reproduced here beyond those short quotations. The pinned blob
+and commit SHAs below were **not** re-read on 2026-08-24; they record a specific
+upstream state read on 2026-08-23 and keep that date deliberately.
 
 ## Cited Microsoft documentation
 
@@ -84,13 +97,15 @@ The security chapter names Microsoft's agentic code scanner by its codename and
 states its stage. The stage is quoted, not paraphrased: Microsoft Learn titles the
 page **"Codename MDASH - Agentic code scanner initiative (private preview)"**.
 
-- <https://learn.microsoft.com/en-us/security-exposure-management/mdash-initiative>
-- <https://learn.microsoft.com/en-us/security-exposure-management/ai-code-security-overview>
+- Stage, quoted from the page title:
+  <https://learn.microsoft.com/en-us/security-exposure-management/mdash-initiative>
+- Capability description:
+  <https://learn.microsoft.com/en-us/security-exposure-management/ai-code-security-overview>
 
-Both read 2026-08-24, which is later than this repository's product validation date
-of 2026-08-23 because this one claim was re-checked on its own. The overview page
-describes the capability but does not carry the stage; the initiative page does, and
-that is why the stage is cited from there. Nothing in this repository depends on the
+Both read 2026-08-24. The overview page describes the capability but does not
+carry the stage; the initiative page's own title does, which is why the stage is
+cited from there and why `fixtures/prepared/06-pr-evidence.json` records the
+initiative page as its `stageSource`. Nothing in this repository depends on the
 capability, and no finding from it is shown or simulated.
 
 ## Cited external evidence

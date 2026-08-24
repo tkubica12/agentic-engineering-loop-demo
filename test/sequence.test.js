@@ -597,9 +597,33 @@ test('the pulse scene states the product stage and the pinned compiler version',
 test('the thesis scene reassures that nothing migrates, and labels the questions Q1 to Q7', () => {
   const card = showcase.slice(showcase.indexOf('id="card-thesis"'), showcase.indexOf('id="card-primitives"'));
   assert.match(card, /Nothing migrates for this demonstration/i);
-  assert.match(card, /native, integrated, or custom/i);
+  for (const verdict of ['native', 'integrated', 'custom']) {
+    assert.match(card, new RegExp(`<strong>${verdict}</strong>`),
+      `the thesis slide does not offer "${verdict}" as one of the three verdicts`);
+  }
   for (let n = 1; n <= 7; n++) {
     assert.ok(card.includes(`Q${n} `), `the thesis slide does not label question Q${n}`);
+  }
+});
+
+test('the commercial argument is stated as a cost to measure, never as a return', () => {
+  // The thesis names where the platform cost actually sits, and the adoption
+  // slide says the pilot measures that cost. Neither invents a number, and no
+  // document may assert a return on investment it cannot evidence.
+  const thesis = showcase.slice(showcase.indexOf('id="card-thesis"'), showcase.indexOf('id="card-primitives"'));
+  assert.match(thesis, /maintained bridges behind the custom ones are the platform cost/i,
+    'the thesis slide does not name where the platform cost sits');
+
+  const coexist = showcase.slice(showcase.indexOf('id="card-coexist"'), showcase.indexOf('id="card-cost"'));
+  assert.match(coexist, /pilot measures/i, 'the adoption slide does not say what the pilot measures');
+  assert.match(coexist, /costs your team to keep the bridges/i,
+    'the adoption slide does not tie the pilot to the cost the thesis named');
+
+  for (const [name, doc] of [['showcase', showcase], ['presenter', presenter], ['mission control', mission]]) {
+    assert.ok(!/\bROI\b|return on investment/i.test(doc), `${name} asserts a return on investment`);
+    assert.ok(!/\b\d+\s*(%|per ?cent)\s*(faster|cheaper|saving|reduction)/i.test(doc),
+      `${name} quotes an invented efficiency number`);
+    assert.ok(!/pays for itself|payback period/i.test(doc), `${name} promises a payback it cannot evidence`);
   }
 });
 
@@ -790,6 +814,32 @@ test('the first divider is a cover, and it costs no extra slide', () => {
   assert.match(presenter, /The first divider is the cover/, 'the crosswalk still calls slide 1 a section name');
 });
 
+test('the cover dateline uses a token that clears the body-text contrast floor', () => {
+  // The cover is the one slide the room reads before anyone is listening, and
+  // article.css puts its dateline on the faintest token on the page. The fix is
+  // to choose a different EXISTING token, never to define or restate a colour:
+  // the palette is fixed and the runtime owns it.
+  const overlay = readText('docs', 'assets', 'slide-a11y.css');
+  const rule = overlay.match(
+    /\[data-view="slides"\] \.doc:has\(#ch-intent\[data-slide-current\]\) \.doc-header \.meta \{\s*color:\s*([^;]+);\s*\}/
+  );
+  assert.ok(rule, 'the cover dateline does not override its colour');
+  assert.equal(rule[1].trim(), 'var(--text-muted)',
+    'the cover dateline uses something other than the --text-muted token');
+
+  // No colour literal and no token definition may appear anywhere in our layer.
+  assert.ok(!/#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(/i.test(overlay),
+    'the overlay states a colour literal instead of using a token');
+  assert.ok(!/^\s*--[a-z-]+\s*:/m.test(overlay),
+    'the overlay defines a design token, which belongs to the runtime');
+
+  // And the rationale is recorded where the next person will read it.
+  const comment = overlay.slice(Math.max(0, overlay.indexOf('The cover\'s dateline') - 8), overlay.indexOf('.doc-header .meta {\n  color'));
+  assert.match(comment, /WCAG/, 'the override records no accessibility rationale');
+  assert.match(comment, /4\.5:1/, 'the rationale does not name the ratio it is clearing');
+  assert.match(comment, /--text-faint/, 'the rationale does not say which token it is replacing');
+});
+
 test('the presented type scale is proportional and lives in the repository layer', () => {
   const overlay = readText('docs', 'assets', 'slide-a11y.css');
   const article = readText('docs', 'assets', 'article.css');
@@ -829,15 +879,29 @@ test('the presenter guide states what the repository cannot create for you', () 
   // The honest gap: seeding creates the issue, and nothing here creates the rest.
   assert.match(card, /nothing here creates them|no script in this repository does/i,
     'the card claims a seeding process for evidence that no script produces');
+  assert.match(card, /installs <strong>no workflow<\/strong>/i,
+    'the card does not say that seeding installs no workflow');
+  assert.match(card, /fork or copy of this repository that you own/i,
+    'the card does not state where the live pulse can actually run');
+  assert.match(card, /Actions enabled and Copilot AI credits and policy/i,
+    'the card does not state what the live pulse needs beyond a repository');
   assert.match(card, /<strong>optional<\/strong>/, 'the card does not mark the live remote tabs optional');
-  for (const tab of ['3', '5', '6', '7']) {
+  for (const tab of ['2', '3', '5', '6', '7']) {
     assert.ok(card.includes(tab), `the card does not name tab ${tab}`);
   }
 
-  // The tab list agrees.
+  // The tab list agrees, and so does the go/no-go condition that depends on it.
   const tabs = presenter.slice(presenter.indexOf('id="card-tabs"'), presenter.indexOf('id="card-crosswalk"'));
-  assert.equal((tabs.match(/optional until/gi) || []).length, 4,
-    'the tab list does not mark exactly the four remote tabs optional');
+  assert.equal((tabs.match(/optional until/gi) || []).length, 5,
+    'the tab list does not mark exactly the five remote tabs optional');
+  assert.match(tabs, /2 — Actions<\/h4><p>[^<]*optional until/i,
+    'the tab list does not mark the Actions tab optional');
+
+  const gono = presenter.slice(presenter.indexOf('id="card-gono"'), presenter.indexOf('id="card-gono"') + 2600);
+  assert.match(gono, /Tabs 2, 3, 5, 6 and 7/, 'the go/no-go condition does not name the tabs that need a live remote');
+  assert.match(gono, /fork or copy you own/i, 'the go/no-go condition does not state the prerequisite');
+  assert.match(gono, /Condition 4 failing costs the live path only/i,
+    'the go/no-go card no longer says the live tabs are the soft condition');
 });
 
 test('the T-24 sequence installs the pinned toolchain before it validates with it', () => {
@@ -857,9 +921,15 @@ test('the T-24 sequence installs the pinned toolchain before it validates with i
   assert.match(card, /Console tab/, 'the T-24 card no longer names the console');
   assert.match(card, /<strong>no-go<\/strong>/, 'a console warning is no longer stated as a no-go');
 
-  // The enterprise profile rehearsal stays.
+  // The enterprise profile rehearsal stays, and must not run verify after a
+  // failed preflight: a preflight that is allowed to be ignored is decoration.
   assert.match(card, /SHOWCASE_PROFILE/, 'the enterprise profile commands were dropped');
-  assert.match(card, /npm run preflight; npm run verify/, 'the PowerShell profile line was dropped');
+  assert.match(card, /if \(\$LASTEXITCODE -eq 0\) \{ npm run verify \}/,
+    'the PowerShell profile block runs verify even when preflight failed');
+  assert.ok(!/npm run preflight; npm run verify/.test(card),
+    'the PowerShell profile line still chains with a semicolon, which ignores the exit code');
+  assert.match(card, /SHOWCASE_PROFILE=enterprise npm run preflight &amp;&amp;/,
+    'the POSIX profile line no longer short-circuits on failure');
 });
 
 test('the offline fallback explains both directions of the presenting toggle', () => {
@@ -931,6 +1001,200 @@ test('every command list that claims a count states the right one', () => {
     'README.md validates with a compiler it has not pinned yet');
   assert.ok(!/gh-aw --pin v\d/.test(readme),
     'README.md hard-codes the pin as a command instead of pointing at the script');
+});
+
+// --- Round 6: lifecycle stages, the close, and the replayed payoff -----------
+
+test('every scene declares which lifecycle stage it puts on the screen', () => {
+  const canonical = shape.stages;
+  for (const scene of scenes) {
+    assert.ok(Array.isArray(scene.stages), `${scene.id} declares no stages array`);
+    assert.ok(scene.stages.length > 0 || scene.crossCutting,
+      `${scene.id} claims no stage and is not marked cross-cutting`);
+    for (const stage of scene.stages) {
+      assert.ok(canonical.includes(stage), `${scene.id} claims "${stage}", which is not one of the nine`);
+    }
+    assert.ok(['demonstrates', 'frames', 'returns'].includes(scene.stageRole),
+      `${scene.id} has an unknown stage role "${scene.stageRole}"`);
+    assert.ok(scene.stageLabel, `${scene.id} has no stage label`);
+    assert.ok(scene.questionLabel, `${scene.id} has no question label`);
+    assert.equal(scene.sceneMarker, `${scene.stageLabel} \u00b7 ${scene.questionLabel}`,
+      `${scene.id} marker does not compose from its own parts`);
+  }
+});
+
+test('every one of the nine stages is demonstrated by a scene that is not cross-cutting', () => {
+  // Cross-cutting scenes frame the loop. If they counted, the opening diagram
+  // alone would satisfy this and the check would prove nothing.
+  const mapping = shape.stageMapping;
+  assert.ok(mapping, 'the manifest declares no stage mapping');
+  for (const stage of shape.stages) {
+    const claimed = mapping.demonstratedBy[stage];
+    assert.ok(Array.isArray(claimed) && claimed.length > 0,
+      `no scene demonstrates the "${stage}" stage`);
+    for (const id of claimed) {
+      const scene = scenes.find((s) => s.id === id);
+      assert.ok(scene, `the mapping names "${id}", which is not a scene`);
+      assert.ok(!scene.crossCutting, `"${stage}" is only claimed by the cross-cutting scene ${id}`);
+      assert.ok(scene.stages.includes(stage), `${id} does not actually claim "${stage}"`);
+    }
+  }
+  // The mapping is derived, never hand-maintained: recompute and compare.
+  const recomputed = Object.fromEntries(shape.stages.map((stage) => [
+    stage,
+    scenes.filter((s) => !s.crossCutting && s.stages.includes(stage)).map((s) => s.id)
+  ]));
+  assert.deepEqual(mapping.demonstratedBy, recomputed, 'the stage mapping has drifted from the scenes');
+  assert.deepEqual(mapping.crossCuttingScenes, scenes.filter((s) => s.crossCutting).map((s) => s.id));
+  assert.deepEqual(mapping.crossCuttingScenes, ['thesis', 'coexist', 'close'],
+    'the set of scenes that only frame the story has changed');
+});
+
+test('the stage marker reaches both screens, identically', () => {
+  for (const scene of scenes) {
+    const start = showcase.indexOf(`id="${scene.card}"`);
+    const head = showcase.slice(start, start + 1600);
+    const sub = head.match(/<span class="card-sub">([^<]*)<\/span>/);
+    assert.ok(sub, `${scene.card} has no subtitle`);
+    const rendered = sub[1].replace(/&middot;/g, '\u00b7');
+    assert.ok(rendered.startsWith(scene.sceneMarker),
+      `${scene.card} subtitle starts "${rendered.slice(0, 60)}" but the manifest marker is "${scene.sceneMarker}"`);
+
+    // The presenter crosswalk shows the same string, so a presenter reading the
+    // second screen and the room reading the slide see one marker, not two.
+    const marker = scene.sceneMarker.replace(/\u00b7/g, '&middot;');
+    assert.ok(presenter.includes(marker),
+      `the crosswalk does not carry the marker "${scene.sceneMarker}" for ${scene.id}`);
+  }
+  // Numbering is the canonical numbering, so "Stage 5" really is the fifth.
+  const delegate = scenes.find((s) => s.id === 'delegate');
+  assert.equal(delegate.stageLabel, `Stage ${shape.stages.indexOf('Implementation') + 1} Implementation`);
+  assert.equal(scenes.find((s) => s.id === 'pulse').stageLabel, 'Stage 1 Signal');
+  assert.equal(scenes.find((s) => s.id === 'sre').stageLabel, 'Stage 9 Production');
+});
+
+test('the close names the seven questions with the thesis slide labels, verbatim', () => {
+  const thesis = showcase.slice(showcase.indexOf('id="card-thesis"'), showcase.indexOf('id="card-primitives"'));
+  const close = showcase.slice(showcase.indexOf('id="card-close"'), showcase.indexOf('id="card-followup"'));
+
+  const thesisLabels = [...thesis.matchAll(/<strong>(Q\d [A-Za-z]+)<\/strong>/g)].map((m) => m[1]);
+  const closeLabels = [...close.matchAll(/<span class="summary-label">(Q\d [A-Za-z]+)<\/span>/g)].map((m) => m[1]);
+
+  assert.equal(thesisLabels.length, 7, `the thesis slide labels ${thesisLabels.length} questions, not 7`);
+  assert.deepEqual(closeLabels, thesisLabels,
+    'the close slide labels the seven questions differently from the thesis slide');
+  assert.deepEqual(thesisLabels, [
+    'Q1 Intent', 'Q2 Proposal', 'Q3 Evidence', 'Q4 Policy',
+    'Q5 Accountability', 'Q6 Release', 'Q7 Feedback'
+  ]);
+});
+
+test('the closing payoff is recomputed from the telemetry, not restated', async () => {
+  const { replayFollowUp, loadReplayInput, unmetRequests } = await import('../scripts/lib/followup.mjs');
+  const input = loadReplayInput();
+  const result = replayFollowUp(input);
+
+  assert.equal(result.requestsReplayed, 32);
+  assert.equal(result.answeredWithSubstitute, 25);
+  assert.equal(result.unresolved, 7);
+  assert.equal(result.answeredWithSubstitute + result.unresolved, result.requestsReplayed);
+
+  // The requests are read from the telemetry the opening signal came from.
+  const requests = unmetRequests(input);
+  assert.equal(requests.length, 32);
+  assert.ok(requests.every((r) => r.siteId === 'SITE-NORTH' && r.sku === 'SKU-1001'));
+  assert.ok(requests.every((r) => r.outcome === 'unavailable'));
+  assert.ok(!Array.isArray(input.replayWindow.requests),
+    'the replay declares its own requests instead of reading them');
+
+  // The article, the fallback and the artefact publish the same three numbers.
+  const followup = readJson('fixtures', 'prepared', '10-followup.json');
+  for (const [label, value] of [['Unmet requests in the window', 32], ['Now answered with an alternative', 25], ['Still answered with nothing', 7]]) {
+    assert.ok(followup.followUpIssue.body.includes(`${label}: ${value} requests`),
+      `the closing issue no longer states "${label}: ${value}"`);
+    assert.ok(mission.includes(`${label}:`), `the offline fallback drops "${label}"`);
+  }
+  assert.ok(showcase.includes('<strong>32 unmet requests</strong>'));
+  assert.ok(showcase.includes('<strong>25 are now answered</strong>'));
+  assert.ok(showcase.includes('<strong>7 still are not</strong>'));
+});
+
+test('the replay is load-bearing: change the declared shelf and the numbers move', async () => {
+  // A check that would pass whatever the inputs said would be decoration. Feed
+  // the replay a different shelf and prove the outcome actually depends on it.
+  const { replayFollowUp, loadReplayInput } = await import('../scripts/lib/followup.mjs');
+  const input = loadReplayInput();
+
+  const empty = replayFollowUp({ ...input, openingStock: { 'SKU-1002': 0, 'SKU-1003': 0, 'SKU-1004': 0 } });
+  assert.equal(empty.answeredWithSubstitute, 0, 'an empty shelf still answered a request');
+  assert.equal(empty.unresolved, 32);
+
+  const plenty = replayFollowUp({ ...input, openingStock: { 'SKU-1002': 999, 'SKU-1003': 999, 'SKU-1004': 999 } });
+  assert.equal(plenty.answeredWithSubstitute, 32, 'a full shelf still left a request unanswered');
+  assert.equal(plenty.unresolved, 0);
+
+  // And the withdrawn group member is excluded on status, not on stock: giving
+  // it unlimited stock must change nothing.
+  const withWithdrawn = replayFollowUp({
+    ...input,
+    openingStock: { ...input.openingStock, 'SKU-1005': 999 }
+  });
+  assert.equal(withWithdrawn.answeredWithSubstitute, 25,
+    'stocking the withdrawn SKU changed the outcome, so status is not being enforced');
+  assert.ok(!Object.keys(withWithdrawn.substitutesBySku).includes('SKU-1005'),
+    'a withdrawn catalogue item was offered as a substitute');
+});
+
+test('the replayed window is never presented as a second production run', () => {
+  const followup = readJson('fixtures', 'prepared', '10-followup.json');
+  assert.match(followup.labelInUi, /replay/i, 'the closing artefact does not label itself a replay');
+  assert.match(followup.labelInUi, /not a second production run/i,
+    'the closing artefact does not deny being a second production run');
+  assert.ok(followup.replay, 'the closing artefact records no replay provenance');
+  assert.match(followup.replay.recomputedBy, /--only followup/, 'the artefact does not say how to recompute it');
+  assert.match(followup.replay.engine, /selectSubstitute/, 'the artefact does not name the engine that produced it');
+
+  const input = readJson('fixtures', 'telemetry', 'post-change-stock.json');
+  assert.equal(input.status, 'synthetic');
+  assert.match(input.labelInUi, /not a second production run/i);
+
+  // No document may claim the workflow ran a second time.
+  for (const [name, doc] of [['showcase', showcase], ['presenter', presenter], ['mission control', mission]]) {
+    assert.ok(!/same pulse workflow ran again/i.test(doc),
+      `${name} claims a second production run of the pulse workflow`);
+    assert.match(doc, /prepared replay/i, `${name} never says "prepared replay"`);
+  }
+  assert.match(presenter, /Say <strong>prepared replay<\/strong>/,
+    'the presenter guide does not instruct the presenter to say it out loud');
+});
+
+test('the presenting accessibility layer covers the closing slide and names the cover', () => {
+  // Two defects this pins down. The takeaway is a SIBLING of <main>, so an
+  // observer scoped to <main> never saw the last slide and the live region kept
+  // announcing slide 14 while slide 15 was on screen. And the cover hides its
+  // chapter label, so announcing that label would name something not shown.
+  const layer = readText('docs', 'assets', 'slide-a11y.js');
+
+  assert.match(layer, /var scope = document\.querySelector\("\.doc"\) \|\| document\.body;/,
+    'the layer does not establish a scope wider than <main>');
+  assert.match(layer, /observer\.observe\(scope, \{/,
+    'the mutation observer is not scoped widely enough to see the closing slide');
+  assert.match(layer, /function currentSlide\(\) \{\s*return scope\.querySelector/,
+    'the current slide is looked up inside <main>, which cannot find the takeaway');
+  assert.ok(!/observer\.observe\(main,/.test(layer), 'the observer is still scoped to <main>');
+
+  assert.match(layer, /function coverHeading\(node\)/, 'the layer has no cover-heading path');
+  assert.match(layer, /function slideTitle\(node\) \{\s*var cover = coverHeading\(node\);/,
+    'slideTitle does not prefer the cover heading when the cover is showing');
+  assert.match(layer, /getComputedStyle\(header\)\.display !== "none"/,
+    'the cover is detected by something other than the header actually being shown');
+
+  // The takeaway must be outside <main> for that to matter, and it is: the
+  // runtime appends it after the chapters. If that ever changes, this test
+  // should be revisited rather than silently kept.
+  const main = showcase.slice(showcase.indexOf('<main>'), showcase.indexOf('</main>'));
+  assert.ok(!main.includes('class="takeaway"'),
+    'the takeaway moved inside <main>; the scope comment in slide-a11y.js is now stale');
 });
 
 test('the trust model is never conflated between the two lanes', () => {
