@@ -1,5 +1,6 @@
 import { createServer } from 'node:http';
 import { createService, ValidationError } from './service.js';
+import { unsafeStockReport } from './unsafe-report-demo.js';
 
 const JSON_HEADERS = {
   'content-type': 'application/json; charset=utf-8',
@@ -58,6 +59,13 @@ export function createApp(service = createService()) {
         const sku = safeEcho(decodeURIComponent(url.pathname.slice('/api/v1/stock/'.length)));
         const siteId = safeEcho(url.searchParams.get('siteId') ?? 'SITE-NORTH');
         return send(res, 200, service.stockOf(siteId, sku));
+      }
+
+      if (req.method === 'GET' && url.pathname === '/api/v1/demo/unsafe-report') {
+        return unsafeStockReport(url.searchParams, (error, stdout) => {
+          if (error) return send(res, 500, { error: 'report_failed' });
+          return send(res, 200, { report: stdout.trim() });
+        });
       }
 
       if (req.method === 'POST' && url.pathname === '/api/v1/reservations') {
