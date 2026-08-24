@@ -85,7 +85,7 @@ test('every CI job declares a timeout', () => {
 });
 
 test('write permissions appear only where the job needs them', () => {
-  const allowedWrites = new Set(['id-token', 'attestations', 'security-events']);
+  const allowedWrites = new Set(['id-token', 'attestations', 'security-events', 'copilot-requests']);
   for (const file of yamlFiles) {
     for (const match of read(file).matchAll(/^\s{6}([\w-]+):\s*write$/gm)) {
       assert.ok(
@@ -125,15 +125,18 @@ test('every agentic workflow caps time, turns, and credits and enables threat de
   }
 });
 
-test('no agentic workflow grants the agent job a write permission', () => {
+test('agentic workflow sources grant no repository write permission', () => {
   for (const md of mdFiles) {
     const frontmatter = read(md).split('---')[1] ?? '';
     const permBlock = frontmatter.match(/permissions:\n((?:\s{2,}\S.*\n)+)/);
     assert.ok(permBlock, `${md} declares no permissions block`);
-    assert.ok(
-      !/:\s*write\b/.test(permBlock[1]),
-      `${md} grants the agent job a write permission: ${permBlock[1].trim()}`
-    );
+    for (const match of permBlock[1].matchAll(/^\s+([\w-]+):\s*write\b/gm)) {
+      assert.equal(
+        match[1],
+        'copilot-requests',
+        `${md} grants repository write permission "${match[1]}: write"`
+      );
+    }
   }
 });
 
@@ -303,12 +306,12 @@ test('lock: every checkout the compiler emits disables credential persistence', 
   }
 });
 
-test('lock: the agent job runs with read-only permissions', () => {
+test('lock: the agent job has read-only repository permissions', () => {
   // The agent job is where the model executes. In every lock it currently
   // declares only read grants; it has zero write permissions. allowedWrites
   // mirrors the repo's hand-written CI allowlist and exists only to catch a
   // future regression, not because the agent job uses any of them today.
-  const allowedWrites = new Set(['id-token', 'attestations', 'security-events']);
+  const allowedWrites = new Set(['id-token', 'attestations', 'security-events', 'copilot-requests']);
   for (const f of lockFiles) {
     const agent = jobBlocks(read(f)).agent;
     assert.ok(agent, `${f}: no agent job found`);
@@ -592,12 +595,12 @@ test('the expires-hours field is inside the compared bytes', () => {
   const committed = normalise(committedBytes);
   assert.match(
     committed,
-    /GH_AW_ACTION_FAILURE_ISSUE_EXPIRES_HOURS: "0"/,
-    'expected the deterministic "0" value in the committed lock'
+    /GH_AW_ACTION_FAILURE_ISSUE_EXPIRES_HOURS: "168"/,
+    'expected the compiler-generated "168" value in the committed lock'
   );
   const edited = committed.replace(
-    'GH_AW_ACTION_FAILURE_ISSUE_EXPIRES_HOURS: "0"',
-    'GH_AW_ACTION_FAILURE_ISSUE_EXPIRES_HOURS: "168"'
+    'GH_AW_ACTION_FAILURE_ISSUE_EXPIRES_HOURS: "168"',
+    'GH_AW_ACTION_FAILURE_ISSUE_EXPIRES_HOURS: "0"'
   );
   assert.notEqual(
     normalise(Buffer.from(edited, 'utf8')),

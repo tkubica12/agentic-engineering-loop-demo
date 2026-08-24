@@ -33,6 +33,7 @@ engine: copilot
 permissions:
   contents: read
   issues: read
+  copilot-requests: write
 
 network: defaults
 
@@ -45,6 +46,7 @@ tools:
     toolsets: [issues]
 
 safe-outputs:
+  report-failure-as-issue: false
   threat-detection: true
   create-issue:
     title-prefix: "[pulse] "
