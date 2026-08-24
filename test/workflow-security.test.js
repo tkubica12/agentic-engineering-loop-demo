@@ -595,12 +595,12 @@ test('the expires-hours field is inside the compared bytes', () => {
   const committed = normalise(committedBytes);
   assert.match(
     committed,
-    /GH_AW_ACTION_FAILURE_ISSUE_EXPIRES_HOURS: "168"/,
-    'expected the compiler-generated "168" value in the committed lock'
+    /GH_AW_ACTION_FAILURE_ISSUE_EXPIRES_HOURS: "0"/,
+    'expected disabled failure-issue reporting to compile with zero expiry hours'
   );
   const edited = committed.replace(
-    'GH_AW_ACTION_FAILURE_ISSUE_EXPIRES_HOURS: "168"',
-    'GH_AW_ACTION_FAILURE_ISSUE_EXPIRES_HOURS: "0"'
+    'GH_AW_ACTION_FAILURE_ISSUE_EXPIRES_HOURS: "0"',
+    'GH_AW_ACTION_FAILURE_ISSUE_EXPIRES_HOURS: "168"'
   );
   assert.notEqual(
     normalise(Buffer.from(edited, 'utf8')),
