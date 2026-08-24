@@ -19,7 +19,7 @@
     "reset": "node scripts/reset.mjs",
     "cleanup": "node scripts/cleanup.mjs",
     "seed:remote": "node scripts/seed-remote.mjs",
-    "aw:install": "gh extension install github/gh-aw --pin v0.86.2",
+    "aw:install": "node scripts/aw-install.mjs",
     "aw:compile": "gh aw compile",
     "validate:aw": "node scripts/validate-aw.mjs",
     "validate:docs": "node scripts/validate-docs.mjs",

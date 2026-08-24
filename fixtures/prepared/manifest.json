@@ -2,7 +2,7 @@
   "$comment": "The showcase spine. Every consumer reads this file: the rehearsal script, the mission-control fallback, the presenter guide, and the repository tests. Change the sequence here and nowhere else.",
   "title": "GitHub Beyond Coding: The Agentic Engineering Loop",
   "durationMinutes": 60,
-  "productValidationDate": "2026-08-23",
+  "productValidationDate": "2026-08-24",
   "shape": {
     "lifecycleStages": 9,
     "demoScenes": 11,
@@ -39,7 +39,45 @@
       "Required review by named owners, attributed to a person",
       "Environment approval, federated credentials, build provenance",
       "A path for production signal to become the next work item"
-    ]
+    ],
+    "stageMapping": {
+      "$comment": "Every scene declares which lifecycle stage it puts on the screen. A scene marked crossCutting frames the loop rather than demonstrating one stage of it, and does not count towards coverage: each of the nine canonical stages must be demonstrated by at least one scene that is not cross-cutting. sceneMarker is what the card subtitle and the presenter crosswalk both render, so the two can never drift.",
+      "markerFormat": "<stageLabel> · <questionLabel>",
+      "crossCuttingScenes": [
+        "thesis",
+        "coexist",
+        "close"
+      ],
+      "demonstratedBy": {
+        "Signal": [
+          "pulse"
+        ],
+        "Intent": [
+          "intake"
+        ],
+        "Contract": [
+          "refine"
+        ],
+        "Lane": [
+          "lanes"
+        ],
+        "Implementation": [
+          "delegate"
+        ],
+        "Evidence": [
+          "evidence"
+        ],
+        "Authority": [
+          "evidence"
+        ],
+        "Release": [
+          "release"
+        ],
+        "Production": [
+          "sre"
+        ]
+      }
+    }
   },
   "tabs": [
     {
@@ -190,7 +228,23 @@
           "target": "thesis",
           "label": "Offline fallback scene: thesis"
         }
-      ]
+      ],
+      "stages": [
+        "Signal",
+        "Intent",
+        "Contract",
+        "Lane",
+        "Implementation",
+        "Evidence",
+        "Authority",
+        "Release",
+        "Production"
+      ],
+      "stageRole": "frames",
+      "crossCutting": true,
+      "stageLabel": "All nine stages",
+      "questionLabel": "Q1 to Q7",
+      "sceneMarker": "All nine stages · Q1 to Q7"
     },
     {
       "id": "pulse",
@@ -230,7 +284,15 @@
           "target": "pulse",
           "label": "Offline fallback scene: pulse"
         }
-      ]
+      ],
+      "stages": [
+        "Signal"
+      ],
+      "stageRole": "demonstrates",
+      "crossCutting": false,
+      "stageLabel": "Stage 1 Signal",
+      "questionLabel": "Q1 of 7",
+      "sceneMarker": "Stage 1 Signal · Q1 of 7"
     },
     {
       "id": "intake",
@@ -270,7 +332,15 @@
           "target": "intake",
           "label": "Offline fallback scene: intake"
         }
-      ]
+      ],
+      "stages": [
+        "Intent"
+      ],
+      "stageRole": "demonstrates",
+      "crossCutting": false,
+      "stageLabel": "Stage 2 Intent",
+      "questionLabel": "Q1 of 7",
+      "sceneMarker": "Stage 2 Intent · Q1 of 7"
     },
     {
       "id": "refine",
@@ -305,7 +375,15 @@
           "target": "refine",
           "label": "Offline fallback scene: refine"
         }
-      ]
+      ],
+      "stages": [
+        "Contract"
+      ],
+      "stageRole": "demonstrates",
+      "crossCutting": false,
+      "stageLabel": "Stage 3 Contract",
+      "questionLabel": "Q1 and Q2 of 7",
+      "sceneMarker": "Stage 3 Contract · Q1 and Q2 of 7"
     },
     {
       "id": "lanes",
@@ -340,7 +418,15 @@
           "target": "lanes",
           "label": "Offline fallback scene: lanes"
         }
-      ]
+      ],
+      "stages": [
+        "Lane"
+      ],
+      "stageRole": "demonstrates",
+      "crossCutting": false,
+      "stageLabel": "Stage 4 Lane",
+      "questionLabel": "Q2 of 7",
+      "sceneMarker": "Stage 4 Lane · Q2 of 7"
     },
     {
       "id": "delegate",
@@ -374,7 +460,15 @@
           "target": "delegate",
           "label": "Offline fallback scene: delegate"
         }
-      ]
+      ],
+      "stages": [
+        "Implementation"
+      ],
+      "stageRole": "demonstrates",
+      "crossCutting": false,
+      "stageLabel": "Stage 5 Implementation",
+      "questionLabel": "Q2 of 7",
+      "sceneMarker": "Stage 5 Implementation · Q2 of 7"
     },
     {
       "id": "evidence",
@@ -410,7 +504,16 @@
           "target": "evidence",
           "label": "Offline fallback scene: evidence"
         }
-      ]
+      ],
+      "stages": [
+        "Evidence",
+        "Authority"
+      ],
+      "stageRole": "demonstrates",
+      "crossCutting": false,
+      "stageLabel": "Stages 6 and 7, Evidence and Authority",
+      "questionLabel": "Q3, Q4 and Q5 of 7",
+      "sceneMarker": "Stages 6 and 7, Evidence and Authority · Q3, Q4 and Q5 of 7"
     },
     {
       "id": "release",
@@ -444,7 +547,15 @@
           "target": "release",
           "label": "Offline fallback scene: release"
         }
-      ]
+      ],
+      "stages": [
+        "Release"
+      ],
+      "stageRole": "demonstrates",
+      "crossCutting": false,
+      "stageLabel": "Stage 8 Release",
+      "questionLabel": "Q6 of 7",
+      "sceneMarker": "Stage 8 Release · Q6 of 7"
     },
     {
       "id": "sre",
@@ -461,7 +572,7 @@
       ],
       "start": 45,
       "end": 51,
-      "title": "Production evidence returns to the repository under a scoped identity",
+      "title": "Production signal correlated to source under an identity scoped to one workload",
       "presenterTitle": "Prepared — Production feedback",
       "mode": "prepared",
       "surface": "external-evidence",
@@ -479,7 +590,15 @@
           "target": "sre",
           "label": "Offline fallback scene: sre"
         }
-      ]
+      ],
+      "stages": [
+        "Production"
+      ],
+      "stageRole": "demonstrates",
+      "crossCutting": false,
+      "stageLabel": "Stage 9 Production",
+      "questionLabel": "Q7 of 7",
+      "sceneMarker": "Stage 9 Production · Q7 of 7"
     },
     {
       "id": "coexist",
@@ -519,7 +638,23 @@
           "target": "coexist",
           "label": "Offline fallback scene: coexist"
         }
-      ]
+      ],
+      "stages": [
+        "Signal",
+        "Intent",
+        "Contract",
+        "Lane",
+        "Implementation",
+        "Evidence",
+        "Authority",
+        "Release",
+        "Production"
+      ],
+      "stageRole": "frames",
+      "crossCutting": true,
+      "stageLabel": "Across all nine stages",
+      "questionLabel": "Q1 to Q7",
+      "sceneMarker": "Across all nine stages · Q1 to Q7"
     },
     {
       "id": "close",
@@ -559,7 +694,16 @@
           "target": "close",
           "label": "Offline fallback scene: close"
         }
-      ]
+      ],
+      "stages": [
+        "Production",
+        "Signal"
+      ],
+      "stageRole": "returns",
+      "crossCutting": true,
+      "stageLabel": "Stage 9 back to stage 1",
+      "questionLabel": "Q1 to Q7",
+      "sceneMarker": "Stage 9 back to stage 1 · Q1 to Q7"
     }
   ]
 }

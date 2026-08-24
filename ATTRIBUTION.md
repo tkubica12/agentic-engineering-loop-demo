@@ -3,13 +3,33 @@
 ## Vendored runtime
 
 `docs/assets/` contains the html-docs document runtime: `article.css`, `article.js`,
-`deck.css`, `deck.js`, `tokens.css`, `validate.js`, `bundle.js`, and
-`sample-diagram.svg`. It is vendored so every document in this repository renders
-offline with no network request and no package install.
+`tokens.css`, `validate.js` and `bundle.js`. It is vendored so every document in this
+repository renders offline with no network request and no package install.
+
+The runtime also ships a standalone deck renderer (`deck.css`, `deck.js`) and a sample
+diagram (`sample-diagram.svg`). No document here is a deck — the showcase is an article
+that can be presented — and nothing referenced the sample, so those three files are not vendored.
+`validate.js` still detects the deck shape and would validate one if a future document
+needed it; only the deck's own stylesheet and script are absent.
 
 `docs/assets/package.json` exists only to scope that runtime as CommonJS, because
 the repository root declares `"type": "module"`. The runtime files themselves are
 unmodified.
+
+## Repository-owned overrides
+
+`docs/assets/slide-a11y.css` and `docs/assets/slide-a11y.js` are **not** vendored.
+They are this repository's own, loaded after the runtime on every presentable
+document, and they are the only sanctioned place to change presented behaviour or
+type size without editing the runtime:
+
+- `slide-a11y.js` moves keyboard focus to the current slide, announces the slide's
+  title and position in a polite live region, and warns once per slide that the
+  runtime had to shrink below a readable zoom.
+- `slide-a11y.css` carries the live-region class, an accessibility fix for the
+  non-text contrast of the presenting chrome, viewport-proportional slide type
+  sizes, and the rules that render the first section divider as the cover. It
+  defines no design token and uses no colour literal.
 
 ## Vendored engine definition
 
@@ -56,7 +76,37 @@ On gh-aw v0.86.2 a workflow importing this definition still compiles and passes
   Claude and OpenAI Codex:
   <https://docs.github.com/en/copilot/concepts/agents/about-third-party-coding-agents>
 
-Both read 2026-08-23. Neither is reproduced here beyond short quotations.
+First read 2026-08-23 and **re-read 2026-08-24**, which is this repository's
+product validation date. What was re-checked on that date, and what it said:
+
+- the engine reference still carries the heading "Unsupported engine samples"
+  and still states that those integrations "are samples only. They are not
+  officially supported by gh-aw and have no compatibility or maintenance
+  commitment", and OpenCode is still listed among them;
+- the third-party agents page still opens with "Third-party coding agents are
+  currently in public preview", and still lists exactly Anthropic Claude and
+  OpenAI Codex under "Supported coding agents".
+
+Neither page is reproduced here beyond those short quotations. The pinned blob
+and commit SHAs below were **not** re-read on 2026-08-24; they record a specific
+upstream state read on 2026-08-23 and keep that date deliberately.
+
+## Cited Microsoft documentation
+
+The security chapter names Microsoft's agentic code scanner by its codename and
+states its stage. The stage is quoted, not paraphrased: Microsoft Learn titles the
+page **"Codename MDASH - Agentic code scanner initiative (private preview)"**.
+
+- Stage, quoted from the page title:
+  <https://learn.microsoft.com/en-us/security-exposure-management/mdash-initiative>
+- Capability description:
+  <https://learn.microsoft.com/en-us/security-exposure-management/ai-code-security-overview>
+
+Both read 2026-08-24. The overview page describes the capability but does not
+carry the stage; the initiative page's own title does, which is why the stage is
+cited from there and why `fixtures/prepared/06-pr-evidence.json` records the
+initiative page as its `stageSource`. Nothing in this repository depends on the
+capability, and no finding from it is shown or simulated.
 
 ## Cited external evidence
 

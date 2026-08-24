@@ -78,7 +78,7 @@
     <p class="eyebrow">OFFLINE FALLBACK</p>
     <h1>Every scene, with no network</h1>
     <p class="subtitle">The complete sixty-minute journey as eleven self-contained demo scenes covering a nine-stage engineering loop. Nothing here contacts GitHub, nothing here is live, and every state on this page is labelled as what it is.</p>
-    <p class="meta"><time datetime="2026-08-23">23 August 2026</time> &middot; Captured from prepared artefacts under <code>fixtures/prepared/</code></p>
+    <p class="meta"><time datetime="2026-08-24">24 August 2026</time> &middot; Captured from prepared artefacts under <code>fixtures/prepared/</code></p>
   </header>
 
   <nav class="doc-nav" aria-label="Related material">
@@ -391,7 +391,7 @@ Code owner review: 1 required, 1 approved</code></pre>
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
               <span class="card-title">58 to 60 — Close</span>
-              <span class="card-sub">Simulated view of the follow-up signal that restarts the loop.</span>
+              <span class="card-sub">Prepared replay of the follow-up signal that restarts the loop.</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
@@ -409,6 +409,7 @@ Still answered with nothing:        7 requests
 Counts, not rates. Not comparable with the opening percentages.</code></pre>
           </div>
           <p>Nine lifecycle stages, one of them coding. The change was measured by the same signal that motivated it, which is only possible because intent, evidence, and telemetry all live where the code lives.</p>
+          <p><strong>Prepared replay, not a second production run.</strong> The thirty-two unmet requests are the real ones from the opening telemetry; what the shelf held afterwards is declared synthetic in <code>fixtures/telemetry/post-change-stock.json</code>, and the answer is computed from both by the shipped selection logic. Recompute it with <code>npm run verify -- --only followup</code>.</p>
           <p>Prepared artefact: <code>fixtures/prepared/10-followup.json</code>.</p>
         </div>
       </article>

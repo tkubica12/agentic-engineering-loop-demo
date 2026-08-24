@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { existsSync, rmSync, readFileSync, readdirSync } from 'node:fs';
+import { existsSync, rmSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
 import { repoPath, readJson, repoRoot, loadProfile } from '../scripts/lib/repo.mjs';
@@ -155,6 +155,197 @@ test('reset then setup then rehearse works, which is the between-sessions loop',
   const rehearsal = run('rehearse.mjs', ['--fast']);
   assert.equal(rehearsal.code, 0, `rehearsal failed after reset:\n${rehearsal.stdout}`);
   assert.ok(existsSync(repoPath('out', 'rehearsal', 'transcript.json')));
+});
+
+test('the pinned gh-aw version is read from the repository, never typed twice', async () => {
+  const { pinnedCompiler } = await import('../scripts/lib/aw.mjs');
+  const pin = pinnedCompiler();
+  assert.match(pin.expected ?? '', /^v\d+\.\d+\.\d+$/,
+    `the repository does not agree on one pinned compiler: ${pin.versions.join(', ')}`);
+  assert.ok(pin.sources.length >= 2,
+    'the pin is claimed by fewer than two committed artefacts, so nothing cross-checks it');
+  assert.ok(pin.sources.includes('.github/aw/actions-lock.json'));
+
+  // The install script must install exactly that, and must never reach for latest.
+  const script = readFileSync(repoPath('scripts', 'aw-install.mjs'), 'utf8');
+  const commands = [...script.matchAll(/probeGh\(\[([^\]]*)\]/g)].map((m) => m[1]);
+  assert.ok(commands.some((c) => c.includes("'--pin'") && c.includes('expected')),
+    'the install script does not install the version the repository pins');
+  assert.ok(!commands.some((c) => /upgrade|latest/i.test(c)),
+    'the install script can reach for a newer release than the pin');
+  assert.ok(!/v\d+\.\d+\.\d+/.test(script), 'the install script hard-codes a version instead of reading the pin');
+  assert.equal(readJson('package.json').scripts['aw:install'], 'node scripts/aw-install.mjs');
+});
+
+test('aw:install is idempotent when the pin is already installed', (t) => {
+  const probe = probeGh(['aw', 'version'], { cwd: repoPath() });
+  if (probe.error || probe.status !== 0) {
+    t.skip('gh aw is not installed on this machine');
+    return;
+  }
+  const first = run('aw-install.mjs');
+  assert.equal(first.code, 0, `aw:install failed:\n${first.stdout}\n${first.stderr ?? ''}`);
+  assert.match(first.stdout, /already .*; nothing to do|matching the version the committed locks/,
+    'aw:install did not report an outcome');
+  const second = run('aw-install.mjs');
+  assert.equal(second.code, 0, 'aw:install is not repeatable');
+  assert.match(second.stdout, /already .*; nothing to do/,
+    'a second run did not recognise that the pin is already installed');
+});
+
+test('validate:aw refuses to compile outside the repository working tree', () => {
+  // Without this the freshness comparison can pass vacuously: gh aw would
+  // resolve a different workflow set and every committed lock would be
+  // "unchanged" because nothing regenerated it.
+  const source = readFileSync(repoPath('scripts', 'validate-aw.mjs'), 'utf8');
+  assert.match(source, /rev-parse', '--show-toplevel/,
+    'validate-aw.mjs does not ask git where the working tree root is');
+  const guard = source.indexOf('--show-toplevel');
+  const compile = source.indexOf("probeGh(['aw', 'compile']");
+  assert.ok(guard > -1 && compile > guard,
+    'the checkout-identity assertion runs after the compile it is meant to protect');
+  assert.match(source, /resolve\(toplevel\) === resolve\(repoPath\(\)\)/,
+    'the assertion does not compare resolved absolute paths');
+});
+
+test('validate:aw refuses to compile at all when the installed compiler has drifted', () => {
+  // A drifted compiler rewrites every generated file, and all that would prove
+  // is that two compilers disagree. Bail out before touching the tree.
+  const source = readFileSync(repoPath('scripts', 'validate-aw.mjs'), 'utf8');
+  const mismatch = source.indexOf('Refusing to compile with a drifted compiler');
+  const compile = source.indexOf("probeGh(['aw', 'compile']");
+  assert.ok(mismatch > -1, 'validate-aw.mjs does not refuse to compile on a pin mismatch');
+  assert.ok(compile > mismatch, 'the drift bail-out is placed after the compile it should prevent');
+  const before = source.slice(0, compile);
+  assert.match(before, /if \(!matches\) \{[\s\S]{0,200}process\.exit\(checker\.finish/,
+    'a pin mismatch does not exit before the compile');
+});
+
+test('validate:aw snapshots every file the compiler may rewrite, not just the locks', () => {
+  const source = readFileSync(repoPath('scripts', 'validate-aw.mjs'), 'utf8');
+  assert.match(source, /const GENERATED = \[/, 'validate-aw.mjs has no declared generated-file set');
+  const generated = source.slice(source.indexOf('const GENERATED = ['), source.indexOf('let compiled = false'));
+  assert.match(generated, /\.lock\.yml/, 'the snapshot set omits the lock files');
+  assert.match(generated, /'aw', 'actions-lock\.json'/,
+    'the snapshot set omits .github/aw/actions-lock.json, which gh aw owns and re-resolves');
+
+  // The finally must put every snapshot back, and must not claim success it did
+  // not achieve.
+  const finallyBlock = source.slice(source.indexOf('} finally {'));
+  assert.match(finallyBlock, /for \(const \[name, \{ path, bytes \}\] of backups\)/,
+    'the finally does not restore every snapshotted file');
+  assert.match(finallyBlock, /the working tree was NOT fully restored/,
+    'a failed restoration is not reported');
+  assert.match(finallyBlock, /checker\.check\(false, 'every generated file was restored/,
+    'a failed restoration does not fail the run');
+  const claim = finallyBlock.indexOf('restored to their committed bytes:');
+  const guard = finallyBlock.indexOf('if (failed.length)');
+  assert.ok(guard > -1 && guard < claim,
+    'the success message is not guarded by the list of files that could not be restored');
+});
+
+test('a failing freshness run still leaves every generated file exactly as it found it', (t) => {
+  const probe = probeGh(['aw', 'version'], { cwd: repoPath() });
+  if (probe.error || probe.status !== 0) {
+    t.skip('gh aw is not installed on this machine');
+    return;
+  }
+  // Corrupt one lock so the freshness comparison FAILS and the compiler is
+  // guaranteed to rewrite that file. The run must then put the corruption back:
+  // validate-aw restores what it found, never what git happens to hold, and it
+  // does so on the failure path as well as the happy one.
+  const tracked = ['.github/workflows/repository-pulse.lock.yml', '.github/aw/actions-lock.json'];
+  const before = new Map(tracked.map((rel) => [rel, readFileSync(repoPath(...rel.split('/')))]));
+  const victim = repoPath('.github', 'workflows', 'repository-pulse.lock.yml');
+
+  try {
+    writeFileSync(victim, `${before.get(tracked[0]).toString('utf8')}\n# deliberately stale\n`);
+    const dirtied = readFileSync(victim);
+
+    const result = run('validate-aw.mjs');
+    assert.notEqual(result.code, 0, 'a stale lock did not fail the validation');
+    assert.match(result.stdout, /is up to date with its source/,
+      'the freshness comparison did not run');
+
+    assert.ok(readFileSync(victim).equals(dirtied),
+      'the corrupted lock was not restored to the bytes validate-aw found');
+    assert.ok(readFileSync(repoPath('.github', 'aw', 'actions-lock.json')).equals(before.get(tracked[1])),
+      'actions-lock.json was not restored after a failing run');
+    assert.match(result.stdout, /restored to their committed bytes:[^\n]*actions-lock\.json/,
+      'the run did not report restoring actions-lock.json');
+  } finally {
+    for (const [rel, bytes] of before) writeFileSync(repoPath(...rel.split('/')), bytes);
+  }
+
+  for (const [rel, bytes] of before) {
+    assert.ok(readFileSync(repoPath(...rel.split('/'))).equals(bytes), `${rel} was left modified`);
+  }
+});
+
+test('the pinned compiler version is written down exactly once', () => {
+  // Two copies of a version number drift silently. CI installs through the same
+  // script a presenter runs, and that script reads the version from the locks.
+  const workflow = readFileSync(repoPath('.github', 'workflows', 'workflow-security.yml'), 'utf8');
+  // Third-party actions must carry their SHA plus a version comment, so only
+  // the gh-aw compiler pin is in scope here: strip the `uses:` lines first.
+  const withoutActionPins = workflow
+    .split('\n')
+    .filter((line) => !/^\s*uses:/.test(line))
+    .join('\n');
+  assert.ok(!/v\d+\.\d+\.\d+/.test(withoutActionPins),
+    'workflow-security.yml hard-codes a compiler version instead of reading the pin');
+  assert.ok(!/gh extension install/.test(workflow),
+    'workflow-security.yml installs the extension directly instead of through the pinned script');
+  assert.match(workflow, /run: npm run aw:install/,
+    'workflow-security.yml does not install through the pinned script');
+
+  // And the one source really is the committed artefacts.
+  const lock = JSON.parse(readFileSync(repoPath('.github', 'aw', 'actions-lock.json'), 'utf8'));
+  const fromActionsLock = new Set(
+    Object.values(lock.entries ?? {}).filter((e) => /gh-aw/.test(e.repo ?? '')).map((e) => e.version)
+  );
+  assert.equal(fromActionsLock.size, 1, 'actions-lock.json pins more than one gh-aw version');
+  const header = readFileSync(repoPath('.github', 'workflows', 'repository-pulse.lock.yml'), 'utf8').split('\n')[0];
+  const fromLockHeader = JSON.parse(header.match(/gh-aw-metadata:\s*(\{.*\})\s*$/)[1]).compiler_version;
+  assert.equal(fromLockHeader, [...fromActionsLock][0],
+    'the compiled lock header and actions-lock.json disagree on the pinned version');
+});
+
+test('npm run verify exposes the follow-up replay as its own group', () => {
+  const usage = run('verify.mjs', ['--only', 'no-such-group']);
+  assert.equal(usage.code, 2);
+  assert.match(`${usage.stdout}${usage.stderr ?? ''}`, /followup/,
+    'the group list does not offer the follow-up replay');
+
+  const result = run('verify.mjs', ['--only', 'followup']);
+  assert.equal(result.code, 0, `verify --only followup failed:\n${result.stdout}\n${result.stderr ?? ''}`);
+  assert.match(result.stdout, /replayed 32 unmet request\(s\)/);
+  assert.match(result.stdout, /answered with a substitute: 25; unresolved: 7/);
+  assert.match(result.stdout, /Verify: all checks passed/);
+
+  // And the documented command is the one that works.
+  for (const doc of ['README.md', 'docs/showcase.html', 'docs/mission-control.html', 'docs/presenter.html']) {
+    const text = readFileSync(repoPath(...doc.split('/')), 'utf8');
+    if (!/--only followup/.test(text)) continue;
+    assert.match(text, /npm run verify -- --only followup/,
+      `${doc} documents the replay command without the npm argument separator`);
+  }
+});
+
+test('a failing local screen does not report that it found nothing', () => {
+  // The wording is the whole point of a screen: a FAIL that says "found
+  // nothing" is worse than no message at all.
+  const source = readFileSync(repoPath('scripts', 'validate-docs.mjs'), 'utf8');
+  const block = source.slice(source.indexOf('const screened = localScreen('), source.indexOf('const catalog ='));
+  assert.match(block, /screened\.offenders\.length\s*\n?\s*\?/,
+    'the screen message does not branch on whether it found anything');
+  assert.match(block, /found \$\{screened\.offenders\.length\} match\(es\)/,
+    'the failing message does not say how many matches it found');
+  assert.match(block, /found nothing in \$\{screened\.scanned\} file\(s\)/,
+    'the passing message no longer says how much was scanned');
+  const failing = block.slice(0, block.indexOf(': `local screen over'));
+  assert.ok(!/found nothing/.test(failing),
+    'the failing branch still claims the screen found nothing');
 });
 
 test('npm run validate:docs passes', () => {

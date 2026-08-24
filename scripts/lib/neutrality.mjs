@@ -11,7 +11,10 @@
 //
 // A presenter who needs to screen for engagement-specific terms puts them in an
 // untracked .showcase.local.json. That file is never committed and this module
-// only reads it when it happens to exist.
+// only reads it when it happens to exist. The screen never reads its own
+// declaration back: .showcase.local.json and the committed
+// .showcase.local.example.json that documents its shape are exempt, because a
+// term list necessarily contains its own terms.
 
 import { existsSync, readFileSync } from 'node:fs';
 import { loadConfig, listProfiles, loadProfile, readText, repoPath } from './repo.mjs';
@@ -26,14 +29,15 @@ const SENTENCE_WORDS = new Set([
   'Given', 'Has', 'How', 'If', 'In', 'Is', 'It', 'Its', 'Keep', 'Leave', 'Migrate', 'Mirror',
   'Most', 'Never', 'Nine', 'No', 'Not', 'Nothing', 'Now', 'On', 'One', 'Only', 'Or', 'Other',
   'Pick', 'Product', 'Ran', 'Read', 'Repository', 'Runs', 'Said', 'Say', 'Seven', 'Show',
-  'Since', 'So', 'Some', 'Source', 'Still', 'Stop', 'Take', 'Tab', 'Ten', 'That', 'The',
+  'Since', 'So', 'Some', 'Source', 'Still', 'Stop', 'Take', 'Tab', 'Tabs', 'Ten', 'That', 'The',
   'Their', 'Then', 'There', 'These', 'They', 'This', 'Those', 'Three', 'To', 'Two', 'Use',
   'Was', 'We', 'What', 'When', 'Where', 'Which', 'While', 'Who', 'Why', 'Will', 'With',
   'Would', 'Write', 'You', 'Your', 'Article', 'Activity', 'Experimental', 'Expected',
   'Prepared', 'Live', 'Static', 'Verdict', 'Rule', 'Note', 'Warning', 'Question', 'Phase',
   'Cut', 'Checkpoint', 'Contents', 'Intent', 'Proposal', 'Evidence', 'Policy',
   'Accountability', 'Release', 'Feedback', 'Signal', 'Contract', 'Lane', 'Implementation',
-  'Authority', 'Production', 'Observation', 'Reveals', 'Slide', 'Say', 'Watch'
+  'Authority', 'Production', 'Observation', 'Reveals', 'Slide', 'Say', 'Watch',
+  'Stage', 'Stages', 'Capability', 'Replay', 'Replayed'
 ]);
 
 /** Strip code, markup and entities so only attendee-visible prose remains. */
@@ -116,6 +120,18 @@ export function concreteIdentityValues() {
 }
 
 /**
+ * The two files that declare the screen rather than being screened by it: the
+ * presenter's own untracked term list, and the committed example that documents
+ * its shape. Screening either one would report the declaration as a finding, so
+ * a correctly configured presenter would always see a failure.
+ */
+const LOCAL_OVERRIDES_EXAMPLE = '.showcase.local.example.json';
+
+export function localScreenExemptions(config = loadConfig()) {
+  return new Set([config.neutrality.localOverridesFile, LOCAL_OVERRIDES_EXAMPLE]);
+}
+
+/**
  * Optional local screen. Returns null when the presenter has no local file,
  * which is the normal state and never a failure.
  */
@@ -129,17 +145,21 @@ export function localScreen(files) {
   } catch {
     return { error: `${config.neutrality.localOverridesFile} is not readable JSON` };
   }
+  const exempt = localScreenExemptions(config);
   const offenders = [];
+  let scanned = 0;
   for (const rel of files) {
+    if (exempt.has(rel)) continue;
     let content;
     try {
       content = readText(rel).toLowerCase();
     } catch {
       continue;
     }
+    scanned++;
     for (const term of terms) {
       if (term && content.includes(String(term).toLowerCase())) offenders.push(`${rel}: a locally screened term`);
     }
   }
-  return { terms: terms.length, offenders };
+  return { terms: terms.length, scanned, offenders, exempt: [...exempt] };
 }

@@ -3,8 +3,17 @@
   "scene": "close",
   "kind": "prepared-output",
   "status": "prepared",
-  "labelInUi": "Prepared output — the loop restarting",
-  "capturedOn": "2026-08-23",
+  "labelInUi": "Prepared output — a replayed post-change window, not a second production run",
+  "capturedOn": "2026-08-24",
+  "replay": {
+    "$comment": "The three closing numbers are recomputed, not restated. scripts/verify.mjs --only followup reads the unmet requests from the telemetry, in timestamp order, and replays them through the service's own selectSubstitute and catalogue. Change the catalogue, the ranking, the telemetry or the declared shelf state and this artefact fails until it is corrected.",
+    "recomputedBy": "npm run verify -- --only followup",
+    "engine": "app/src/substitution.js selectSubstitute, with app/src/catalog.js loadCatalog",
+    "requestsFrom": "fixtures/telemetry/reservation-events.jsonl",
+    "shelfStateFrom": "fixtures/telemetry/post-change-stock.json",
+    "claims": "A replay of the real unmet requests against a declared synthetic shelf state, through the shipped selection logic. No second window was observed.",
+    "sayOnStage": "Say prepared replay. The requests are the real ones from the opening telemetry; what the shelf held afterwards is declared, and the answer is computed."
+  },
   "metricStyle": {
     "$comment": "Deliberately expressed as absolute counts of requests, never as a percentage. The opening signal is stated in percentages (23% to 78%); if the closing metric were also a percentage an audience would try to subtract the two. They measure different things: the opening measures how often stock ran out, the closing measures how often an alternative existed.",
     "unit": "requests",

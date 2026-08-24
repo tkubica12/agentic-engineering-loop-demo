@@ -1,0 +1,54 @@
+{
+  "$comment": "Synthetic. No real stock levels, supplier, product or customer data. This file exists so the closing 32 / 25 / 7 payoff can be RECOMPUTED rather than asserted. It declares the only input the replay needs that the telemetry does not carry: what was on the shelf at SITE-NORTH during the follow-up window, after the change shipped.",
+  "fixtureId": "post-change-stock",
+  "kind": "replay-input",
+  "status": "synthetic",
+  "labelInUi": "Synthetic replay input — a declared post-change window, not a second production run",
+  "capturedOn": "2026-08-24",
+  "why": {
+    "problem": "fixtures/telemetry/reservation-events.jsonl was recorded BEFORE the change. Every event in it carries substituteOffered: false, because at that time the service had no substitute path at all. The file therefore records what was requested, but it cannot record what a substitute path would have answered.",
+    "whatIsMissing": "A request's outcome after the change depends on how much of each group member was free at that site at that moment. The telemetry carries no stock level, so that state has to come from somewhere. It is declared here rather than invented inside the check.",
+    "whatIsNotClaimed": "This is not a second production run and no second window was observed. It is a replay of the real requests against a declared shelf state, through the real selection logic."
+  },
+  "replayWindow": {
+    "siteId": "SITE-NORTH",
+    "requestedSku": "SKU-1001",
+    "derivedFrom": {
+      "file": "fixtures/telemetry/reservation-events.jsonl",
+      "selector": "siteId == SITE-NORTH and sku == SKU-1001 and outcome == unavailable",
+      "note": "The requests and their quantities are NOT declared here. They are read from the telemetry, in timestamp order, so the replay cannot quietly choose a friendlier set of requests."
+    }
+  },
+  "openingStock": {
+    "$comment": "Free units of each group member at SITE-NORTH when the follow-up window opened, after the restock that followed the change. SKU-1001 itself stays at zero: the window is precisely the period in which it was out of stock. SKU-1005 is in the same group but is withdrawn, and the selection logic excludes it on status, not on stock, so its level is deliberately irrelevant and is recorded as zero to make that visible.",
+    "SKU-1001": 0,
+    "SKU-1002": 24,
+    "SKU-1003": 10,
+    "SKU-1004": 14,
+    "SKU-1005": 0
+  },
+  "replayRules": {
+    "engine": "app/src/substitution.js selectSubstitute, with app/src/catalog.js loadCatalog",
+    "order": "timestamp ascending",
+    "acceptance": "Each offered substitute is taken by the counter, so its units leave the shelf and are not available to a later request in the same window.",
+    "unresolved": "A request is unresolved when no active member of the group has enough free units at that site for the whole quantity requested. That is the same condition the service applies; nothing here re-implements it."
+  },
+  "expected": {
+    "$comment": "Recomputed by scripts/verify.mjs --only followup. If the catalogue, the ranking, the telemetry or the stock above changes, this block must change with it or the check fails.",
+    "requestsReplayed": 32,
+    "answeredWithSubstitute": 25,
+    "unresolved": 7,
+    "unitsDispensed": 48,
+    "substitutesBySku": {
+      "SKU-1002": 14,
+      "SKU-1003": 4,
+      "SKU-1004": 7
+    },
+    "closingStock": {
+      "SKU-1002": 0,
+      "SKU-1003": 0,
+      "SKU-1004": 0
+    },
+    "whyTheRemainderIsUnresolved": "The shelf is empty by then. Every active member of the group is at zero free units, so the last seven requests have nothing to be offered. That is a sourcing problem, not a response-shape problem, which is exactly why the follow-up issue is a different question from the one that started the hour."
+  }
+}

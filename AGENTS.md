@@ -15,9 +15,10 @@ without advancing it, remove the change.
 ## Product accuracy
 
 1. **Date every product claim.** The verification date for this repository is
-   2026-08-23. If you change a claim, change the date and say what you checked.
-2. **Name the stage.** GA, public preview, experimental sample, and simulation are
-   four different things. Use the right word every time the capability appears.
+   2026-08-24. If you change a claim, change the date and say what you checked.
+2. **Name the stage.** GA, public preview, private preview, experimental sample, and
+   simulation are five different things. Use the right word every time the
+   capability appears. "Preview" on its own is not a stage.
 3. **Never claim a capability you have not verified.** If a source cannot be found,
    say it could not be found. An unverifiable claim marked as unverifiable is
    useful; an unverifiable claim stated confidently is a defect.
@@ -48,7 +49,8 @@ without advancing it, remove the change.
    in `neutrality.allowedProperNouns`. An unrecognised name fails the build in
    `scripts/validate-docs.mjs`. A presenter's engagement-specific terms go in an
    untracked `.showcase.local.json`, documented by `.showcase.local.example.json`
-   and never committed.
+   and never committed. The screen never reads its own declaration: both of those
+   files are exempt from it, because a term list necessarily contains its terms.
 4. **No tenant, subscription, or directory identifier.** Profiles use `null`
    placeholders; targets are supplied on the command line.
 
@@ -84,7 +86,13 @@ without advancing it, remove the change.
 ## Documents
 
 1. **Author HTML with the html-docs skill's components only.** Do not invent CSS
-   classes and do not edit `docs/assets/article.css` or `docs/assets/article.js`.
+   classes and do not edit `docs/assets/article.css`, `docs/assets/article.js`,
+   or any other vendored runtime file. Repository-owned overrides go in
+   `docs/assets/slide-a11y.css` and `docs/assets/slide-a11y.js`, which load after
+   the runtime and are listed as ours in `ATTRIBUTION.md`. They may set layout
+   and type size for existing classes; they may not define a token or a colour.
+   A per-document `<style>` block that overrides the runtime is not an
+   alternative to that layer.
 2. **Never change a design token in a page.** The palette is fixed.
 3. **No emoji anywhere.** A test fails the build on one.
 4. **Every document must be readable with JavaScript disabled** and must work
@@ -114,9 +122,14 @@ without advancing it, remove the change.
    on a missing one.
 5. **Every live scene needs a durable prepared artefact.** No exceptions.
 6. **The scenes must tile the whole hour with no gap.** A test asserts it.
-7. **Slides mode must produce between ten and fifteen slides.** Depth belongs in
-   cards nested below the one presentation card per chapter, and in reveals.
-   A test asserts the slide count.
+7. **Slides mode must produce between ten and fifteen slides in
+   `docs/showcase.html`.** That rule is about the presented deck and nothing
+   else. `docs/mission-control.html` is a scene fallback surface: it is a
+   readable article that can also be presented, its card count follows the
+   eleven scenes, and no slide budget applies to it. `docs/presenter.html` and
+   `docs/index.html` are read, not presented. Depth belongs in cards nested
+   below the one presentation card per chapter, and in reveals. A test asserts
+   the showcase's slide count.
 
 ## Remote operations
 
@@ -128,9 +141,13 @@ without advancing it, remove the change.
 ## Before you open a pull request
 
 ```bash
-npm test && npm run verify && npm run validate:aw && npm run rehearse
+npm test && npm run verify && npm run aw:install && npm run validate:aw && npm run rehearse
 node docs/assets/validate.js docs/showcase.html
 ```
+
+`aw:install` comes before `validate:aw` because the validation requires the
+installed `gh aw` to be exactly the version the committed locks were compiled
+with. It is idempotent and never installs the latest release.
 
 If any of those cannot run in your environment, say so explicitly in the pull
 request. Do not describe a check you did not perform.

@@ -21,17 +21,33 @@ Everything here is public, customer-neutral, and built on synthetic data.
 
 Node 22 or newer. There is nothing to install: the repository has no runtime dependency.
 
-The agentic-workflow compiler is pinned. `npm run aw:install` installs `github/gh-aw --pin v0.86.2`; `npm run aw:compile` regenerates the lock files. `node scripts/validate-aw.mjs` fails if the installed `gh aw` drifts from the pinned version.
+The agentic-workflow compiler is pinned. `npm run aw:install` installs `github/gh-aw` at the version the committed lock files record, currently `v0.86.2`, reading it from the repository rather than from a second copy of the number; it is idempotent and never installs the latest release. `npm run aw:compile` regenerates the lock files. `npm run validate:aw` asserts that this checkout is the git working-tree root, then fails if the installed `gh aw` drifts from the pinned version or if any lock file is stale.
 
 ```bash
 npm run setup        # create output directories; installs nothing
 npm run preflight    # is this machine ready to present?
 npm test             # service tests and repository tests
 npm run verify       # recompute the telemetry signal and check it against the prepared issue
+npm run aw:install   # pin the agentic-workflow compiler to the version the locks record
 npm run validate:aw  # gh aw validate --strict, plus lock-file provenance
 npm run rehearse     # walk all eleven scenes offline
 npm run serve        # http://127.0.0.1:8080/
 ```
+
+`npm run verify` proves its claims group by group, and each group can be run on
+its own. Two of them recompute the numbers the hour opens and closes on:
+
+```bash
+npm run verify -- --only signal     # the opening 23% to 78%, from the telemetry
+npm run verify -- --only followup   # the closing 32 / 25 / 7, replayed
+```
+
+The follow-up group replays the thirty-two unmet requests through the service's
+own `selectSubstitute`, so the closing payoff is derived rather than restated. It
+is a **prepared replay**: the requests are the real ones from the telemetry, and
+the shelf state afterwards is declared synthetic in
+`fixtures/telemetry/post-change-stock.json`. No second production window was
+observed, and nothing in the repository claims one was.
 
 `npm run rehearse -- --fallback` walks the same hour entirely on prepared artefacts, resolving every fallback target, which is the check that the fallback path has no gaps.
 
@@ -78,7 +94,7 @@ Every agent job holds read-only GitHub permissions, caps its time, turns, and AI
 
 ## Honesty rules this repository enforces
 
-- Product states carry the date they were verified: **2026-08-23**.
+- Product states carry the date they were verified: **2026-08-24**.
 - Experimental, preview, and simulated states are labelled everywhere they appear.
 - A simulated provenance record declares `mode: simulated` and is never described as an attestation.
 - No customer or tenant identifier is committed. Neutrality is structural: no profile holds a concrete organisation, tenant, subscription or directory value, and attendee-facing documents may use only an allowlisted set of scenario and product proper nouns. Tests enforce both, and an unrecognised name fails the build. A presenter's engagement-specific terms live in an untracked `.showcase.local.json` (see `.showcase.local.example.json`) and are never committed. This public repository's own owner and name are present, because the standalone export needs them to rewrite sibling links.

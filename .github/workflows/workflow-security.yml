@@ -59,16 +59,19 @@ jobs:
       # be installed the job fails here rather than proceeding to a green check
       # that never actually validated anything.
       #
-      # Pinned to v0.86.2: the compiler version is part of the lock contract
-      # (each lock header records "compiler_version":"v0.86.2"), so CI installs
-      # the exact org (github/gh-aw) and version the committed locks were
-      # produced with. validate-aw.mjs re-checks that the installed version
-      # matches the locks and fails with the exact install command otherwise.
-      - name: Install the agentic workflow extension
+      # The version is NOT written here. npm run aw:install reads it from the
+      # committed artefacts that define it — each lock header records
+      # "compiler_version", and .github/aw/actions-lock.json pins the same
+      # release — and installs exactly that, never the latest. A version typed
+      # into this file would be a second copy of the number that could drift
+      # from the locks silently; instead there is one source and CI reads it.
+      # validate-aw.mjs then re-checks the installed version against the locks
+      # and refuses to compile at all if they disagree.
+      - name: Install the agentic workflow extension at the pinned version
         id: install-aw
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh extension install github/gh-aw --pin v0.86.2
+        run: npm run aw:install
 
       # validate-aw.mjs --ci independently confirms gh aw is runnable (by exit
       # status), runs strict validation, and byte-compares each freshly compiled
