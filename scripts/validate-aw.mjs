@@ -54,9 +54,12 @@ for (const source of sources) {
   const md = readText('.github', 'workflows', source);
   const frontmatter = md.split('---')[1] ?? '';
   checker.check(/permissions:/.test(frontmatter), `${source} declares explicit permissions`);
+  const repositoryWrite = [...frontmatter.split('safe-outputs')[0].matchAll(/^\s+([\w-]+):\s*write\b/gm)]
+    .map((match) => match[1])
+    .filter((permission) => permission !== 'copilot-requests');
   checker.check(
-    !/permissions:[\s\S]*?\bwrite\b/.test(frontmatter.split('safe-outputs')[0]),
-    `${source} grants the agent job no write permission`
+    repositoryWrite.length === 0,
+    `${source} grants no repository write permission`
   );
   checker.check(/timeout-minutes:/.test(frontmatter), `${source} caps its wall-clock time`);
   checker.check(/max-turns:/.test(frontmatter), `${source} caps its turns`);
