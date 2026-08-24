@@ -894,6 +894,45 @@ test('the slide budget rule names the document it applies to', () => {
     'the exemption is stated before the rule it qualifies');
 });
 
+test('every command list that claims a count states the right one', () => {
+  // Three documents publish the clean-checkout sequence. They must agree with
+  // each other and with package.json, and none may promise a count it does not
+  // list. A stale number here is the cheapest possible way to lose the room.
+  const scripts = readJson('package.json').scripts;
+  const expected = ['setup', 'preflight', 'test', 'verify', 'aw:install', 'validate:aw', 'rehearse'];
+  for (const name of expected) {
+    assert.ok(scripts[name], `package.json has no "${name}" script`);
+  }
+  const WORD = { 6: 'Six', 7: 'Seven', 8: 'Eight' };
+
+  const index = readText('docs', 'index.html');
+  for (const [doc, text, anchor] of [
+    ['docs/index.html', index, 'id="card-index-commands"'],
+    ['docs/presenter.html', presenter, 'id="card-t24"']
+  ]) {
+    const start = text.indexOf(anchor);
+    assert.ok(start > -1, `${doc} has no command card`);
+    const card = text.slice(start, start + 3000);
+    const claimed = card.match(/\b(Six|Seven|Eight) commands\b/);
+    assert.ok(claimed, `${doc} does not state how many commands it lists`);
+    const listed = expected.filter((name) => card.includes(`npm run ${name}`) || (name === 'test' && card.includes('npm test')));
+    assert.equal(claimed[1], WORD[listed.length],
+      `${doc} promises "${claimed[1]} commands" but lists ${listed.length}`);
+    for (const name of expected) {
+      const command = name === 'test' ? 'npm test' : `npm run ${name}`;
+      assert.ok(card.includes(command), `${doc} omits ${command}`);
+    }
+    assert.ok(card.indexOf('npm run aw:install') < card.indexOf('npm run validate:aw'),
+      `${doc} validates with a compiler it has not pinned yet`);
+  }
+
+  const readme = readText('README.md');
+  assert.ok(readme.indexOf('npm run aw:install') < readme.indexOf('npm run validate:aw'),
+    'README.md validates with a compiler it has not pinned yet');
+  assert.ok(!/gh-aw --pin v\d/.test(readme),
+    'README.md hard-codes the pin as a command instead of pointing at the script');
+});
+
 test('the trust model is never conflated between the two lanes', () => {
   const pulse = scenes.find((s) => s.id === 'pulse');
   const intake = scenes.find((s) => s.id === 'intake');

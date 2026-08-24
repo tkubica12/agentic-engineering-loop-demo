@@ -21,13 +21,14 @@ Everything here is public, customer-neutral, and built on synthetic data.
 
 Node 22 or newer. There is nothing to install: the repository has no runtime dependency.
 
-The agentic-workflow compiler is pinned. `npm run aw:install` installs `github/gh-aw --pin v0.86.2`; `npm run aw:compile` regenerates the lock files. `node scripts/validate-aw.mjs` fails if the installed `gh aw` drifts from the pinned version.
+The agentic-workflow compiler is pinned. `npm run aw:install` installs `github/gh-aw` at the version the committed lock files record, currently `v0.86.2`, reading it from the repository rather than from a second copy of the number; it is idempotent and never installs the latest release. `npm run aw:compile` regenerates the lock files. `npm run validate:aw` asserts that this checkout is the git working-tree root, then fails if the installed `gh aw` drifts from the pinned version or if any lock file is stale.
 
 ```bash
 npm run setup        # create output directories; installs nothing
 npm run preflight    # is this machine ready to present?
 npm test             # service tests and repository tests
 npm run verify       # recompute the telemetry signal and check it against the prepared issue
+npm run aw:install   # pin the agentic-workflow compiler to the version the locks record
 npm run validate:aw  # gh aw validate --strict, plus lock-file provenance
 npm run rehearse     # walk all eleven scenes offline
 npm run serve        # http://127.0.0.1:8080/
