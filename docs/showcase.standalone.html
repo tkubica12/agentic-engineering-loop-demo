@@ -1161,12 +1161,13 @@ html:not(.js) .detail-more { display: none; }
 </style>
 <style>
 /* =========================================================================
-   slide-a11y.css — accessibility overrides layered on the vendored article.css
+   slide-a11y.css — accessibility and legibility overrides layered on the
+   vendored article.css
 
-   Two rules only: a visually-hidden live-region class used by slide-a11y.js,
-   and a non-text-contrast fix for the presenting chrome. No design token is
-   defined or changed here and no colour literal is used — colour stays with
-   article.css; only layer opacity changes.
+   Three groups, and no design token is defined or changed in any of them: a
+   visually-hidden live-region class used by slide-a11y.js, a non-text-contrast
+   fix for the presenting chrome, and a set of proportional slide type sizes.
+   Colour stays with article.css; no colour literal is used here.
    ========================================================================= */
 
 /* Visually hidden, but still announced by assistive tech. display:none or
@@ -1201,6 +1202,109 @@ html:not(.js) .detail-more { display: none; }
 [data-view="slides"][data-chrome="awake"] .slide-nav,
 [data-view="slides"][data-chrome="awake"] .controls {
   opacity: 1;
+}
+
+/* ---------- slide legibility ----------------------------------------------
+
+   article.css sizes slide type in rem. A rem is the same number of pixels on a
+   1280x720 laptop and on a 1920x1080 projector, so the projector renders the
+   same small text while having half as much room again — and the far end of the
+   room is where it has to be read.
+
+   Every rule below has the same shape: clamp(<the vendored rem value>, <a share
+   of the viewport height>, <a ceiling>). The lower bound means 720p renders
+   exactly what article.css already produced, so the runtime's fit zoom is never
+   made to work harder there. Above about 900px of viewport height the type
+   grows in proportion to the room it has. The shares are chosen so the
+   proportions between body, label and code are preserved, which is why they are
+   not all the same number.
+
+   Measured in Chromium at 1920x1080: body 21.6px, labels 17.5px, block code
+   19.2px — each above its floor even after a fit zoom of 0.9. Measured at
+   1280x720: body 18.6px, labels 11.5px, block code 14.1px, all identical to the
+   vendored runtime. Only font sizes are set; no token, colour or layout. */
+
+[data-view="slides"] .card[data-slide-current] .card-body {
+  font-size: clamp(1.16rem, 2vh, 1.375rem);
+}
+[data-view="slides"] .card[data-slide-current] .card-sub {
+  font-size: clamp(1.1rem, 1.7vh, 1.3rem);
+}
+[data-view="slides"] .card[data-slide-current] .callout {
+  font-size: clamp(0.98rem, 1.72vh, 1.2rem);
+}
+[data-view="slides"] .card[data-slide-current] .callout-label,
+[data-view="slides"] .card[data-slide-current] .summary-label {
+  font-size: clamp(0.72rem, 1.62vh, 1.1rem);
+}
+[data-view="slides"] .card[data-slide-current] .code-label {
+  font-size: clamp(0.76rem, 1.62vh, 1.1rem);
+}
+[data-view="slides"] .card[data-slide-current] .code pre {
+  font-size: clamp(0.88rem, 1.78vh, 1.25rem);
+}
+[data-view="slides"] .card[data-slide-current] .figure figcaption {
+  font-size: clamp(0.9rem, 1.62vh, 1.15rem);
+}
+[data-view="slides"] .card[data-slide-current] .steps h4 {
+  font-size: clamp(1.02rem, 1.85vh, 1.25rem);
+}
+
+/* The closing slide states the ask. It is the one line the room should leave
+   with, so it gets its own weight rather than sitting inside the sentence. */
+[data-view="slides"] .takeaway[data-slide-current] strong {
+  display: block;
+  margin-top: 0.7em;
+  font-size: 1.2em;
+  color: var(--accent-strong);
+}
+
+/* ---------- the opening divider is the cover ------------------------------
+
+   The runtime turns every chapter into a divider slide showing just its label,
+   and hides the document header in slides mode. The first divider is the slide
+   the room sees while people are still sitting down, so it shows the header
+   instead: the same title, subtitle and thesis the article already carries, with
+   nothing duplicated into the markup and nothing hidden from a reader.
+
+   Both rules are guarded by :has() on the same condition. A browser without
+   :has() drops both, and the first slide falls back to the plain chapter
+   divider the runtime would have drawn anyway. */
+
+[data-view="slides"] .doc:has(#ch-intent[data-slide-current]) #ch-intent > .chapter-label {
+  display: none;
+}
+[data-view="slides"] .doc:has(#ch-intent[data-slide-current]) .doc-header {
+  display: grid;
+  align-content: center;
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  margin: 0;
+  padding: 0 8vw;
+  background: var(--bg);
+}
+[data-view="slides"] .doc:has(#ch-intent[data-slide-current]) .doc-header .eyebrow {
+  font-size: clamp(0.9rem, 1.7vh, 1.2rem);
+}
+[data-view="slides"] .doc:has(#ch-intent[data-slide-current]) .doc-header h1 {
+  font-size: clamp(2.6rem, 6.4vh, 4.6rem);
+}
+[data-view="slides"] .doc:has(#ch-intent[data-slide-current]) .doc-header .subtitle {
+  max-width: 62ch;
+  font-size: clamp(1.3rem, 2.9vh, 2rem);
+  font-weight: 600;
+  color: var(--accent-strong);
+}
+[data-view="slides"] .doc:has(#ch-intent[data-slide-current]) .doc-header .subtitle + .subtitle {
+  margin-top: 0.6em;
+  font-size: clamp(1.05rem, 2.1vh, 1.45rem);
+  font-weight: 400;
+  color: var(--text-muted);
+}
+[data-view="slides"] .doc:has(#ch-intent[data-slide-current]) .doc-header .meta {
+  margin-top: 1.4em;
+  font-size: clamp(0.85rem, 1.5vh, 1.05rem);
 }
 </style>
 <script>
@@ -2206,8 +2310,9 @@ html:not(.js) .detail-more { display: none; }
 
   <header class="doc-header">
     <p class="eyebrow">ENGINEERING PRACTICE</p>
-    <h1>GitHub Beyond Coding: The Agentic Engineering Loop</h1>
-    <p class="subtitle">A nine-stage engineering loop shown in eleven demo scenes; only one lifecycle stage is coding. By the end you can tell which stages an agent should own, which must stay with a named human, and which primitives your current stack already provides.</p>
+    <h1>GitHub Beyond Coding</h1>
+    <p class="subtitle">The Agentic Engineering Loop</p>
+    <p class="subtitle">A nine-stage engineering loop shown in eleven demo scenes; only one lifecycle stage is coding. The business case is in the other eight, where cycle time, rework and audit effort accumulate. By the end you can tell which stages an agent should own, which must stay with a named human, and which primitives your current stack already provides.</p>
     <p class="meta"><time datetime="2026-08-23">23 August 2026</time> &middot; Product states verified 2026-08-23 &middot; Synthetic data only</p>
   </header>
 
@@ -2239,7 +2344,7 @@ html:not(.js) .detail-more { display: none; }
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
               <span class="card-title">Nine stages carry one change, and only one is coding</span>
-              <span class="card-sub">Q1 to Q7 &middot; nothing migrates for this demonstration</span>
+              <span class="card-sub">Q1 to Q7 &middot; Bitbucket and Jira may remain; nothing migrates for this demonstration</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
@@ -2250,7 +2355,7 @@ html:not(.js) .detail-more { display: none; }
               <style>
                 .b { fill: var(--surface); stroke: var(--border-strong); stroke-width: 2; }
                 .ba { fill: var(--accent-soft); stroke: var(--accent-border); stroke-width: 2; }
-                .t { fill: var(--text); font-size: 34px; font-weight: 600; }
+                .t { fill: var(--text); font-size: 32px; font-weight: 600; }
                 .l { fill: var(--accent); font-size: 30px; }
                 .ln { stroke: var(--border-strong); stroke-width: 2; fill: none; }
                 .la { stroke: var(--accent); stroke-width: 2; fill: none; stroke-dasharray: 7 6; }
@@ -2258,34 +2363,34 @@ html:not(.js) .detail-more { display: none; }
                 .ha { fill: var(--accent); }
                 text { font-family: var(--font-sans); }
               </style>
-              <rect class="b" x="8" y="10" width="160" height="62" rx="8"/>
-              <text class="t" x="88" y="49" text-anchor="middle">Signal</text>
-              <rect class="b" x="185" y="10" width="160" height="62" rx="8"/>
-              <text class="t" x="265" y="49" text-anchor="middle">Intent</text>
-              <rect class="b" x="362" y="10" width="160" height="62" rx="8"/>
-              <text class="t" x="442" y="49" text-anchor="middle">Contract</text>
-              <rect class="b" x="539" y="10" width="160" height="62" rx="8"/>
-              <text class="t" x="619" y="49" text-anchor="middle">Lane</text>
-              <rect class="ba" x="716" y="10" width="176" height="62" rx="8"/>
-              <text class="t" x="804" y="49" text-anchor="middle">Implementation</text>
-              <rect class="b" x="909" y="10" width="160" height="62" rx="8"/>
-              <text class="t" x="989" y="49" text-anchor="middle">Evidence</text>
-              <rect class="b" x="1086" y="10" width="160" height="62" rx="8"/>
-              <text class="t" x="1166" y="49" text-anchor="middle">Authority</text>
-              <rect class="b" x="1263" y="10" width="160" height="62" rx="8"/>
-              <text class="t" x="1343" y="49" text-anchor="middle">Release</text>
-              <rect class="b" x="1440" y="10" width="152" height="62" rx="8"/>
-              <text class="t" x="1516" y="49" text-anchor="middle">Production</text>
-              <path class="ln" d="M168 41 H179"/><polygon class="h" points="185,41 175,37 175,45"/>
-              <path class="ln" d="M345 41 H356"/><polygon class="h" points="362,41 352,37 352,45"/>
-              <path class="ln" d="M522 41 H533"/><polygon class="h" points="539,41 529,37 529,45"/>
-              <path class="ln" d="M699 41 H710"/><polygon class="h" points="716,41 706,37 706,45"/>
-              <path class="ln" d="M892 41 H903"/><polygon class="h" points="909,41 899,37 899,45"/>
-              <path class="ln" d="M1069 41 H1080"/><polygon class="h" points="1086,41 1076,37 1076,45"/>
-              <path class="ln" d="M1246 41 H1257"/><polygon class="h" points="1263,41 1253,37 1253,45"/>
-              <path class="ln" d="M1423 41 H1434"/><polygon class="h" points="1440,41 1430,37 1430,45"/>
-              <path class="la" d="M1516 72 V104 H88 V78"/><polygon class="ha" points="88,72 84,82 92,82"/>
-              <text class="l" x="700" y="98" text-anchor="middle">the return to stage one, not a tenth stage</text>
+              <rect class="b" x="18" y="10" width="120" height="62" rx="8"/>
+              <text class="t" x="78" y="52" text-anchor="middle">Signal</text>
+              <rect class="b" x="156" y="10" width="118" height="62" rx="8"/>
+              <text class="t" x="215" y="52" text-anchor="middle">Intent</text>
+              <rect class="b" x="292" y="10" width="156" height="62" rx="8"/>
+              <text class="t" x="370" y="52" text-anchor="middle">Contract</text>
+              <rect class="b" x="466" y="10" width="100" height="62" rx="8"/>
+              <text class="t" x="516" y="52" text-anchor="middle">Lane</text>
+              <rect class="ba" x="584" y="10" width="264" height="62" rx="8"/>
+              <text class="t" x="716" y="52" text-anchor="middle">Implementation</text>
+              <rect class="b" x="866" y="10" width="160" height="62" rx="8"/>
+              <text class="t" x="946" y="52" text-anchor="middle">Evidence</text>
+              <rect class="b" x="1044" y="10" width="170" height="62" rx="8"/>
+              <text class="t" x="1129" y="52" text-anchor="middle">Authority</text>
+              <rect class="b" x="1232" y="10" width="140" height="62" rx="8"/>
+              <text class="t" x="1302" y="52" text-anchor="middle">Release</text>
+              <rect class="b" x="1390" y="10" width="192" height="62" rx="8"/>
+              <text class="t" x="1486" y="52" text-anchor="middle">Production</text>
+              <path class="ln" d="M138 41 H149"/><polygon class="h" points="156,41 146,37 146,45"/>
+              <path class="ln" d="M274 41 H285"/><polygon class="h" points="292,41 282,37 282,45"/>
+              <path class="ln" d="M448 41 H459"/><polygon class="h" points="466,41 456,37 456,45"/>
+              <path class="ln" d="M566 41 H577"/><polygon class="h" points="584,41 574,37 574,45"/>
+              <path class="ln" d="M848 41 H859"/><polygon class="h" points="866,41 856,37 856,45"/>
+              <path class="ln" d="M1026 41 H1037"/><polygon class="h" points="1044,41 1034,37 1034,45"/>
+              <path class="ln" d="M1214 41 H1225"/><polygon class="h" points="1232,41 1222,37 1222,45"/>
+              <path class="ln" d="M1372 41 H1383"/><polygon class="h" points="1390,41 1380,37 1380,45"/>
+              <path class="la" d="M1486 72 V114 H78 V78"/><polygon class="ha" points="78,72 74,82 82,82"/>
+              <text class="l" x="716" y="100" text-anchor="middle">the return to stage one, not a tenth stage</text>
             </svg>
             <figcaption>Implementation, stage five, is the only coding stage. Seven questions decide whether that diff survives.</figcaption>
           </figure>
@@ -2298,7 +2403,7 @@ html:not(.js) .detail-more { display: none; }
             <li><strong>Q6 Release</strong> — how does it ship? Approval and federated identity.</li>
             <li><strong>Q7 Feedback</strong> — what did production say? Back to stage one.</li>
           </ul>
-          <p>Nothing migrates for this demonstration. Assess one repository, and compare which of these seven primitives are native, integrated, or custom in your current stack.</p>
+          <p><strong>Nothing migrates for this demonstration.</strong> Your Bitbucket repositories and your Jira projects may remain exactly where they are. Assess one repository, and compare which of these seven primitives are native, integrated, or custom in your current stack.</p>
         </div>
       </article>
 
@@ -2354,48 +2459,8 @@ html:not(.js) .detail-more { display: none; }
           </button>
         </h3>
         <div class="card-body">
-          <figure class="figure">
-            <svg viewBox="0 0 1000 224" width="1000" height="224" style="width:100%;height:auto;display:block" role="img" aria-label="An agentic workflow pipeline: a Markdown source is compiled to a committed lock file, which runs a read-only agent job, then threat detection inspects the proposal, then a separate scoped job performs the only write.">
-              <style>
-                .pb { fill: var(--surface); stroke: var(--border-strong); stroke-width: 2; }
-                .pq { fill: var(--surface-2); stroke: var(--border-strong); stroke-width: 2; }
-                .pa { fill: var(--accent-soft); stroke: var(--accent-border); stroke-width: 2; }
-                .pt { fill: var(--text); font-size: 23px; font-weight: 600; }
-                .ps { fill: var(--text-muted); font-size: 21px; }
-                .pm { fill: var(--text-muted); font-size: 20px; font-family: var(--font-mono); }
-                .pl { stroke: var(--border-strong); stroke-width: 2; fill: none; }
-                .ph { fill: var(--border-strong); }
-                text { font-family: var(--font-sans); }
-              </style>
-              <rect class="pb" x="4" y="4" width="300" height="84" rx="8"/>
-              <text class="pt" x="154" y="34" text-anchor="middle">Markdown source</text>
-              <text class="pm" x="154" y="68" text-anchor="middle">repository-pulse.md</text>
-              <rect class="pq" x="350" y="4" width="290" height="84" rx="8"/>
-              <text class="pt" x="495" y="34" text-anchor="middle">Compiler</text>
-              <text class="pm" x="495" y="68" text-anchor="middle">gh aw compile</text>
-              <rect class="pb" x="686" y="4" width="310" height="84" rx="8"/>
-              <text class="pt" x="841" y="34" text-anchor="middle">Committed lock</text>
-              <text class="pm" x="841" y="68" text-anchor="middle">*.lock.yml</text>
-              <path class="pl" d="M304 46 H344"/><polygon class="ph" points="350,46 340,42 340,50"/>
-              <path class="pl" d="M640 46 H680"/><polygon class="ph" points="686,46 676,42 676,50"/>
-              <path class="pl" d="M841 88 V104 H154 V122"/><polygon class="ph" points="154,128 150,118 158,118"/>
-              <rect class="pb" x="4" y="132" width="300" height="88" rx="8"/>
-              <text class="pt" x="154" y="162" text-anchor="middle">Agent job</text>
-              <text class="ps" x="154" y="190" text-anchor="middle">read-only permissions;</text>
-              <text class="ps" x="154" y="212" text-anchor="middle">no engine credentials</text>
-              <rect class="pb" x="350" y="132" width="290" height="88" rx="8"/>
-              <text class="pt" x="495" y="162" text-anchor="middle">Threat detection</text>
-              <text class="ps" x="495" y="190" text-anchor="middle">inspects the proposal,</text>
-              <text class="ps" x="495" y="212" text-anchor="middle">not the prompt</text>
-              <rect class="pa" x="686" y="132" width="310" height="88" rx="8"/>
-              <text class="pt" x="841" y="162" text-anchor="middle">Safe-output job</text>
-              <text class="ps" x="841" y="190" text-anchor="middle">one issue, fixed prefix,</text>
-              <text class="ps" x="841" y="212" text-anchor="middle">three allowlisted labels</text>
-              <path class="pl" d="M304 176 H344"/><polygon class="ph" points="350,176 340,172 340,180"/>
-              <path class="pl" d="M640 176 H680"/><polygon class="ph" points="686,176 676,172 676,180"/>
-            </svg>
-            <figcaption>The input is committed telemetry: reviewed repository content, not attacker-controlled. The compiled lock is ordinary committed Actions YAML.</figcaption>
-          </figure>
+          <p><strong>The opening number.</strong> For the synthetic pair <code>SITE-NORTH</code> / <code>SKU-1001</code>, the unavailable rate rose from <strong>23%</strong> to <strong>78%</strong> across the window. The counts quoted at the close are a different measure, not a comparison with these percentages.</p>
+          <p>The input is committed telemetry: reviewed repository content, not attacker-controlled. What bounds the run is the frontmatter below, and the compiled lock it produces is ordinary committed Actions YAML.</p>
           <div class="code">
             <p class="code-label">.github/workflows/repository-pulse.md &mdash; the control contract, in review</p>
             <pre><code>permissions:  { contents: read, issues: read }   # the agent job can write nothing
@@ -2404,6 +2469,10 @@ safe-outputs:
   threat-detection: true                          # inspects the proposal
   create-issue: { title-prefix: "[pulse] ", labels: [showcase, pulse, needs-triage], max: 1 }</code></pre>
           </div>
+          <aside class="callout callout--rule">
+            <p class="callout-label">Rule</p>
+            <p>If you cannot read an agent's limits in a diff, you do not have limits; you have hopes.</p>
+          </aside>
         </div>
       </article>
 
@@ -2421,10 +2490,48 @@ safe-outputs:
           <div class="card-body">
             <p>Six lines of frontmatter decide what this agent may do: what it can read, how long it may run, how many turns it may take, how much it may spend, and the exact shape of the single thing it may write. That is a code review, not a console setting, and it is in the pull request like anything else.</p>
             <p><code>gh aw compile</code> turns it into the committed <code>.lock.yml</code>. Validation recompiles with the pinned compiler and byte-compares against the committed lock, so a source change that was not recompiled fails the build, and so does a hand-edited lock.</p>
-            <aside class="callout callout--rule">
-              <p class="callout-label">Rule</p>
-              <p>If you cannot read an agent's limits in a diff, you do not have limits. You have hopes.</p>
-            </aside>
+            <figure class="figure">
+              <svg viewBox="0 0 1000 224" width="1000" height="224" style="width:100%;max-width:1000px;height:auto;display:block;margin:0 auto" role="img" aria-label="An agentic workflow pipeline: a Markdown source is compiled to a committed lock file, which runs a read-only agent job, then threat detection inspects the proposal, then a separate scoped job performs the only write.">
+                <style>
+                  .pb { fill: var(--surface); stroke: var(--border-strong); stroke-width: 2; }
+                  .pq { fill: var(--surface-2); stroke: var(--border-strong); stroke-width: 2; }
+                  .pa { fill: var(--accent-soft); stroke: var(--accent-border); stroke-width: 2; }
+                  .pt { fill: var(--text); font-size: 23px; font-weight: 600; }
+                  .ps { fill: var(--text-muted); font-size: 21px; }
+                  .pm { fill: var(--text-muted); font-size: 20px; font-family: var(--font-mono); }
+                  .pl { stroke: var(--border-strong); stroke-width: 2; fill: none; }
+                  .ph { fill: var(--border-strong); }
+                  text { font-family: var(--font-sans); }
+                </style>
+                <rect class="pb" x="4" y="4" width="300" height="84" rx="8"/>
+                <text class="pt" x="154" y="34" text-anchor="middle">Markdown source</text>
+                <text class="pm" x="154" y="68" text-anchor="middle">repository-pulse.md</text>
+                <rect class="pq" x="350" y="4" width="290" height="84" rx="8"/>
+                <text class="pt" x="495" y="34" text-anchor="middle">Compiler</text>
+                <text class="pm" x="495" y="68" text-anchor="middle">gh aw compile</text>
+                <rect class="pb" x="686" y="4" width="310" height="84" rx="8"/>
+                <text class="pt" x="841" y="34" text-anchor="middle">Committed lock</text>
+                <text class="pm" x="841" y="68" text-anchor="middle">*.lock.yml</text>
+                <path class="pl" d="M304 46 H344"/><polygon class="ph" points="350,46 340,42 340,50"/>
+                <path class="pl" d="M640 46 H680"/><polygon class="ph" points="686,46 676,42 676,50"/>
+                <path class="pl" d="M841 88 V104 H154 V122"/><polygon class="ph" points="154,128 150,118 158,118"/>
+                <rect class="pb" x="4" y="132" width="300" height="88" rx="8"/>
+                <text class="pt" x="154" y="162" text-anchor="middle">Agent job</text>
+                <text class="ps" x="154" y="190" text-anchor="middle">read-only permissions;</text>
+                <text class="ps" x="154" y="212" text-anchor="middle">no engine credentials</text>
+                <rect class="pb" x="350" y="132" width="290" height="88" rx="8"/>
+                <text class="pt" x="495" y="162" text-anchor="middle">Threat detection</text>
+                <text class="ps" x="495" y="190" text-anchor="middle">inspects the proposal,</text>
+                <text class="ps" x="495" y="212" text-anchor="middle">not the prompt</text>
+                <rect class="pa" x="686" y="132" width="310" height="88" rx="8"/>
+                <text class="pt" x="841" y="162" text-anchor="middle">Safe-output job</text>
+                <text class="ps" x="841" y="190" text-anchor="middle">one issue, fixed prefix,</text>
+                <text class="ps" x="841" y="212" text-anchor="middle">three allowlisted labels</text>
+                <path class="pl" d="M304 176 H344"/><polygon class="ph" points="350,176 340,172 340,180"/>
+                <path class="pl" d="M640 176 H680"/><polygon class="ph" points="686,176 676,172 676,180"/>
+              </svg>
+              <figcaption>The compiler is the only thing between the reviewed source and the committed lock. Nothing downstream of it can widen what the frontmatter allowed.</figcaption>
+            </figure>
           </div>
         </article>
 
@@ -2471,15 +2578,19 @@ safe-outputs:
           </button>
         </h3>
         <div class="card-body">
-          <p>Intake classifies the issue, checks duplicates, assesses feasibility against the codebase, and lists what is missing. One comment, at most three allowlisted labels. Two workflows import the identical brief from <code>shared/intake-brief.md</code> and differ in exactly one line: the engine.</p>
+          <p>Intake reads an issue body, and anyone can open one, so that text is attacker-controlled.</p>
+          <aside class="callout callout--rule">
+            <p class="callout-label">Rule</p>
+            <p>Do not ask a model to refuse a malicious instruction. Arrange the system so obeying a malicious instruction achieves nothing.</p>
+          </aside>
           <div class="summary-grid">
-            <div class="summary-item"><span class="summary-label">Engine removed</span>ADR-50145, accepted 2026-08-04, removed OpenCode as a supported experimental gh-aw engine. It ships on as an unsupported sample.</div>
-            <div class="summary-item"><span class="summary-label">Ecosystem grew</span>GitHub now lists Anthropic Claude and OpenAI Codex as third-party coding agents in public preview, enabled through Copilot policy. Nothing in this repository depends on either.</div>
-            <div class="summary-item"><span class="summary-label">What changed here</span>One line. The brief, the labels, the comment shape, the checks and the reviewer were untouched.</div>
+            <div class="summary-item"><span class="summary-label">Engine removed</span>ADR-50145, accepted 2026-08-04, removed OpenCode as a supported gh-aw engine.</div>
+            <div class="summary-item"><span class="summary-label">Ecosystem grew</span>Third-party coding agents: Anthropic Claude and OpenAI Codex, public preview.</div>
+            <div class="summary-item"><span class="summary-label">What changed here</span>One line. Two workflows share the identical brief; only the engine differs.</div>
           </div>
           <aside class="callout callout--warning">
             <p class="callout-label">Warning</p>
-            <p>This lane is shown as prepared output and is never run live: its compiled lock reports the egress firewall disabled, and maps the Copilot token into the model sandbox as <code>OPENAI_API_KEY</code> without excluding it. Both supported lanes do neither.</p>
+            <p>Prepared output, never run live. The lane returns one comment and at most three allowlisted labels; this lock also reports the egress firewall disabled and maps the Copilot token into the sandbox as <code>OPENAI_API_KEY</code> without excluding it. Both supported lanes do neither.</p>
           </aside>
         </div>
       </article>
@@ -2498,6 +2609,7 @@ safe-outputs:
           <div class="card-body">
             <p>ADR-50145 in <code>github/gh-aw</code> states: "We will remove <code>opencode</code> as a supported experimental engine from the gh-aw platform." Its changeset is marked <code>major</code> and says workflows using <code>engine: opencode</code> no longer compile or validate. The behaviour definition still ships under "Unsupported engine samples", carrying <code>experimental: true</code>, with no compatibility or maintenance commitment.</p>
             <p>The vendored copy here is byte-identical to the upstream blob, and a test computes its git blob SHA to prove it. All commentary lives outside that file.</p>
+            <p>Separately, GitHub now lists Anthropic Claude and OpenAI Codex as third-party coding agents in public preview, enabled through Copilot policy. Nothing in this repository depends on either: they are named so the ecosystem claim is dated and bounded, not because a scene uses them.</p>
             <aside class="callout callout--source">
               <p class="callout-label">Source</p>
               <p>gh-aw <code>main</code> at <code>c453ed8</code>, read 2026-08-23. ADR blob <code>2b9a9f46</code>, changeset blob <code>a18ad374</code>, vendored definition blob <code>d875e158</code>. Third-party agent state verified the same day at <a href="https://docs.github.com/en/copilot/concepts/agents/about-third-party-coding-agents">the third-party coding agents page</a>.</p>
@@ -2683,11 +2795,11 @@ safe-outputs:
             <li>codeql / analyze javascript</li>
             <li>dependency-review / review dependency changes</li>
           </ul>
-          <div class="summary-grid">
-            <div class="summary-item"><span class="summary-label">Policy</span>A ruleset on the default branch requires a pull request, these checks, and a code-owner review, and blocks force pushes.</div>
-            <div class="summary-item"><span class="summary-label">Accountability</span>CODEOWNERS names who must approve; the approval is attributed to a person and a commit SHA.</div>
+          <p><strong>Policy:</strong> a ruleset on the default branch requires a pull request, these checks and a code-owner review. <strong>Accountability:</strong> CODEOWNERS names who must approve, on a commit SHA. An AI review can do neither. It did catch one leak: four internal fields were being spread into the response.</p>
+          <div class="code">
+            <p class="code-label">app/src/service.js &mdash; the remediation, proved on every run by AC-4</p>
+            <pre><code>suggestion: { ...toPublicItem(substitute), siteId, available: available(siteId, substitute.sku) }</code></pre>
           </div>
-          <p>An AI review comments alongside all of this. It cannot mark a check green and it cannot satisfy the code-owner requirement.</p>
         </div>
       </article>
 
@@ -2744,11 +2856,11 @@ safe-outputs:
               <li>Secret scanning push protection blocks a recognised secret at the push, before it reaches history.</li>
               <li>Dependency review inspects what the pull request adds, not the whole tree.</li>
               <li>CodeQL analyses the code and reports alerts that gate the merge.</li>
-              <li>Microsoft MDASH, a codename, is an agentic code scanner in preview.</li>
+              <li>Microsoft MDASH, a codename, is an agentic code scanner in private preview.</li>
             </ul>
             <aside class="callout callout--warning">
               <p class="callout-label">Warning</p>
-              <p>MDASH is a codename for a preview capability in the Microsoft Defender and Exposure Management family: an agentic code scanner that publishes findings into Exposure Management. It overlaps and complements CodeQL rather than adding runtime context, and nothing here depends on it. See <a href="https://learn.microsoft.com/en-us/security-exposure-management/ai-code-security-overview">the Microsoft Learn overview</a>. Push protection availability depends on plan and settings, so this repository explains that control rather than staging a block.</p>
+              <p>MDASH is a codename for a capability in the Microsoft Defender and Exposure Management family: an agentic code scanner that publishes findings into Exposure Management. Microsoft Learn titles its page "Codename MDASH - Agentic code scanner initiative (private preview)", so <strong>private preview</strong> is the stage, not general preview. It overlaps and complements CodeQL rather than adding runtime context, and nothing here depends on it. See <a href="https://learn.microsoft.com/en-us/security-exposure-management/mdash-initiative">the Microsoft Learn initiative page</a>, read 2026-08-24, and <a href="https://learn.microsoft.com/en-us/security-exposure-management/ai-code-security-overview">the overview</a>. Push protection availability depends on plan and settings, so this repository explains that control rather than staging a block.</p>
             </aside>
           </div>
         </article>
@@ -2814,8 +2926,8 @@ safe-outputs:
           <button type="button" class="card-toggle" aria-expanded="false">
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
-              <span class="card-title">Production evidence returns to the repository under a scoped identity</span>
-              <span class="card-sub">Question 7 of 7 &middot; a cloud-neutral pattern; the Azure demo below is one concrete proof</span>
+              <span class="card-title">Production signal correlated to source under an identity scoped to one workload</span>
+              <span class="card-sub">Question 7 of 7 &middot; a cloud-neutral pattern; the Azure demo below is one concrete proof. GitHub write-back is the named next step, not proof.</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
@@ -2830,7 +2942,7 @@ safe-outputs:
           </ul>
           <aside class="callout callout--warning">
             <p class="callout-label">Warning</p>
-            <p>This demonstration proves source grounding and scoped remediation. It does not prove GitHub write-back: the rollback subagent is instructed to raise an issue for source fixes, but its configured tool list contains no GitHub connector, so that is a designed next step and not a demonstrated capability.</p>
+            <p>What is proved here is the title and no more: production signal correlated to source, and remediation under an identity scoped to one workload. <strong>GitHub write-back is the named next step, not proof.</strong> The rollback subagent is instructed to raise an issue for source fixes, but its configured tool list contains no GitHub connector, so the return to stage one is designed and not yet demonstrated.</p>
           </aside>
         </div>
       </article>
@@ -2953,7 +3065,7 @@ safe-outputs:
               <span class="card-num" aria-hidden="true"></span>
               <span class="card-titles">
                 <span class="card-title">Every capability this session touches, with its stage and its licensing</span>
-                <span class="card-sub">Verified 2026-08-23. GA, public preview, removed sample and simulation are four different things.</span>
+                <span class="card-sub">Verified 2026-08-23. GA, public preview, private preview, removed sample and simulation are five different things.</span>
               </span>
               <span class="card-mark" aria-hidden="true"></span>
             </button>
@@ -2972,7 +3084,7 @@ safe-outputs:
               <div class="detail-row"><span class="detail-key">Artifact attestations</span><span class="detail-val"><strong>GA.</strong> Included. Needs an entitled repository. This showcase labels the simulated case.</span></div>
               <div class="detail-row"><span class="detail-key">Environments and required reviewers</span><span class="detail-val"><strong>GA.</strong> Public repositories, or paid plans for private. Where the deploy authority boundary lives.</span></div>
               <div class="detail-row"><span class="detail-key">Repository rulesets</span><span class="detail-val"><strong>GA.</strong> Public repositories, or paid plans for private. Policy as configuration, readable in the repository.</span></div>
-              <div class="detail-row"><span class="detail-key">Microsoft MDASH (codename)</span><span class="detail-val"><strong>Preview.</strong> Microsoft Defender and Exposure Management. An agentic code scanner: a multi-agent source-scanning pipeline that publishes findings into Exposure Management. It overlaps and complements CodeQL rather than adding runtime context. Not used by this repository.</span></div>
+              <div class="detail-row"><span class="detail-key">Microsoft MDASH (codename)</span><span class="detail-val"><strong>Private preview.</strong> Microsoft Defender and Exposure Management. An agentic code scanner: a multi-agent source-scanning pipeline that publishes findings into Exposure Management. It overlaps and complements CodeQL rather than adding runtime context. Not used by this repository.</span></div>
               <div class="detail-row"><span class="detail-key">Azure SRE Agent</span><span class="detail-val"><strong>Available.</strong> Azure. Cited from a separate public repository. Its GitHub connector reads source; write-back is not demonstrated there.</span></div>
             </div>
           </div>
@@ -3059,7 +3171,7 @@ Still answered with nothing:        7 requests</code></pre>
 
   </main>
 
-  <p class="takeaway">Pick whichever execution surface you like, and change your mind next quarter; what must not churn is the place where intent, evidence, and authority live. The ask: one low-risk repository, two weeks, five evidence artefacts, a decision on day 14.</p>
+  <p class="takeaway" id="card-takeaway">Pick whichever execution surface you like, and change your mind next quarter; what must not churn is the place where intent, evidence, and authority live. <strong>The ask: one low-risk repository, two weeks, five evidence artefacts, a decision on day 14.</strong></p>
 
   <footer class="doc-footer">
     <a href="https://github.com/tkubica12/agentic-engineering-loop-demo/blob/main/docs/index.html">Repository index</a>

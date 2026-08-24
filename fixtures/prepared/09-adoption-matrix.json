@@ -122,7 +122,7 @@
     { "capability": "Artifact attestations", "state": "GA", "licensing": "Included", "notes": "Needs an entitled repository. This showcase labels the simulated case." },
     { "capability": "Environments and required reviewers", "state": "GA", "licensing": "Public repositories, or paid plans for private", "notes": "Where the deploy authority boundary lives." },
     { "capability": "Repository rulesets", "state": "GA", "licensing": "Public repositories, or paid plans for private", "notes": "Policy as configuration, readable in the repository." },
-    { "capability": "Microsoft MDASH (codename)", "state": "Preview", "licensing": "Microsoft Defender and Exposure Management", "notes": "An agentic code scanner: a multi-agent source-scanning pipeline that publishes findings into Exposure Management. It overlaps and complements CodeQL rather than adding runtime context. Not used by this repository." },
+    { "capability": "Microsoft MDASH (codename)", "state": "Private preview", "licensing": "Microsoft Defender and Exposure Management", "notes": "An agentic code scanner: a multi-agent source-scanning pipeline that publishes findings into Exposure Management. It overlaps and complements CodeQL rather than adding runtime context. Not used by this repository." },
     { "capability": "Azure SRE Agent", "state": "Available", "licensing": "Azure", "notes": "Cited from a separate public repository. Its GitHub connector reads source; write-back is not demonstrated there." }
   ],
   "lowRiskAdoptionPath": [

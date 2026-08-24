@@ -485,6 +485,34 @@ test('lock: the supported threat-detection sandbox excludes exactly the three cr
   }
 });
 
+test('the prepared evidence names all five excluded variables and splits them correctly', () => {
+  // The article and the fallback both say "five named variables". The fixture is
+  // where that claim is written down, so it must name the same five the compiled
+  // lock excludes, and it must keep the distinction: three are engine or MCP
+  // credentials, two are the OIDC request variables a job would use to mint a
+  // federated token. Conflating them would overstate what is being withheld.
+  const boundary = JSON.parse(readText('fixtures', 'prepared', '06-pr-evidence.json')).credentialBoundary;
+  const named = boundary.excludedFromAgentSandbox;
+  assert.deepEqual(named.map((e) => e.name).sort(), [...AGENT_EXCLUDED_FIVE].sort(),
+    'the fixture does not name exactly the five variables the lock excludes');
+
+  const credentials = named.filter((e) => /credential$/.test(e.kind)).map((e) => e.name).sort();
+  const oidc = named.filter((e) => e.kind === 'OIDC request variable').map((e) => e.name).sort();
+  assert.deepEqual(credentials, ['COPILOT_GITHUB_TOKEN', 'GITHUB_MCP_SERVER_TOKEN', 'MCP_GATEWAY_API_KEY']);
+  assert.deepEqual(oidc, ['ACTIONS_ID_TOKEN_REQUEST_TOKEN', 'ACTIONS_ID_TOKEN_REQUEST_URL']);
+  assert.deepEqual(boundary.excludedCounts, { total: 5, engineOrMcpCredentials: 3, oidcRequestVariables: 2 });
+
+  // The detection sandbox claim must match the three the lock actually excludes.
+  for (const cred of DETECTION_EXCLUDED_THREE) {
+    assert.ok(boundary.threatDetectionSandbox.includes(cred),
+      `the fixture's detection claim omits ${cred}`);
+  }
+
+  // The wording rule stays the true property, never "holds no secret".
+  assert.match(boundary.wording, /read-only GitHub permissions/);
+  assert.match(boundary.wording, /Never say the agent job holds no secret/);
+});
+
 test('lock: the OpenCode lane keeps the same exclusions and maps OPENAI_API_KEY in both sandboxes', () => {
   const blocks = jobBlocks(read(openCodeLock));
   const mapping = /OPENAI_API_KEY:\s*\$\{\{\s*secrets\.COPILOT_GITHUB_TOKEN\s*\}\}/;

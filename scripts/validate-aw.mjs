@@ -17,9 +17,10 @@
 // pass when gh aw could not run: that is a hard failure.
 
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { createChecker, repoPath, readText, exists, log, parseArgs } from './lib/repo.mjs';
-import { probeGh } from './lib/gh.mjs';
+import { probe, probeGh } from './lib/gh.mjs';
+import { pinnedCompiler, versionTokenOf } from './lib/aw.mjs';
 
 const args = parseArgs();
 const ci = args.flags.has('ci');
@@ -89,7 +90,7 @@ surface(String(version.stdout ?? ''), String(version.stderr ?? ''));
 if (!awAvailable) {
   const why = version.error ? `could not be launched (${version.error.code ?? version.error.message})` : `exited ${version.status}`;
   log.fail(`gh aw ${why}, so strict validation and lock-freshness could not run.`);
-  log.info('Install it (pinned) with: gh extension install github/gh-aw --pin v0.86.2');
+  log.info('Install it pinned with: npm run aw:install');
   if (ci) {
     log.fail('CI requires gh aw. A missing or broken extension is a failure here, not a silent pass.');
   }
@@ -111,54 +112,53 @@ log.head('gh aw compiler pin');
 
 // `gh aw version` prints to stderr (verified), so read the version token from
 // either stream rather than assuming stdout.
-const installedVersion = (`${version.stdout ?? ''}\n${version.stderr ?? ''}`.match(/v\d+\.\d+\.\d+/) || [])[0] ?? null;
+const installedVersion = versionTokenOf(version);
 
-function compilerVersionOf(lock) {
-  const header = readText('.github', 'workflows', lock).split('\n')[0] ?? '';
-  const m = header.match(/gh-aw-metadata:\s*(\{.*\})\s*$/);
-  if (!m) return null;
-  try {
-    return JSON.parse(m[1]).compiler_version ?? null;
-  } catch {
-    return null;
-  }
-}
-
-const pinLockNames = readdirSync(workflowDir).filter((f) => f.endsWith('.lock.yml')).sort();
-const expectedVersions = new Set();
-for (const lock of pinLockNames) {
-  const v = compilerVersionOf(lock);
-  if (v) expectedVersions.add(v);
-}
-if (exists('.github', 'aw', 'actions-lock.json')) {
-  try {
-    const parsed = JSON.parse(readText('.github', 'aw', 'actions-lock.json'));
-    for (const entry of Object.values(parsed.entries ?? {})) {
-      if (/gh-aw/.test(entry.repo ?? '') && entry.version) expectedVersions.add(entry.version);
-    }
-  } catch {
-    checker.check(false, '.github/aw/actions-lock.json is valid JSON');
-  }
-}
+const { versions: expectedVersions, expected } = pinnedCompiler();
 
 // The repository must agree with itself on exactly one pinned compiler version.
-const expected = expectedVersions.size === 1 ? [...expectedVersions][0] : null;
 checker.check(
-  expectedVersions.size === 1,
-  expectedVersions.size === 1
+  expected !== null,
+  expected !== null
     ? `the locks and actions-lock.json agree on compiler ${expected}`
-    : `the locks/actions-lock.json disagree on the pinned compiler version (${[...expectedVersions].join(', ') || 'none found'}); recompile with a single pinned gh aw`
+    : `the locks/actions-lock.json disagree on the pinned compiler version (${expectedVersions.join(', ') || 'none found'}); recompile with a single pinned gh aw`
 );
 
 if (expected) {
-  const installCmd = `gh extension install github/gh-aw --pin ${expected}`;
   const matches = installedVersion === expected;
   if (!matches) {
     log.fail(`installed gh aw is ${installedVersion ?? 'unknown'} but the committed locks were compiled with ${expected}.`);
-    log.info(`Pin the compiler to match the locks: ${installCmd}`);
-    log.info('(confirm the flag first with: gh extension install --help). Then recompile with: npm run aw:compile');
+    log.info('Pin the compiler to match the locks: npm run aw:install');
+    log.info(`(that runs: gh extension install github/gh-aw --pin ${expected}). Then recompile with: npm run aw:compile`);
   }
   checker.check(matches, `installed gh aw (${installedVersion ?? 'unknown'}) matches the pinned compiler ${expected}`);
+}
+
+// --- the compile below must act on THIS repository ---------------------------
+//
+// `gh aw compile` and the freshness comparison both run with cwd set to
+// repoPath(). If that directory is not the root of the git working tree — a
+// nested checkout, a stray copy inside another repository — the compiler can
+// resolve a different workflow set, and every freshness check would then compare
+// files it never regenerated and pass vacuously. Assert the two agree first.
+
+log.head('checkout identity');
+{
+  const top = probe('git', ['rev-parse', '--show-toplevel'], { cwd: repoPath() });
+  const toplevel = String(top.stdout ?? '').trim();
+  const ran = !top.error && top.status === 0 && toplevel.length > 0;
+  checker.check(ran, 'git reported the working-tree root');
+  if (ran) {
+    const same = resolve(toplevel) === resolve(repoPath());
+    if (!same) {
+      log.fail(`git says the working tree root is ${resolve(toplevel)}, but these scripts live under ${resolve(repoPath())}.`);
+      log.info('Run the validation from the repository root; a nested checkout would make the freshness comparison vacuous.');
+    }
+    checker.check(same, 'the scripts and the git working tree root are the same directory');
+    if (!same) process.exit(checker.finish('Agentic workflow validation'));
+  } else {
+    process.exit(checker.finish('Agentic workflow validation'));
+  }
 }
 
 // --- strict validation -------------------------------------------------------

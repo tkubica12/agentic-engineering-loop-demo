@@ -87,7 +87,7 @@ if (ghVersion) {
     const version = (`${aw.stdout ?? ''}\n${aw.stderr ?? ''}`.match(/v\d+\.\d+\.\d+/) || [])[0] ?? 'version unknown';
     log.ok(`Agentic workflow extension available (${version})`);
   } else {
-    checker.warn('gh aw not installed. Install it pinned with: gh extension install github/gh-aw --pin v0.86.2 (or: npm run aw:install)');
+    checker.warn('gh aw not installed. Install it pinned with: npm run aw:install');
   }
 }
 
@@ -106,7 +106,7 @@ const CAPABILITY_LABELS = {
   artifactAttestation: { label: 'Artifact attestations', scene: true },
   environmentApproval: { label: 'Environments and required reviewers', scene: true },
   rulesets: { label: 'Repository rulesets', scene: true },
-  mdash: { label: 'Microsoft MDASH (codename, preview)', scene: false }
+  mdash: { label: 'Microsoft MDASH (codename, private preview)', scene: false }
 };
 for (const [name, state] of Object.entries(profile.capabilities)) {
   const meta = CAPABILITY_LABELS[name] || { label: name, scene: true };

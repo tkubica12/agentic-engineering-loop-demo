@@ -135,6 +135,7 @@ if (screened === null) {
 } else if (screened.error) {
   checker.check(false, screened.error);
 } else {
+  log.info(`the local screen never reads its own declaration: ${screened.exempt.join(', ')}`);
   checker.check(
     screened.offenders.length === 0,
     `local screen over ${screened.terms} presenter term(s) found nothing${screened.offenders.length ? `: ${screened.offenders.join('; ')}` : ''}`

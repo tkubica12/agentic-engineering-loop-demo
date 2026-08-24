@@ -461,7 +461,7 @@
       ],
       "start": 45,
       "end": 51,
-      "title": "Production evidence returns to the repository under a scoped identity",
+      "title": "Production signal correlated to source under an identity scoped to one workload",
       "presenterTitle": "Prepared — Production feedback",
       "mode": "prepared",
       "surface": "external-evidence",

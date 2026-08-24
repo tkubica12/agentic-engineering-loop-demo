@@ -157,6 +157,57 @@ test('reset then setup then rehearse works, which is the between-sessions loop',
   assert.ok(existsSync(repoPath('out', 'rehearsal', 'transcript.json')));
 });
 
+test('the pinned gh-aw version is read from the repository, never typed twice', async () => {
+  const { pinnedCompiler } = await import('../scripts/lib/aw.mjs');
+  const pin = pinnedCompiler();
+  assert.match(pin.expected ?? '', /^v\d+\.\d+\.\d+$/,
+    `the repository does not agree on one pinned compiler: ${pin.versions.join(', ')}`);
+  assert.ok(pin.sources.length >= 2,
+    'the pin is claimed by fewer than two committed artefacts, so nothing cross-checks it');
+  assert.ok(pin.sources.includes('.github/aw/actions-lock.json'));
+
+  // The install script must install exactly that, and must never reach for latest.
+  const script = readFileSync(repoPath('scripts', 'aw-install.mjs'), 'utf8');
+  const commands = [...script.matchAll(/probeGh\(\[([^\]]*)\]/g)].map((m) => m[1]);
+  assert.ok(commands.some((c) => c.includes("'--pin'") && c.includes('expected')),
+    'the install script does not install the version the repository pins');
+  assert.ok(!commands.some((c) => /upgrade|latest/i.test(c)),
+    'the install script can reach for a newer release than the pin');
+  assert.ok(!/v\d+\.\d+\.\d+/.test(script), 'the install script hard-codes a version instead of reading the pin');
+  assert.equal(readJson('package.json').scripts['aw:install'], 'node scripts/aw-install.mjs');
+});
+
+test('aw:install is idempotent when the pin is already installed', (t) => {
+  const probe = probeGh(['aw', 'version'], { cwd: repoPath() });
+  if (probe.error || probe.status !== 0) {
+    t.skip('gh aw is not installed on this machine');
+    return;
+  }
+  const first = run('aw-install.mjs');
+  assert.equal(first.code, 0, `aw:install failed:\n${first.stdout}\n${first.stderr ?? ''}`);
+  assert.match(first.stdout, /already .*; nothing to do|matching the version the committed locks/,
+    'aw:install did not report an outcome');
+  const second = run('aw-install.mjs');
+  assert.equal(second.code, 0, 'aw:install is not repeatable');
+  assert.match(second.stdout, /already .*; nothing to do/,
+    'a second run did not recognise that the pin is already installed');
+});
+
+test('validate:aw refuses to compile outside the repository working tree', () => {
+  // Without this the freshness comparison can pass vacuously: gh aw would
+  // resolve a different workflow set and every committed lock would be
+  // "unchanged" because nothing regenerated it.
+  const source = readFileSync(repoPath('scripts', 'validate-aw.mjs'), 'utf8');
+  assert.match(source, /rev-parse', '--show-toplevel/,
+    'validate-aw.mjs does not ask git where the working tree root is');
+  const guard = source.indexOf('--show-toplevel');
+  const compile = source.indexOf("probeGh(['aw', 'compile']");
+  assert.ok(guard > -1 && compile > guard,
+    'the checkout-identity assertion runs after the compile it is meant to protect');
+  assert.match(source, /resolve\(toplevel\) === resolve\(repoPath\(\)\)/,
+    'the assertion does not compare resolved absolute paths');
+});
+
 test('npm run validate:docs passes', () => {
   const result = run('validate-docs.mjs');
   assert.equal(result.code, 0, `document validation failed:\n${result.stdout}`);

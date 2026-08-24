@@ -10,7 +10,7 @@
       "name": "tests / unit and contract tests (ubuntu-latest)",
       "workflow": ".github/workflows/tests.yml",
       "conclusion": "success",
-      "proves": "All 168 repository tests pass, including the 21 service tests that carry AC-1 to AC-10.",
+      "proves": "All 186 repository tests pass, including the 21 service tests that carry AC-1 to AC-10.",
       "kind": "deterministic"
     },
     {
@@ -86,15 +86,25 @@
   },
   "mdash": {
     "codename": "MDASH",
-    "stage": "preview",
+    "stage": "private preview",
+    "stageSource": "https://learn.microsoft.com/en-us/security-exposure-management/ai-code-security-overview",
     "positioning": "A Microsoft agentic code scanner in the Defender and Exposure Management family. It runs a multi-agent source-scanning pipeline and publishes its findings into Exposure Management.",
     "relationToCodeQL": "It overlaps and complements CodeQL as a code scanner. It is not runtime or exposure context, and it does not replace static analysis. Nothing in this repository depends on it.",
-    "claimBoundary": "Named as a preview capability with its stage stated. No screenshot, no simulated finding, no claim that it ran here."
+    "claimBoundary": "Named as a private preview capability with its stage stated. No screenshot, no simulated finding, no claim that it ran here."
   },
   "credentialBoundary": {
-    "supportedLanes": "The agent job holds read-only GitHub permissions, and the compiled lock passes --exclude-env for COPILOT_GITHUB_TOKEN, GITHUB_MCP_SERVER_TOKEN and MCP_GATEWAY_API_KEY, so the engine and MCP credentials are withheld from the model sandbox. Both supported locks also set GH_AW_INFO_FIREWALL_ENABLED to true.",
+    "supportedLanes": "The agent job holds read-only GitHub permissions, and the compiled lock passes --exclude-env for five named variables, so none of them is present in the model sandbox. Both supported locks also set GH_AW_INFO_FIREWALL_ENABLED to true.",
+    "excludedFromAgentSandbox": [
+      { "name": "COPILOT_GITHUB_TOKEN", "kind": "engine credential", "why": "the token the Copilot engine authenticates with" },
+      { "name": "GITHUB_MCP_SERVER_TOKEN", "kind": "MCP credential", "why": "the token the GitHub MCP server authenticates with" },
+      { "name": "MCP_GATEWAY_API_KEY", "kind": "MCP credential", "why": "the key the MCP gateway authenticates with" },
+      { "name": "ACTIONS_ID_TOKEN_REQUEST_TOKEN", "kind": "OIDC request variable", "why": "not a credential itself; with the URL below it is what a job uses to mint a federated OIDC token" },
+      { "name": "ACTIONS_ID_TOKEN_REQUEST_URL", "kind": "OIDC request variable", "why": "not a credential itself; the endpoint the request token is presented to" }
+    ],
+    "excludedCounts": { "total": 5, "engineOrMcpCredentials": 3, "oidcRequestVariables": 2 },
+    "threatDetectionSandbox": "The threat-detection job excludes the three of those five that exist in its environment: COPILOT_GITHUB_TOKEN, ACTIONS_ID_TOKEN_REQUEST_TOKEN and ACTIONS_ID_TOKEN_REQUEST_URL. The two MCP credentials are never present there, so they are not on its list.",
     "experimentalException": "The OpenCode sample lock maps OPENAI_API_KEY to the COPILOT_GITHUB_TOKEN secret and does not exclude that variable, so the Copilot token reaches the model sandbox under another name. It also sets GH_AW_INFO_FIREWALL_ENABLED to false. Both differences are material, and both are why that lane is prepared evidence rather than a live control path.",
-    "wording": "Never say the agent job holds no secret. Say what is true: read-only permissions, and engine credentials excluded from the sandbox by name."
+    "wording": "Never say the agent job holds no secret. Say what is true: read-only GitHub permissions, and five named variables excluded from the model sandbox — three engine or MCP credentials, and the two OIDC request variables that would let the job mint a federated token."
   },
   "authority": {
     "codeowners": ".github/CODEOWNERS requires an owner review on app/src/catalog.js, app/src/substitution.js, docs/spec/, and the workflow definitions.",
