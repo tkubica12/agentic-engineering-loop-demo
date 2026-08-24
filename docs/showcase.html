@@ -582,7 +582,7 @@ safe-outputs:
           </h3>
           <div class="card-body">
             <p>Copilot code review is a reviewer. The reviewer count goes up; the number of things that can authorise a merge does not.</p>
-            <p>These checks are not ornamental here. CodeQL found a real high-severity reflected cross-site scripting alert on the pull request that built this showcase, and a second alert in a test that checked a URL by substring. Both were fixed before this pull request was ready to merge. The prepared feature pull request shown in this scene has a clean CodeQL check, which is what a healthy change looks like.</p>
+            <p>These checks are not ornamental here. CodeQL found a real high-severity reflected cross-site scripting alert on the pull request that built this showcase, and a second alert in a test that checked a URL by substring. On the pull request that sharpened it, CodeQL found a third: a time-of-check to time-of-use race in a newly added test, which checked that a file was absent and then created it by name. All three were fixed before their pull request was ready to merge. The prepared feature pull request shown in this scene has a clean CodeQL check, which is what a healthy change looks like.</p>
           </div>
         </article>
 

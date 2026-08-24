@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { closeSync, mkdirSync, openSync, rmSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { loadConfig, loadProfile, listProfiles, readText, readJson, walk, relPath, exists, repoPath } from '../scripts/lib/repo.mjs';
 import { concreteIdentityValues, unknownProperNouns, properNounsIn, proseOf, localScreen, localScreenExemptions } from '../scripts/lib/neutrality.mjs';
@@ -255,12 +255,24 @@ test('the local screen skips its own declaration and still catches a term elsewh
   const overrides = repoPath('.showcase.local.json');
   const probeRel = 'out/local-screen-probe.txt';
   const probe = repoPath(probeRel);
-  assert.ok(!existsSync(overrides), 'a local override file was already present; refusing to overwrite it');
 
   const TERM = 'aeloop-screen-probe-term';
   mkdirSync(repoPath('out'), { recursive: true });
+
+  // Create exclusively: "wx" fails if the path already exists, so a presenter's
+  // real override file can never be clobbered. Checking first and then writing
+  // would leave a window in which the file could appear between the two calls.
+  let handle;
   try {
-    writeFileSync(overrides, `${JSON.stringify({ forbiddenTerms: [TERM] }, null, 2)}\n`);
+    handle = openSync(overrides, 'wx');
+  } catch (error) {
+    assert.fail(`could not create a temporary local override file (${error.code}); if one already exists, remove it first`);
+  }
+
+  try {
+    writeFileSync(handle, `${JSON.stringify({ forbiddenTerms: [TERM] }, null, 2)}\n`);
+    closeSync(handle);
+    handle = null;
 
     // 1. The declaration files carry the term by definition and must be exempt.
     const exempt = localScreenExemptions();
@@ -284,11 +296,11 @@ test('the local screen skips its own declaration and still catches a term elsewh
       assert.ok(message.length < 80, `the failure message is not concise: ${message}`);
     }
   } finally {
+    if (handle !== null && handle !== undefined) closeSync(handle);
     rmSync(overrides, { force: true });
     rmSync(probe, { force: true });
   }
 
-  assert.ok(!existsSync(overrides), 'the temporary local override file survived the test');
   assert.equal(localScreen(['README.md']), null,
     'the screen must be inert again once the local file is gone');
 });
