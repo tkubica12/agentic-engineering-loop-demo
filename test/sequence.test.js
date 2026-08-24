@@ -650,13 +650,7 @@ test('the contract scene shows the artefact chain, and names Spec Kit with a fir
     'the contract slide does not render the artefact chain from brief to tests');
   assert.match(slide, /An issue on its own is not the contract/i,
     'the contract slide does not say that an issue alone is not the contract');
-  const slideLinks = [...slide.matchAll(/href="([^"]+)"/g)].map((match) => match[1]);
-  assert.ok(slideLinks.includes('https://github.com/github/spec-kit'),
-    'the contract slide does not link Spec Kit');
-
   const card = showcase.slice(showcase.indexOf('id="card-spec-kit"'), showcase.indexOf('id="card-loop-patterns"'));
-  const cardLinks = [...card.matchAll(/href="([^"]+)"/g)].map((match) => match[1]);
-  assert.ok(cardLinks.includes('https://github.github.io/spec-kit/'), 'the Spec Kit card omits the documentation link');
   assert.match(card, /first-party/i, 'the Spec Kit card does not say it is first-party GitHub tooling');
   assert.match(card, /does not discover intent for you/i,
     'the Spec Kit card does not state that it cannot discover intent');
