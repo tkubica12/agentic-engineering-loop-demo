@@ -200,6 +200,20 @@ SHOWCASE_PROFILE=enterprise npm run preflight &amp;&amp; SHOWCASE_PROFILE=enterp
 npm run seed:remote -- --repo OWNER/REPO --apply</code></pre>
           </div>
           <p>No default target, by design; <code>--apply</code> is required before anything is written. Seeding creates the labels and the signal issue only, and starts no agentic workflow.</p>
+          <div class="reveal">
+            <button type="button" class="reveal-toggle" aria-expanded="false">Show what already exists in the reference repository</button>
+            <div class="reveal-body">
+              <p>If you are presenting from the reference repository rather than your own copy, this evidence is already there and can be opened directly. These are issue and pull-request numbers, never workflow run identifiers: a run identifier expires, a number does not.</p>
+              <ul class="arrow-list">
+                <li><strong>Issue 2</strong> &mdash; the agent-raised <code>[pulse]</code> signal issue, with the supported triage lane's comment beneath it. This is tab 3.</li>
+                <li><strong>Issue 3</strong> &mdash; the same bounded change written up as intent, with a prepared triage result posted under it.</li>
+                <li><strong>Pull request 6</strong> &mdash; an agent proposal with its review and checks. This is tabs 5 and 6.</li>
+                <li><strong>Pull request 10</strong> &mdash; a deliberate CodeQL finding, marked do not merge. Open it only if the room asks whether the scanners actually fire.</li>
+                <li><strong>The Dependabot alerts page</strong> &mdash; raised by the fixture in <code>demo/dependabot-vulnerability/</code>. Also depth, not a scene.</li>
+              </ul>
+              <p>Verified 2026-08-24. In a repository you own, these are the five artefacts you have to create yourself; nothing here creates them for you.</p>
+            </div>
+          </div>
           <aside class="callout callout--warning">
             <p class="callout-label">Warning</p>
             <p>Be honest about the gap. Seeding installs <strong>no workflow</strong>: the pulse on tab 2 runs only where <code>.github/workflows/</code> already lives, which means a fork or copy of this repository that you own, with Actions enabled and Copilot AI credits and policy available to it. Seeding also does not create the pull request on tab 5, the checks on tab 6, or the release run on tab 7, and no script here does. Until you have verified each one, treat tabs 2, 3, 5, 6 and 7 as <strong>optional</strong>, present those scenes from the prepared artefacts, and say so once.</p>
@@ -294,23 +308,23 @@ npm run seed:remote -- --repo OWNER/REPO --apply</code></pre>
           </button>
         </h3>
         <div class="card-body">
-          <p>Fifteen slides: three section dividers, eleven scene cards, one closing takeaway. The first divider is the cover, so slide 1 shows the title, the subtitle and the thesis rather than a section name. Every scene names the lifecycle stage it puts on the screen and the questions it answers, in that order, and the slide shows the same marker. Nine stages, eleven scenes: they are different counts.</p>
+          <p>Fifteen slides: three section dividers, eleven scene cards, one closing takeaway. The first divider is the cover, so slide 1 shows the title, the subtitle and the thesis rather than a section name. Every scene names the graph concern it puts on the screen and the plain question that concern answers, in that order, and the slide shows the same marker. Nine concerns, eleven scenes: they are different counts.</p>
           <ol class="steps">
-            <li><h4>00 to 02 &middot; slide 2 &middot; <code>card-thesis</code></h4><p>All nine stages &middot; Q1 to Q7. Tab 1 — Showcase, slides mode.</p></li>
-            <li><h4>02 to 10 &middot; slide 3 &middot; <code>card-pulse</code></h4><p>Stage 1 Signal &middot; Q1 of 7. Tab 3 — The signal issue, with tab 2 — Actions in the background.</p></li>
-            <li><h4>10 to 13 &middot; slide 4 &middot; <code>card-intake</code></h4><p>Stage 2 Intent &middot; Q1 of 7. Tab 3 — The signal issue. Prepared output only.</p></li>
-            <li><h4>13 to 17 &middot; slide 5 &middot; <code>card-refine</code></h4><p>Stage 3 Contract &middot; Q1 and Q2 of 7. Tab 4 — The specification.</p></li>
-            <li><h4>17 to 21 &middot; slide 6 &middot; <code>card-lanes</code></h4><p>Stage 4 Lane &middot; Q2 of 7. Back to tab 1 — Showcase, slides mode. First backwards jump.</p></li>
-            <li><h4>21 to 27 &middot; slide 8 &middot; <code>card-delegate</code></h4><p>Stage 5 Implementation &middot; Q2 of 7. Tab 5 — The pull request, Files changed.</p></li>
-            <li><h4>27 to 40 &middot; slide 9 &middot; <code>card-evidence</code></h4><p>Stages 6 and 7, Evidence and Authority &middot; Q3, Q4 and Q5 of 7. Tab 6 — The pull request, Checks.</p></li>
-            <li><h4>40 to 45 &middot; slide 11 &middot; <code>card-release</code></h4><p>Stage 8 Release &middot; Q6 of 7. Tab 7 — Release run.</p></li>
-            <li><h4>45 to 51 &middot; slide 12 &middot; <code>card-sre</code></h4><p>Stage 9 Production &middot; Q7 of 7. Back to tab 1 — Showcase, slides mode. Second backwards jump.</p></li>
-            <li><h4>51 to 58 &middot; slide 13 &middot; <code>card-coexist</code></h4><p>Across all nine stages &middot; Q1 to Q7. Tab 1 — Showcase, slides mode.</p></li>
-            <li><h4>58 to 60 &middot; slide 14 &middot; <code>card-close</code></h4><p>Stage 9 back to stage 1 &middot; Q1 to Q7. Tab 1 — Showcase, slides mode. Then slide 15, <code>card-takeaway</code>.</p></li>
+            <li><h4>00 to 02 &middot; slide 2 &middot; <code>card-thesis</code></h4><p>The whole graph &middot; Nine concerns, nine questions. Tab 1 — Showcase, slides mode.</p></li>
+            <li><h4>02 to 10 &middot; slide 3 &middot; <code>card-pulse</code></h4><p>Signal &middot; What changed or deserves attention? Tab 3 — The signal issue, with tab 2 — Actions in the background.</p></li>
+            <li><h4>10 to 13 &middot; slide 4 &middot; <code>card-intake</code></h4><p>Intent &middot; Why should we act? Tab 3 — The signal issue. Prepared output only.</p></li>
+            <li><h4>13 to 17 &middot; slide 5 &middot; <code>card-refine</code></h4><p>Contract &middot; What must remain true? Tab 4 — The specification.</p></li>
+            <li><h4>17 to 21 &middot; slide 6 &middot; <code>card-lanes</code></h4><p>Lane &middot; Who or what should act? Back to tab 1 — Showcase, slides mode. First backwards jump.</p></li>
+            <li><h4>21 to 27 &middot; slide 8 &middot; <code>card-delegate</code></h4><p>Implementation &middot; What changed? Tab 5 — The pull request, Files changed.</p></li>
+            <li><h4>27 to 40 &middot; slide 9 &middot; <code>card-evidence</code></h4><p>Evidence and Authority &middot; Does it work and remain secure? Who accepts the risk? Tab 6 — The pull request, Checks.</p></li>
+            <li><h4>40 to 45 &middot; slide 11 &middot; <code>card-release</code></h4><p>Release &middot; What is allowed to ship? Tab 7 — Release run.</p></li>
+            <li><h4>45 to 51 &middot; slide 12 &middot; <code>card-sre</code></h4><p>Production &middot; What happened after release? Back to tab 1 — Showcase, slides mode. Second backwards jump.</p></li>
+            <li><h4>51 to 58 &middot; slide 13 &middot; <code>card-coexist</code></h4><p>Across the whole graph &middot; Which concerns does your stack already answer? Tab 1 — Showcase, slides mode.</p></li>
+            <li><h4>58 to 60 &middot; slide 14 &middot; <code>card-close</code></h4><p>Production back into the graph &middot; What did production change? Tab 1 — Showcase, slides mode. Then slide 15, <code>card-takeaway</code>.</p></li>
           </ol>
           <aside class="callout callout--note">
             <p class="callout-label">Note</p>
-            <p>Slides 1, 7 and 10 are the three section dividers. Slide 1 is the cover and carries the title, the subtitle and the thesis; slides 7 and 10 need no tab and no talk track beyond naming the section. Three scenes are marked as spanning the loop rather than demonstrating one stage of it: the thesis, the adoption ask, and the close. Every one of the nine stages is demonstrated by one of the other eight.</p>
+            <p>Slides 1, 7 and 10 are the three section dividers. Slide 1 is the cover and carries the title, the subtitle and the thesis; slides 7 and 10 need no tab and no talk track beyond naming the section. Three scenes are marked as framing the graph rather than demonstrating one concern of it: the thesis, the adoption ask, and the close. Every one of the nine concerns is demonstrated by one of the other eight.</p>
           </aside>
         </div>
       </article>
@@ -332,8 +346,9 @@ npm run seed:remote -- --repo OWNER/REPO --apply</code></pre>
           </button>
         </h3>
         <div class="card-body">
-          <p><strong>Say:</strong> "An agent can write a plausible diff in ninety seconds. That stopped being the hard part. The hard part is seven questions, and not one of them is a model problem. Was the intent written down? Is the proposal reviewable? Is the evidence deterministic? Is the change allowed? Who is accountable for the merge? How does it reach production? And what did production say back? Mark each one native, integrated, or custom in whatever you run today. Over the next hour a single change answers all seven. Count the stages. One of them is coding."</p>
-          <p><strong>Expected:</strong> The thesis slide: the nine-stage loop, and the seven questions with the primitive each one needs.</p>
+          <p><strong>Say:</strong> "An agent can write a plausible diff in ninety seconds. That stopped being the hard part. The hard part is steering the change, and steering is nine concerns. What changed or deserves attention? Why should we act? What must remain true? Who or what should act? What changed? Does it work and remain secure? Who accepts the risk? What is allowed to ship? And what happened after release? Only one of those nine is coding. Not one of the other eight is a model problem. Mark each of them native, integrated, or custom in whatever you run today."</p>
+          <p><strong>Then, before anyone assumes a pipeline:</strong> "This is a graph, not a queue. Work enters where it happens to arrive — telemetry, a business request, a security finding, a production incident — and the edges run backwards as well as forwards. The left-to-right reading is one path through it, and it is the path we are about to walk."</p>
+          <p><strong>Expected:</strong> The thesis slide: the engineering graph, its four entry points, and the three feedback edges.</p>
           <p><strong>Stop:</strong> If the deck will not enter slides mode, present the article view and continue.</p>
         </div>
       </article>
@@ -344,15 +359,17 @@ npm run seed:remote -- --repo OWNER/REPO --apply</code></pre>
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
               <span class="card-title">02 to 10 — Live — Repository pulse</span>
-              <span class="card-sub">Tab 3 first, then tab 2. Reasoning proposes one issue; a compiled contract bounds the write.</span>
+              <span class="card-sub">Tab 3 first, then tab 2. Work can enter from anywhere; make the next step durable.</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
         </h3>
         <div class="card-body">
+          <p><strong>Open with the entry points, not the numbers:</strong> "Four ways work reaches an engineering team: something moved in the telemetry, somebody asked for an outcome, a scanner found something in code that already merged, or a release misbehaved. Any of them can be first. This hour enters at telemetry, because it is the entry most rooms have never automated."</p>
           <p><strong>Do:</strong> Open Tab 3 and show the finished <code>[pulse]</code> issue immediately. The room sees the outcome inside fifteen seconds. Only then trigger a fresh run from Tab 2, leave it running in the background, and turn to the source.</p>
           <p><strong>Say:</strong> "That issue was written by a workflow that read three weeks of committed telemetry — a file that went through a pull request, so it is reviewed repository content, not something an attacker controls. Now look at why you would trust the workflow itself. Six lines of frontmatter decide everything: what it can read, how long it may run, how many turns it may take, how much it may spend, and the exact shape of the one thing it may write. That is a code review, not a console setting. The job that runs the model holds read-only permissions, and the compiled lock excludes five named engine and MCP credentials from the model's sandbox. A separate job with a narrower grant creates exactly one issue with a fixed prefix and three allowed labels."</p>
           <p><strong>Then, on product state:</strong> "To be exact about what this is: GitHub Agentic Workflows is in public preview, and this repository pins the compiler at gh-aw v0.86.2. What it produces is an ordinary Actions workflow file, committed and reviewable like any other. There is no separate runtime to trust."</p>
+          <p><strong>The numbers are the last thing you say, not the first:</strong> the synthetic pair, and the rate that moved from 23% to 78%. They are evidence that the entry point worked; they are not the story.</p>
           <p><strong>If the fresh run finishes before minute 8:</strong> put it beside the prepared issue and say "same bounded shape, different run." That is the whole payoff. <strong>If it has not finished, say nothing about it and move on</strong> — never draw attention to a queue.</p>
           <p><strong>Expected:</strong> One issue, <code>[pulse]</code> prefix, labels showcase, pulse, needs-triage.</p>
           <p><strong>Stop:</strong> Show the finished issue first, always. Never make the room watch a queue.</p>
@@ -364,15 +381,16 @@ npm run seed:remote -- --repo OWNER/REPO --apply</code></pre>
           <button type="button" class="card-toggle" aria-expanded="false">
             <span class="card-num" aria-hidden="true"></span>
             <span class="card-titles">
-              <span class="card-title">10 to 13 — Prepared — Issue intake (experimental lane)</span>
-              <span class="card-sub">Tab 3. Give it exactly one attempt.</span>
+              <span class="card-title">10 to 13 — Prepared — Issue triage</span>
+              <span class="card-sub">Tab 3. Lead with the triage output. Engine history is depth, not stage time.</span>
             </span>
             <span class="card-mark" aria-hidden="true"></span>
           </button>
         </h3>
         <div class="card-body">
-          <p><strong>Say:</strong> "This one is deliberately not Copilot. Same brief, imported from the same file; one line differs, and that line is the engine. Note what changed here: an issue body is text anyone can write, so this lane gates on a specific label before any model runs. The pulse lane reads reviewed repository content and needs no such gate."</p>
-          <p><strong>Then, briefly:</strong> "The engine died, in fact. GitHub accepted a decision on the fourth of August to remove OpenCode as a supported experimental engine; it still ships as an unsupported sample. Meanwhile the ecosystem grew: Claude and Codex are documented third-party coding agents in public preview. Engines churn in both directions. The brief, the labels, the checks and the reviewer did not move. I run this prepared rather than live, because its compiled lock reports the egress firewall disabled and maps the Copilot token into the model sandbox as an OpenAI key."</p>
+          <p><strong>Say:</strong> "Before anyone writes code, something has to turn a raised issue into intent somebody can accept or reject. Five things came back: what kind of change this is, whether it duplicates an open issue, whether it is feasible without a new dependency, which decisions are missing, and what the safe next action is. Look at the fourth one. Five decisions nobody in engineering owns — how many alternatives, what makes two items interchangeable, whether a partial match counts, what happens when nothing is in stock, whether it has to be the same site. An agent that answered those itself would have invented the product. Naming them and stopping is the correct behaviour."</p>
+          <p><strong>Then, on the trust model:</strong> "An issue body is text anyone can write, so this lane gates on a specific label before any model runs. The pulse lane reads reviewed repository content and needs no such gate."</p>
+          <p><strong>One sentence on provenance, and only one:</strong> "This particular output came from an experimental sample engine that upstream has since removed; the supported Copilot lane imports the identical brief and returns the same shape. That is the point — the contract outlived the engine. The detail is in the article."</p>
           <p><strong>Expected:</strong> Prepared output: one comment with four headings, at most three allowlisted labels.</p>
           <p><strong>Stop:</strong> Three minutes, hard. Prepared only: the OpenCode lock reports the firewall disabled and maps the Copilot token into the model sandbox. Never run this lane live.</p>
         </div>
@@ -390,9 +408,9 @@ npm run seed:remote -- --repo OWNER/REPO --apply</code></pre>
           </button>
         </h3>
         <div class="card-body">
-          <p><strong>Say:</strong> "An issue becomes a contract when it carries three things: one outcome, the constraints that must stay true, and acceptance criteria somebody could test without asking me. Ten criteria here. Each maps to exactly one named test, and the build fails if a criterion has no test. That mapping is the difference between a specification and a wish."</p>
-          <p><strong>Then:</strong> Thirty seconds on spec-kit. What it is, that this repository writes the same artefacts by hand, and that the value is every repository putting the contract in the same place.</p>
-          <p><strong>Expected:</strong> The specification beside the acceptance mapping.</p>
+          <p><strong>Say:</strong> "An issue is not a contract. It carries why, and nothing an agent can be judged against. The chain is: a product brief that names the outcome and how success is measured; one issue that makes it assignable; a decision record for the choice and what it rules out; a specification with behaviour, constraints and acceptance criteria; and tests that make those criteria executable. Ten criteria here. Each maps to exactly one named test, and the build fails if a criterion has no test. That mapping is the difference between a specification and a wish."</p>
+          <p><strong>Then:</strong> Thirty seconds on Spec Kit. It is GitHub's own toolkit for spec-driven development, it packages exactly this chain, and the honest limit is worth saying out loud: it makes intent to contract durable, it does not discover the intent for you, and it does not close the production feedback edge.</p>
+          <p><strong>Expected:</strong> The artefact chain, then the specification beside the acceptance mapping.</p>
         </div>
       </article>
 
@@ -496,7 +514,7 @@ npm run seed:remote -- --repo OWNER/REPO --apply</code></pre>
         <div class="card-body">
           <p><strong>Say:</strong> "The pattern first, because it is cloud-neutral: any operational agent, on any cloud, can correlate production signal with the source that produced it and act under an identity scoped to one workload. What follows is one implementation that actually ran, on Azure, in a separate public repository. It proves the agent correlated live telemetry with connected GitHub source and named the configuration difference. It proves a write-capable subagent shifted all traffic back to the known-good revision, under an identity scoped to one container app."</p>
           <p><strong>Then, mid-scene, without being asked:</strong> "What it does not prove is writing back to GitHub. The subagent's instructions tell it to raise an issue for source fixes, but its configured tool list has no GitHub connector. So that is a designed next step, not a demonstrated capability."</p>
-          <p><strong>Then finish on the bridge:</strong> "It also proves the Activity Log attributed that write to the agent and not to a person, and that recovery was verified rather than assumed. That is the shape that matters: production evidence, attributable, under a scoped identity, flowing back to the place the change came from. Whatever runs your production, that is the loop closing — and it is why the next five minutes are about what it costs to try."</p>
+          <p><strong>Then finish on the bridge:</strong> "It also proves the Activity Log attributed that write to the agent and not to a person, and that recovery was verified rather than assumed. And notice what production can now do to the graph: raise a new signal, reshape the intent, change what must remain true, or open a proposal directly. Four different edges, not one arrow back to the start. Whatever runs your production, that is the graph staying alive — and it is why the next five minutes are about what it costs to try."</p>
           <p><strong>Do not raise MDASH here.</strong> It is reader depth in the article. Mention it only if someone asks.</p>
           <p><strong>Stop:</strong> Never open a live cloud portal. This scene is cited evidence from a public repository.</p>
         </div>
@@ -514,10 +532,10 @@ npm run seed:remote -- --repo OWNER/REPO --apply</code></pre>
           </button>
         </h3>
         <div class="card-body">
-          <p><strong>Say:</strong> "Nothing here says replace Jira. Work management and engineering evidence are different systems of record. Jira keeps the planning and the reporting the business already reads. Bitbucket repositories stay exactly where they are — nothing migrates during the pilot. What moves closer to the code is the evidence an agent works from."</p>
+          <p><strong>Say:</strong> "Nothing here says replace your work management. Work management and engineering evidence are different systems of record. Planning and reporting stay where the business already reads them, and your repositories stay exactly where they are — nothing migrates during the pilot. What moves closer to the code is the evidence an agent works from."</p>
           <p><strong>Then, the cost, before anyone has to ask:</strong> "Three lines. Actions minutes, which the pilot bounds because it is one repository. Copilot AI credits for the Copilot-powered workflows, which every file here caps with <code>max-ai-credits</code>, so the ceiling is in the diff rather than the invoice. And Advanced Security licensing, which is what governs code scanning, secret scanning and dependency review on private repositories — public repositories get those without it. Confirm the current terms for your plan with your account team; I am not quoting a number from a slide."</p>
           <p><strong>Then, the ask:</strong> "One repository, two weeks. Week one is observation only: AGENTS.md, one specification, one read-only workflow, nothing merges differently. Week two makes your existing checks required and adds CODEOWNERS and a ruleset. Three people, part time: the repository owner, a security reviewer, a platform engineer. We supply this repository, the workflow definitions and a walkthrough. By day 14 you have five artefacts — an agent-raised issue from your telemetry, a specification with mapped tests, a pull request small enough to read, a check run that blocked something, and an attributed approval. The decision on day 14 is whether to extend to a second repository. Not which agent to standardise on; that stays reversible."</p>
-          <p><strong>If asked about migration:</strong> Phases are time; dispositions are per repository. After the pilot each repository gets one of migrate, mirror, or leave in place, decided on evidence. <code>gh actions-importer</code> audits Bitbucket Pipelines and translates most of the mechanical shape; rewrite the security posture by hand. The path is cloud-neutral.</p>
+          <p><strong>If asked about migration:</strong> Phases are time; dispositions are per repository. After the pilot each repository gets one of migrate, mirror, or leave in place, decided on evidence. <code>gh actions-importer</code> audits several other CI systems and translates most of the mechanical shape; rewrite the security posture by hand. The path is cloud-neutral.</p>
           <p><strong>Do not:</strong> disparage anyone's current tooling. The argument is about which primitives are native, integrated, or custom in their stack — they answer that themselves.</p>
         </div>
       </article>
@@ -538,10 +556,10 @@ npm run seed:remote -- --repo OWNER/REPO --apply</code></pre>
             <p class="callout-label">Rule</p>
             <p>Say <strong>prepared replay</strong>, out loud, before you say the numbers. The thirty-two requests are the real ones from the opening telemetry; what the shelf held afterwards is declared synthetic, and the answer is computed from both by the shipped selection logic. It is <em>not</em> a second production run, and no second window was observed. <code>npm run verify -- --only followup</code> recomputes it in front of anyone who asks.</p>
           </aside>
-          <p><strong>Say:</strong> "This is a prepared replay: the same unmet requests, run through the code that shipped. Thirty-two unmet requests, twenty-five now answered with an alternative, seven still not — because by then nothing in the group was left on the shelf. Stage nine became stage one. Nine lifecycle stages, shown in eleven scenes. One of the nine was coding. The other eight are what made the coding safe to keep. All seven questions I opened with now have an answer that does not depend on which model wrote the code. Pick whichever agent you like, and change your mind next quarter. What must not churn is the place where intent, evidence, and authority live."</p>
+          <p><strong>Say:</strong> "This is a prepared replay: the same unmet requests, run through the code that shipped. Thirty-two unmet requests, twenty-five now answered with an alternative, seven still not — because by then nothing in the group was left on the shelf. And that residue entered the graph again as a bounded issue. Nine concerns, shown in eleven scenes. One of the nine was coding. The other eight are what made the coding safe to keep. The repository now remembers why, what, proof, and outcome — and not one of those four is a chat transcript or depends on which model wrote the code. Pick whichever agent you like, and change your mind next quarter. What must not churn is the place where intent, evidence, and authority live."</p>
           <p><strong>Then, the one-line ask:</strong> "One repository, two weeks, three people, five artefacts, and a decision on day 14."</p>
           <p><strong>Then:</strong> Stop. Take questions after this, not inside the hour.</p>
-          <p><strong>Expected:</strong> The close slide: follow-up counts, the seven answers, the ask. Then slide 15, the takeaway.</p>
+          <p><strong>Expected:</strong> The close slide: follow-up counts, the four things the repository remembers, the ask. Then slide 15, the takeaway.</p>
           <p><strong>Stop:</strong> None. Never cut the close.</p>
         </div>
       </article>
@@ -620,12 +638,12 @@ npm run seed:remote -- --repo OWNER/REPO --apply</code></pre>
         <div class="card-body">
           <p>A cut is only available before the scene runs. Look at the clock at each checkpoint, and take cuts from that checkpoint's list only.</p>
           <ol class="steps">
-            <li><h4>Checkpoint 1 &mdash; minute 10 entering intake, and again at minute 13</h4><p><strong>Recoverable here: 5 minutes.</strong> If you are over at minute 10, cut intake to one sentence — state the swappability claim and skip the prepared comment body — which saves 3 minutes. At minute 13, if still over, skip spec-kit entirely in the contract scene for another 2 minutes; it is context, not argument.</p></li>
+            <li><h4>Checkpoint 1 &mdash; minute 10 entering intake, and again at minute 13</h4><p><strong>Recoverable here: 5 minutes.</strong> If you are over at minute 10, cut triage to one sentence — name the five missing decisions and skip the prepared comment body — which saves 3 minutes. At minute 13, if still over, skip Spec Kit entirely in the contract scene for another 2 minutes; it is context, not argument.</p></li>
             <li><h4>Checkpoint 2 &mdash; minute 27 entering evidence, and again at minute 29</h4><p><strong>Recoverable here: 11 minutes.</strong> In order: name the eight checks from the slide rather than opening the Checks tab (3 minutes); show the provenance record and skip the OIDC and Terraform detail (2 minutes); keep the four proven production claims and the one limitation but drop the architecture walk (3 minutes); keep the pilot shape, the three cost lines and the five artefacts but drop the disposition detail (3 minutes).</p></li>
           </ol>
           <aside class="callout callout--rule">
             <p class="callout-label">Rule</p>
-            <p>Do not try to recover time from a scene that has already run, and never cut the close or the commercial ask. Finish at minute 60 with the seven questions answered and the pilot named, then take questions. Question time is after the hour, not inside it; say so at minute 0 so nobody interrupts to save you.</p>
+            <p>Do not try to recover time from a scene that has already run, and never cut the close or the commercial ask. Finish at minute 60 with the nine questions answered and the pilot named, then take questions. Question time is after the hour, not inside it; say so at minute 0 so nobody interrupts to save you.</p>
           </aside>
         </div>
       </article>

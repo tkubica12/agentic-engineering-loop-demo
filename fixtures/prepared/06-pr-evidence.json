@@ -10,7 +10,7 @@
       "name": "tests / unit and contract tests (ubuntu-latest)",
       "workflow": ".github/workflows/tests.yml",
       "conclusion": "success",
-      "proves": "All 203 repository tests pass, including the 21 service tests that carry AC-1 to AC-10.",
+      "proves": "All 208 repository tests pass, including the 21 service tests that carry AC-1 to AC-10.",
       "kind": "deterministic"
     },
     {

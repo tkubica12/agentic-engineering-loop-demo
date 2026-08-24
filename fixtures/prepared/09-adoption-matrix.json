@@ -92,10 +92,10 @@
   },
   "coexistence": {
     "premise": "Work management and engineering evidence are different systems of record. They do not have to be the same product, and forcing them together is a migration risk with no engineering payoff.",
-    "jira": {
+    "workManagement": {
       "keeps": ["Portfolio and programme planning", "Cross-team work management", "Reporting that the business already reads", "Non-engineering workflows"],
       "gains": "Engineering evidence is linked from the ticket instead of retyped into it.",
-      "mechanism": "Commit and pull request references carry the ticket key. Jira's GitHub integration shows the branch, the pull request, and the deployment against the ticket."
+      "mechanism": "Commit and pull request references carry the ticket key. A work-management tool's GitHub integration then shows the branch, the pull request, and the deployment against the ticket."
     },
     "github": {
       "holds": ["Durable intent close to the code", "Reviewable proposals", "Deterministic evidence", "Policy and accountable authority", "Governed release and provenance"],
@@ -106,7 +106,7 @@
   "migrationPath": {
     "premise": "Migration is a per-repository decision, taken repository by repository using the dispositions above. There is no single switch and no numbered wave plan.",
     "cloudNeutral": "Nothing in this path requires a particular hosting provider or cloud. The primitives are the same wherever the workload runs.",
-    "pipelineNote": "Assess pipeline definitions before moving anything. gh actions-importer audits Bitbucket Pipelines and other systems and translates most of the mechanical shape. The security posture in this repository is the part worth rewriting by hand rather than importing.",
+    "pipelineNote": "Assess pipeline definitions before moving anything. gh actions-importer audits several other CI systems and translates most of the mechanical shape. The security posture in this repository is the part worth rewriting by hand rather than importing.",
     "sequencing": "During the pilot, no repository moves at all. Dispositions are assigned afterwards, on evidence."
   },
   "capabilityMatrix": [
